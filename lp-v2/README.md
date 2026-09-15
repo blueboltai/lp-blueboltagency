@@ -43,7 +43,14 @@ são as únicas três menções a "Blue Bolt AI" que sobraram na página.
 
 ## Primeira e segunda dobra
 
-**Hero** em azul Blue Bolt (`#000122`) com o vídeo do modelo do Elementor
+**Hero** com o tratamento dos heros de SaaS modernos: uma pílula com a oferta
+por cima do título, o título a desvanecer para baixo até 58% de branco, o
+subtítulo em cinzento, um botão claro em degradê e quatro faíscas discretas à
+volta. O botão só é claro aqui — no CTA final, que está sobre fundo claro, o
+azul continua a ser o que salta. Por trás da VSL há um halo azul, que é o que
+faz o vídeo ler-se como um ecrã aceso em vez de um retângulo colado ao fundo.
+
+Em azul Blue Bolt (`#000122`) com o vídeo do modelo do Elementor
 (`img/hero-video.webm`) a correr ao fundo, por baixo de um véu que garante o
 contraste do texto. A tipografia é a da própria página — Archia no título,
 Manrope no corpo — e só a medida e a cor foram ajustadas, que o hero centrado

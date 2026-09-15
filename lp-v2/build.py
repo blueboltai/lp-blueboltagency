@@ -596,6 +596,118 @@ SECOES_CSS = """
   color:#7b8190;
 }
 
+/* ══ A parte de cima, ate a VSL ══
+   Tratamento de hero de SaaS: pilula com a oferta, titulo a desvanecer
+   para baixo, subtitulo em cinzento, um botao claro e um halo por tras do
+   video. O azul da marca fica no acento do titulo e no halo; o resto e
+   contraste, que e o que faz o texto ganhar ao fotograma do video. */
+
+.hero-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:.6rem;
+  margin-bottom:1.75rem;
+  padding:.45rem 1.05rem;
+  border-radius:9999px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.05);
+  backdrop-filter:blur(8px);
+  font-family:'Manrope',sans-serif;
+  font-size:12.5px;
+  font-weight:500;
+  letter-spacing:.01em;
+  text-transform:none;
+  color:rgba(215,222,236,.82);
+  white-space:nowrap;
+}
+.hero-badge-dot{
+  width:6px;height:6px;
+  border-radius:50%;
+  background:#2fa1ff;
+  box-shadow:0 0 0 3px rgba(47,161,255,.18);
+  animation:hb-pisca 2.6s ease-in-out infinite;
+}
+@keyframes hb-pisca{
+  0%,100%{ box-shadow:0 0 0 3px rgba(47,161,255,.18); }
+  50%{ box-shadow:0 0 0 6px rgba(47,161,255,.06); }
+}
+
+/* O titulo desvanece para baixo, como nos exemplos: a ultima linha fica a
+   60% de branco e o bloco ganha profundidade sem precisar de sombra. */
+.hero-h1 .t1{
+  background:linear-gradient(to bottom,#fff 0%,#fff 42%,rgba(255,255,255,.58) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{ color:rgba(186,196,214,.74); }
+
+/* O botao do hero passa a claro. Na dobra escura e o branco que salta;
+   no CTA final, que esta sobre fundo claro, o azul continua a ser o certo. */
+#hero .cta-btn-main{
+  background:linear-gradient(to bottom,#fff 0%,rgba(255,255,255,.95) 55%,rgba(255,255,255,.72) 100%);
+  border-color:rgba(255,255,255,.5);
+  color:#08101f;
+  box-shadow:0 14px 38px rgba(0,0,0,.42), 0 0 0 1px rgba(255,255,255,.12);
+  transition:transform .25s cubic-bezier(.16,1,.3,1), padding .5s cubic-bezier(.16,1,.3,1), box-shadow .3s;
+}
+#hero .cta-btn-main:hover{ transform:scale(1.035); }
+#hero .cta-btn-main:active{ transform:scale(.98); }
+#hero .cta-btn-text{ color:#08101f; }
+#hero .cta-btn-circle{ background:#08101f;color:#fff; }
+#hero .cta-btn-circle svg{ color:#fff; }
+
+/* Faiscas a volta do titulo, como na referencia. Sao decoracao: ficam fora
+   da arvore de acessibilidade e param com o movimento reduzido. */
+.hero-faisca{
+  position:absolute;
+  width:14px;height:14px;
+  pointer-events:none;
+  color:rgba(120,190,255,.55);
+  animation:hb-brilha 4.5s ease-in-out infinite;
+}
+.hero-faisca svg{ width:100%;height:100%;display:block; }
+.hero-faisca-1{ top:4%;left:11%;width:20px;height:20px;animation-delay:0s; }
+.hero-faisca-2{ top:16%;right:13%;width:13px;height:13px;animation-delay:1.3s; }
+.hero-faisca-3{ top:46%;left:6%;width:11px;height:11px;animation-delay:2.4s; }
+.hero-faisca-4{ top:38%;right:7%;width:16px;height:16px;animation-delay:3.2s; }
+@keyframes hb-brilha{
+  0%,100%{ opacity:.25;transform:scale(.85); }
+  50%{ opacity:1;transform:scale(1); }
+}
+
+/* Halo por tras da VSL: e o que faz o video ler-se como um ecra aceso em
+   vez de um rectangulo colado ao fundo. */
+.vsl-straddle{ position:relative; }
+.vsl-straddle::before{
+  content:'';
+  position:absolute;
+  left:50%;
+  top:-190px;
+  /* O terceiro termo e o que evita transbordo horizontal: sem ele o halo
+     empurrava a pagina 150px para o lado em ecras medios. */
+  width:min(1240px, 150%, calc(100vw - 32px));
+  height:420px;
+  transform:translateX(-50%);
+  background:
+    radial-gradient(46% 52% at 50% 62%, rgba(120,200,255,.5) 0%, rgba(47,161,255,.22) 38%, rgba(47,161,255,0) 70%),
+    radial-gradient(60% 60% at 50% 55%, rgba(0,93,169,.42) 0%, rgba(0,93,169,0) 72%);
+  filter:blur(26px);
+  pointer-events:none;
+  z-index:0;
+}
+.vsl-shell{ position:relative;z-index:1; }
+
+@media(max-width:860px){
+  .vsl-straddle::before{ top:-120px;height:280px; }
+}
+
+@media(max-width:640px){
+  .hero-badge{ font-size:11.5px;padding:.4rem .85rem;margin-bottom:1.35rem;white-space:normal; }
+  .hero-faisca{ display:none; }
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-badge-dot,.hero-faisca{ animation:none; }
+}
+
 @media(max-width:640px){
   .hero-h1{ font-size:clamp(26px,7.6vw,36px); }
   .hero-sub{ font-size:14.5px; }
@@ -859,6 +971,36 @@ if not faixa:
     falhas.append("hero: nao encontrei a faixa de confianca")
 else:
     html = html.replace(faixa.group(0), "\n      </div>\n    </div>\n  </section>")
+
+# ── A pilula por cima do titulo ──────────────────────────────────────
+# Diz a oferta numa linha antes do titulo, como nos heros de SaaS: a
+# primeira coisa que se le e o que se leva, nao o que se vende.
+html = troca(
+    html,
+    '<div class="hero-content">\n\n        <h1 class="hero-h1">',
+    '<div class="hero-content">\n\n'
+    '        <div class="hero-badge" data-reveal="fade">\n'
+    '          <span class="hero-badge-dot" aria-hidden="true"></span>\n'
+    '          Diagnóstico gratuito de 30 minutos\n'
+    '        </div>\n\n'
+    '        <h1 class="hero-h1">',
+    "pílula do hero",
+)
+
+# ── Faiscas a volta do titulo ────────────────────────────────────────
+# Sao decoracao pura: aria-hidden, e param com prefers-reduced-motion.
+_FAISCA = ('<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">'
+           '<path d="M12 0c.5 6.2 5.3 11 11.5 11.5C17.3 12 12.5 16.8 12 23c-.5-6.2-5.3-11-11.5-11.5'
+           'C6.7 11 11.5 6.2 12 0Z"/></svg>')
+html = troca(
+    html,
+    '<div class="hero-content">\n\n        <div class="hero-badge"',
+    '<div class="hero-content">\n\n'
+    + "".join(f'        <span class="hero-faisca hero-faisca-{i}" aria-hidden="true">{_FAISCA}</span>\n'
+              for i in range(1, 5))
+    + '\n        <div class="hero-badge"',
+    "faíscas do hero",
+)
 
 # ── Prova social por baixo do botao ─────────────────────────────────
 # Retratos da propria equipa da Blue Bolt, os mesmos do site. Sao seis:
