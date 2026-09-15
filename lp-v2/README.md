@@ -41,6 +41,20 @@ não têm efeito nenhum.
 duas frases sobre IA. Foi pedido assim. Se um dia quiser adaptá-la à agência,
 são as únicas três menções a "Blue Bolt AI" que sobraram na página.
 
+## Primeira e segunda dobra
+
+**Hero** em azul Blue Bolt (`#000122`) com o vídeo do modelo do Elementor
+(`img/hero-video.webm`) a correr ao fundo, por baixo de um véu que garante o
+contraste do texto. O título usa o par tipográfico do modelo — DM Sans a bold
+para a primeira parte, Instrument Serif em itálico a `#0072F5` para o remate — e
+por baixo dos CTAs ficam os três selos: Google Partner, Meta Business Partner e
+Scoring Top 5% PME 2025. A faixa deslizante de provas que vinha da página de IA
+saiu, substituída por eles.
+
+**Segunda dobra** passou a branco/cinza (`#f6f7f9`), com o texto e a grelha de
+fundo invertidos para tom escuro. É isso que faz a VSL ler como na referência:
+metade sobre o azul, metade sobre o claro.
+
 ## A VSL
 
 Vídeo do YouTube `v4o2YB1vPjI` — o VSL da Blue Bolt, o mesmo da LP do Elementor.
@@ -63,6 +77,11 @@ recuperados e foram substituídos por equivalentes do repositório:
 | `ricardo.webp` | `img/ricardo.avif` | Retrato do Ricardo da secção de equipa |
 | `bluebolt-logo.webp` | `img/bluebolt-logo.webp` | Logótipo Blue Bolt |
 | `bluebolt-ai-brand.png` | `img/equipa.webp` | A foto do robô era da oferta de IA; entra a foto da equipa |
+
+Do modelo do Elementor vieram ainda `img/hero-video.webm` (o vídeo de fundo),
+`img/hero-poster.jpg` (o fotograma que aparece enquanto o vídeo não arranca) e
+os três selos em `img/google-partner.webp`, `img/meta-partner.webp` e
+`img/selo-top5.svg`.
 
 Se enviar os ficheiros originais, é só substituí-los em `img/` com os mesmos
 nomes.

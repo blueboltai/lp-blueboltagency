@@ -81,7 +81,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <link rel="stylesheet" href="assets/bluebolt-ai-shared.css">
 <style>
@@ -2075,12 +2075,149 @@ a{text-decoration:none;color:inherit}
 #hero{ padding-top:4rem; }
 @media(max-width:900px){ #hero{ padding-top:3rem; } }
 @media(max-width:640px){ #hero{ padding-top:2.5rem; } }
+
+/* ══════════════════════════════════════════════════════════════════
+   PRIMEIRA DOBRA — hero em azul Blue Bolt, sobre o video do modelo
+   ══════════════════════════════════════════════════════════════════ */
+
+.hero-wrap{ background:#000122; }
+
+.hero-bg-video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:1;
+  pointer-events:none;
+}
+/* Veu por cima do video: o texto tem de ganhar sempre ao fotograma. */
+.hero-bg-veil{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  background:
+    linear-gradient(180deg, rgba(0,1,34,.72) 0%, rgba(0,1,34,.84) 55%, #000122 96%),
+    radial-gradient(65% 50% at 50% 34%, rgba(0,1,34,.34), rgba(0,1,34,.8) 100%);
+}
+.hero-orb{ z-index:3; }
+#hero{ z-index:5; }
+.hero-overlay-bottom{
+  z-index:4;
+  height:260px;
+  background:linear-gradient(to top,#000122 0%,transparent 100%);
+}
+
+/* Titulo: DM Sans a bold para a primeira parte, Instrument Serif em italico
+   para o remate a azul — o mesmo par do modelo do Elementor. */
+.hero-h1{
+  font-family:'DM Sans',sans-serif;
+  font-weight:700;
+  font-size:clamp(32px,4.6vw,66px);
+  line-height:1.08;
+  letter-spacing:-.03em;
+  max-width:min(1120px, 94%);
+  margin-inline:auto;
+  margin-bottom:1.25rem;
+  text-wrap:balance;
+}
+.hero-h1 .t1{
+  background:none;
+  -webkit-text-fill-color:#fff;
+  color:#fff;
+}
+.hero-h1 .t2{
+  font-family:'Instrument Serif',Georgia,serif;
+  font-style:italic;
+  font-weight:400;
+  letter-spacing:-.01em;
+  background:none;
+  -webkit-text-fill-color:#0072F5;
+  color:#0072F5;
+}
+.hero-sub{
+  font-family:'DM Sans',sans-serif;
+  font-size:clamp(15px,1.3vw,19px);
+  font-weight:500;
+  line-height:1.55;
+  color:rgba(255,255,255,.88);
+  max-width:60ch;
+  margin-inline:auto;
+  margin-bottom:2.25rem;
+}
+
+/* Selos de confianca */
+.hero-badges{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(20px,3.4vw,46px);
+  width:100%;
+  padding-top:clamp(2rem,4vw,3.25rem);
+}
+.hero-badge{
+  height:clamp(66px,7vw,104px);
+  width:auto;
+  object-fit:contain;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   SEGUNDA DOBRA — branco/cinza, para a VSL ficar metade sobre cada uma
+   ══════════════════════════════════════════════════════════════════ */
+
+#quem{
+  --lt-inc: #12141a;
+  --lt-inc-2: #4b505c;
+  --lt-inc-3: #6b7078;
+  background:#f6f7f9;
+  color:var(--lt-inc);
+}
+#quem::before{
+  background-image:
+    linear-gradient(rgba(10,15,35,.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(10,15,35,.055) 1px, transparent 1px);
+}
+#quem .quem-h2 .tg{
+  background:linear-gradient(to bottom,#12141a 0%,#3a3f4a 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+#quem .quem-bio{ color:var(--lt-inc-2); }
+#quem .quem-bio strong{ color:var(--lt-inc); font-weight:600; }
+#quem .quem-creds{ border-top-color:rgba(10,15,35,.1); }
+#quem .quem-cred-value{ color:var(--lt-inc); }
+#quem .quem-img-glow{ background:rgba(0,114,245,.07); }
+#quem .quem-corner-glow{ background:rgba(0,114,245,.14); }
+
+/* O cartao da imagem mantem-se escuro: contrasta com o fundo claro e
+   segura as estatisticas em branco que ja la viviam. */
+#quem .quem-visual{
+  border-color:rgba(10,15,35,.08);
+  box-shadow:0 30px 70px rgba(10,15,35,.16);
+}
+
+@media(max-width:640px){
+  .hero-h1{ max-width:100%; font-size:clamp(28px,8.4vw,40px); }
+  .hero-sub{ font-size:14.5px; }
+  .hero-badge{ height:58px; }
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-bg-video{ display:none; }
+}
 </style>
 </head>
 <body>
 
 <!-- HERO WRAP -->
 <div class="hero-wrap">
+
+  <!-- Vídeo de fundo (o mesmo do modelo do Elementor) -->
+  <video class="hero-bg-video" autoplay muted loop playsinline preload="none"
+         poster="img/hero-poster.jpg" aria-hidden="true">
+    <source src="img/hero-video.webm" type="video/webm">
+  </video>
+  <div class="hero-bg-veil" aria-hidden="true"></div>
 
   <!-- Glow orbs animados -->
   <div class="hero-orb hero-orb-1"></div>
@@ -2096,11 +2233,11 @@ a{text-decoration:none;color:inherit}
       <div class="hero-content">
 
         <h1 class="hero-h1">
-          <span class="t1">Aumente a sua faturação com um </span><span class="t2">sistema previsível de aquisição de clientes.</span>
+          <span class="t1">Transforme o que investe em anúncios em </span><span class="t2">faturação que consegue ver e explicar</span>
         </h1>
 
         <p class="hero-sub">
-          Ajudamos o seu negócio a crescer com um sistema que transforma anúncios em vendas e dá controlo real sobre os resultados, para escalar com decisões estratégicas em vez de palpites.
+          Com um Sistema Previsível de Aquisição de Clientes, sabe todos os meses onde o dinheiro se perdeu, onde gerou oportunidades e onde se transformou em clientes.
         </p>
 
         <div class="hero-ctas">
@@ -2115,42 +2252,10 @@ a{text-decoration:none;color:inherit}
           <a href="#trajetoria" class="btn-secondary">Ver como funciona</a>
         </div>
 
-        <div class="hero-trust-strip">
-          <div class="trust-strip-track">
-            <div class="trust-strip-items stack-marquee">
-              <div class="stackstrip-item"><svg class="stackstrip-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg><span class="stackstrip-text"><span class="stackstrip-lbl">Parceiro</span><span class="stackstrip-strong">Google Partner</span></span></div>
-              <span class="trust-dot"></span>
-              <div class="stackstrip-item"><svg class="stackstrip-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 6C3.46 6 1 8.69 1 12s2.46 6 5.5 6c2.04 0 3.62-1.2 5.5-4.2C13.88 16.8 15.46 18 17.5 18c3.04 0 5.5-2.69 5.5-6s-2.46-6-5.5-6c-2.04 0-3.62 1.2-5.5 4.2C10.12 7.2 8.54 6 6.5 6m0 2.4c1.05 0 2.02.79 3.6 3.6-1.58 2.81-2.55 3.6-3.6 3.6C4.98 15.6 3.9 14 3.9 12s1.08-3.6 2.6-3.6m11 0c1.52 0 2.6 1.6 2.6 3.6s-1.08 3.6-2.6 3.6c-1.05 0-2.02-.79-3.6-3.6 1.58-2.81 2.55-3.6 3.6-3.6"/></svg><span class="stackstrip-text"><span class="stackstrip-lbl">Parceiro</span><span class="stackstrip-strong">Meta Business</span></span></div>
-              <span class="trust-dot"></span>
-              <div class="stackstrip-item"><svg class="stackstrip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V6z"/><path d="m9.5 12 1.8 1.8L15 10.2"/></svg><span class="stackstrip-text"><span class="stackstrip-lbl">Distinção</span><span class="stackstrip-strong">Top 5% PME Portugal</span></span></div>
-              <span class="trust-dot"></span>
-              <div class="stackstrip-item"><svg class="stackstrip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="stackstrip-text"><span class="stackstrip-lbl">Experiência</span><span class="stackstrip-strong">+400 negócios</span></span></div>
-              <span class="trust-dot"></span>
-              <div class="stackstrip-item"><svg class="stackstrip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-5 3.5 3L21 6"/></svg><span class="stackstrip-text"><span class="stackstrip-lbl">Foco</span><span class="stackstrip-strong">ROI medido</span></span></div>
-              <span class="trust-dot"></span>
-              <div class="stackstrip-item"><svg class="stackstrip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 3.5"/></svg><span class="stackstrip-text"><span class="stackstrip-lbl">Resposta</span><span class="stackstrip-strong">Em menos de 24h</span></span></div>
-              <span class="trust-dot"></span>
-              <div class="stackstrip-item"><svg class="stackstrip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg><span class="stackstrip-text"><span class="stackstrip-lbl">Acompanhamento</span><span class="stackstrip-strong">Reunião mensal</span></span></div>
-              <span class="trust-dot"></span>
-            </div>
-            <!-- duplicado para loop contínuo -->
-            <div class="trust-strip-items stack-marquee" aria-hidden="true">
-              <div class="stackstrip-item"><svg class="stackstrip-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"/></svg><span class="stackstrip-text"><span class="stackstrip-lbl">Parceiro</span><span class="stackstrip-strong">Google Partner</span></span></div>
-              <span class="trust-dot"></span>
-              <div class="stackstrip-item"><svg class="stackstrip-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M6.5 6C3.46 6 1 8.69 1 12s2.46 6 5.5 6c2.04 0 3.62-1.2 5.5-4.2C13.88 16.8 15.46 18 17.5 18c3.04 0 5.5-2.69 5.5-6s-2.46-6-5.5-6c-2.04 0-3.62 1.2-5.5 4.2C10.12 7.2 8.54 6 6.5 6m0 2.4c1.05 0 2.02.79 3.6 3.6-1.58 2.81-2.55 3.6-3.6 3.6C4.98 15.6 3.9 14 3.9 12s1.08-3.6 2.6-3.6m11 0c1.52 0 2.6 1.6 2.6 3.6s-1.08 3.6-2.6 3.6c-1.05 0-2.02-.79-3.6-3.6 1.58-2.81 2.55-3.6 3.6-3.6"/></svg><span class="stackstrip-text"><span class="stackstrip-lbl">Parceiro</span><span class="stackstrip-strong">Meta Business</span></span></div>
-              <span class="trust-dot"></span>
-              <div class="stackstrip-item"><svg class="stackstrip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8.5 8 9 4.5-.5 8-4 8-9V6z"/><path d="m9.5 12 1.8 1.8L15 10.2"/></svg><span class="stackstrip-text"><span class="stackstrip-lbl">Distinção</span><span class="stackstrip-strong">Top 5% PME Portugal</span></span></div>
-              <span class="trust-dot"></span>
-              <div class="stackstrip-item"><svg class="stackstrip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg><span class="stackstrip-text"><span class="stackstrip-lbl">Experiência</span><span class="stackstrip-strong">+400 negócios</span></span></div>
-              <span class="trust-dot"></span>
-              <div class="stackstrip-item"><svg class="stackstrip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="m7 15 4-5 3.5 3L21 6"/></svg><span class="stackstrip-text"><span class="stackstrip-lbl">Foco</span><span class="stackstrip-strong">ROI medido</span></span></div>
-              <span class="trust-dot"></span>
-              <div class="stackstrip-item"><svg class="stackstrip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 3.5"/></svg><span class="stackstrip-text"><span class="stackstrip-lbl">Resposta</span><span class="stackstrip-strong">Em menos de 24h</span></span></div>
-              <span class="trust-dot"></span>
-              <div class="stackstrip-item"><svg class="stackstrip-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg><span class="stackstrip-text"><span class="stackstrip-lbl">Acompanhamento</span><span class="stackstrip-strong">Reunião mensal</span></span></div>
-              <span class="trust-dot"></span>
-            </div>
-          </div>
+        <div class="hero-badges">
+          <img class="hero-badge" src="img/google-partner.webp" alt="Google Partner" width="110" height="110" loading="lazy" decoding="async">
+          <img class="hero-badge" src="img/meta-partner.webp" alt="Meta Business Partner" width="110" height="110" loading="lazy" decoding="async">
+          <img class="hero-badge" src="img/selo-top5.svg" alt="Scoring Top 5% — Melhores PME de Portugal 2025" width="129" height="129" loading="lazy" decoding="async">
         </div>
 
       </div>
