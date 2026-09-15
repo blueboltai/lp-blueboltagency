@@ -105,7 +105,7 @@ SECOES_CSS = """
    PRIMEIRA DOBRA — hero em azul Blue Bolt, sobre o video do modelo
    ══════════════════════════════════════════════════════════════════ */
 
-.hero-wrap{ background:#03113a; }
+.hero-wrap{ background:#000122; }
 
 .hero-bg-video{
   position:absolute;
@@ -117,25 +117,17 @@ SECOES_CSS = """
   pointer-events:none;
 }
 /* Veu por cima do video: o texto tem de ganhar sempre ao fotograma. */
-/* O veu deixou de ser preto-azulado e passou a azul: o fundo acende sem
-   deixar de garantir o contraste do texto sobre o fotograma do video. A
-   ultima paragem volta ao #000122 para a base do hero continuar a fechar
-   contra o halo da VSL. */
+/* Veu por cima do video: o texto tem de ganhar sempre ao fotograma. */
 .hero-bg-veil{
   position:absolute;
   inset:0;
   z-index:2;
   pointer-events:none;
   background:
-    /* O clarao fica a meia altura, por baixo do texto: acende o azul onde
-       ha espaco livre e deixa a zona do titulo com bed escuro que baste. */
-    radial-gradient(76% 50% at 50% 60%, rgba(30,120,232,.5) 0%, rgba(10,52,128,.3) 46%, rgba(3,17,58,0) 80%),
-    linear-gradient(180deg, rgba(1,13,50,.84) 0%, rgba(1,15,56,.74) 40%, rgba(0,9,42,.84) 82%, #000122 100%);
+    linear-gradient(180deg, rgba(0,1,34,.72) 0%, rgba(0,1,34,.84) 55%, #000122 96%),
+    radial-gradient(65% 50% at 50% 34%, rgba(0,1,34,.34), rgba(0,1,34,.8) 100%);
 }
-/* Os halos ganham corpo, agora que o fundo os aguenta. */
 .hero-orb{ z-index:3; }
-.hero-orb-1{ background:radial-gradient(circle,rgba(47,161,255,.3) 0%,transparent 70%); }
-.hero-orb-2{ background:radial-gradient(circle,rgba(47,161,255,.18) 0%,transparent 70%); }
 #hero{ z-index:5; }
 .hero-overlay-bottom{
   z-index:4;
@@ -486,42 +478,6 @@ SECOES_CSS = """
   .traj-no span{ font-size:13px; }
 }
 
-/* ══ Prova social, por baixo do botao do hero ══
-   Retratos da equipa em pilha, com um aro da cor do fundo a separa-los —
-   e o aro que faz a pilha ler-se como pessoas e nao como mancha. */
-/* Sem capsula: os retratos e a frase chegam para se lerem como um bloco,
-   e sem a moldura o hero fica com menos uma caixa a competir com o botao. */
-.hero-prova{
-  display:inline-flex;
-  align-items:center;
-  gap:.85rem;
-  margin-top:1.75rem;
-}
-.hero-prova-caras{ display:inline-flex; }
-.hero-prova-caras img{
-  width:38px;height:38px;
-  border-radius:50%;
-  object-fit:cover;
-  border:2px solid #0a0f24;
-  background:#0a0f24;
-}
-.hero-prova-caras img + img{ margin-left:-13px; }
-.hero-prova-txt{
-  font-family:'Manrope',sans-serif;
-  font-size:14px;
-  font-weight:400;
-  color:rgba(255,255,255,.76);
-  white-space:nowrap;
-}
-.hero-prova-txt strong{ font-weight:700;color:#fff; }
-
-@media(max-width:640px){
-  .hero-prova{ gap:.6rem; }
-  .hero-prova-caras img{ width:32px;height:32px; }
-  .hero-prova-caras img + img{ margin-left:-11px; }
-  .hero-prova-txt{ font-size:12.5px;white-space:normal;text-align:left; }
-}
-
 /* ══ Testemunhos em video ══
    Fila que rola na horizontal em vez de grelha: sao oito, e uma grelha de
    oito ou punha cartoes minusculos ou tres filas a encher o ecra. Rolar de
@@ -664,27 +620,32 @@ SECOES_CSS = """
 /* Halo por tras da VSL: e o que faz o video ler-se como um ecra aceso em
    vez de um rectangulo colado ao fundo. */
 .vsl-straddle{ position:relative; }
+/* O halo e a luz que sai por tras do topo da VSL: e ele que faz o video
+   ler-se como um ecra aceso em vez de um rectangulo colado ao fundo. Fica
+   forte de proposito — o resto do hero continua escuro, e e o contraste
+   entre os dois que da o efeito. */
 .vsl-straddle::before{
   content:'';
   position:absolute;
   left:50%;
-  top:-190px;
+  top:-230px;
   /* O terceiro termo e o que evita transbordo horizontal: sem ele o halo
      empurrava a pagina 150px para o lado em ecras medios. */
-  width:min(1240px, 150%, calc(100vw - 32px));
-  height:420px;
+  width:min(1320px, 165%, calc(100vw - 32px));
+  height:500px;
   transform:translateX(-50%);
   background:
-    radial-gradient(46% 52% at 50% 62%, rgba(120,200,255,.5) 0%, rgba(47,161,255,.22) 38%, rgba(47,161,255,0) 70%),
-    radial-gradient(60% 60% at 50% 55%, rgba(0,93,169,.42) 0%, rgba(0,93,169,0) 72%);
-  filter:blur(26px);
+    radial-gradient(40% 46% at 50% 66%, rgba(186,226,255,.78) 0%, rgba(96,186,255,.42) 34%, rgba(47,161,255,0) 68%),
+    radial-gradient(58% 56% at 50% 62%, rgba(47,161,255,.48) 0%, rgba(0,93,169,.16) 48%, rgba(0,93,169,0) 76%),
+    radial-gradient(76% 70% at 50% 58%, rgba(0,93,169,.42) 0%, rgba(0,93,169,0) 74%);
+  filter:blur(30px);
   pointer-events:none;
   z-index:0;
 }
 .vsl-shell{ position:relative;z-index:1; }
 
 @media(max-width:860px){
-  .vsl-straddle::before{ top:-120px;height:280px; }
+  .vsl-straddle::before{ top:-150px;height:330px; }
 }
 
 @media(max-width:640px){
@@ -993,24 +954,6 @@ html = troca(
     '        </div>\n\n'
     '        <h1 class="hero-h1">',
     "pílula do hero",
-)
-
-# ── Prova social por baixo do botao ─────────────────────────────────
-# Retratos da propria equipa da Blue Bolt, os mesmos do site. Sao seis:
-# mais do que isso e a pilha deixa de se ler e passa a mancha.
-EQUIPA = ["andreia", "bruno", "daniela", "mariana", "hugo", "diego"]
-CARAS = "".join(
-    f'<img src="img/prova/{n}.avif" alt="" width="38" height="38" loading="lazy" decoding="async">'
-    for n in EQUIPA
-)
-html = troca(
-    html,
-    "</div>\n\n      </div>\n    </div>\n  </section>",
-    '</div>\n\n        <div class="hero-prova" data-reveal="fade">\n'
-    f'          <span class="hero-prova-caras" aria-hidden="true">{CARAS}</span>\n'
-    '          <span class="hero-prova-txt"><strong>+400</strong> negócios transformados</span>\n'
-    '        </div>\n\n      </div>\n    </div>\n  </section>',
-    "prova social do hero",
 )
 
 html = troca(

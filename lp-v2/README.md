@@ -46,8 +46,8 @@ são as únicas três menções a "Blue Bolt AI" que sobraram na página.
 **Hero** com o tratamento dos heros de SaaS modernos: uma pílula com a oferta
 por cima do título, o título a desvanecer para baixo até 58% de branco, o
 subtítulo em cinzento e um botão claro em degradê. O véu por cima do vídeo
-deixou de ser preto-azulado e passou a azul, com o clarão a meia altura — por
-baixo do texto, para acender o fundo sem tirar contraste ao título. O botão só é claro aqui — no CTA final, que está sobre fundo claro, o
+fica escuro: é o contraste entre o hero escuro e o halo aceso por trás do topo
+da VSL que dá o efeito — cheguei a acender o hero todo e perdeu-se. O botão só é claro aqui — no CTA final, que está sobre fundo claro, o
 azul continua a ser o que salta. Por trás da VSL há um halo azul, que é o que
 faz o vídeo ler-se como um ecrã aceso em vez de um retângulo colado ao fundo.
 
@@ -55,9 +55,10 @@ Em azul Blue Bolt (`#000122`) com o vídeo do modelo do Elementor
 (`img/hero-video.webm`) a correr ao fundo, por baixo de um véu que garante o
 contraste do texto. A tipografia é a da própria página — Archia no título,
 Manrope no corpo — e só a medida e a cor foram ajustadas, que o hero centrado
-e o vídeo por trás obrigam. Por baixo dos CTAs ficam os três selos: Google
-Partner, Meta Business Partner e Scoring Top 5% PME 2025. A faixa deslizante
-de provas que vinha da página de IA saiu, substituída por eles.
+e o vídeo por trás obrigam. A faixa deslizante de provas que vinha
+da página de IA saiu; os três selos — Google Partner, Meta Business Partner e
+Scoring Top 5% PME 2025 — passaram para o rodapé. O hero fica com um caminho
+só: o título, a promessa e o botão.
 
 O selo da Scoring vinha num SVG de 542 KB que era, na verdade, um PNG de
 1527×1527 embrulhado num `<pattern>` — o embrulho reenquadrava o desenho e
