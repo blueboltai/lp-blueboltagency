@@ -531,6 +531,125 @@ SECOES_CSS = """
   #trajetoria .traj-item:nth-child(even) .traj-content::before{ left:0;right:auto; }
 }
 
+/* ══ Prova social, por baixo do botao do hero ══
+   Retratos da equipa em pilha, com um aro da cor do fundo a separa-los —
+   e o aro que faz a pilha ler-se como pessoas e nao como mancha. */
+.hero-prova{
+  display:inline-flex;
+  align-items:center;
+  gap:.85rem;
+  margin-top:1.6rem;
+  padding:.5rem 1.1rem .5rem .55rem;
+  border-radius:9999px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.09);
+  backdrop-filter:blur(8px);
+}
+.hero-prova-caras{ display:inline-flex; }
+.hero-prova-caras img{
+  width:38px;height:38px;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid #0a0f24;
+  background:#0a0f24;
+}
+.hero-prova-caras img + img{ margin-left:-13px; }
+.hero-prova-txt{
+  font-family:'Manrope',sans-serif;
+  font-size:14px;
+  font-weight:400;
+  color:rgba(255,255,255,.76);
+  white-space:nowrap;
+}
+.hero-prova-txt strong{ font-weight:700;color:#fff; }
+
+@media(max-width:640px){
+  .hero-prova{ gap:.6rem;padding:.45rem .9rem .45rem .5rem; }
+  .hero-prova-caras img{ width:32px;height:32px; }
+  .hero-prova-caras img + img{ margin-left:-11px; }
+  .hero-prova-txt{ font-size:12.5px;white-space:normal;text-align:left; }
+}
+
+/* ══ Testemunhos em video ══
+   Fila que rola na horizontal em vez de grelha: sao oito, e uma grelha de
+   oito ou punha cartoes minusculos ou tres filas a encher o ecra. Rolar de
+   lado mantem o cartao grande e diz, so pela barra, que ha mais para ver. */
+.tst-section{
+  position:relative;
+  padding:clamp(80px,9vw,130px) 0;
+  background:#f6f7f9;
+  color:#12141a;
+}
+.tst-inner{ max-width:1240px;margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem); }
+.tst-head{ text-align:center;margin-bottom:clamp(2.5rem,5vw,4rem); }
+.tst-section .quem-eyebrow{ color:#005da9; }
+.tst-h2{
+  font-family:'Archia',sans-serif;
+  font-size:clamp(26px,3.1vw,40px);
+  font-weight:400;
+  letter-spacing:-.035em;
+  line-height:1.14;
+  width:var(--medida-titulo);
+  margin-inline:calc(50% - var(--medida-titulo) / 2);
+  text-wrap:pretty;
+}
+.tst-h2 .tg{
+  background:linear-gradient(to bottom,#12141a 0%,#3a3f4a 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.tst-h2 .ta{
+  background:linear-gradient(135deg,#2fa1ff 0%,#005da9 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+.tst-row{
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns:minmax(280px,1fr);
+  gap:clamp(1rem,2vw,1.75rem);
+  overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  padding-bottom:1.25rem;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(0,93,169,.35) transparent;
+}
+@media(min-width:1100px){ .tst-row{ grid-auto-columns:minmax(0,1fr);grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));overflow:visible; } }
+.tst-row::-webkit-scrollbar{ height:6px; }
+.tst-row::-webkit-scrollbar-thumb{ background:rgba(0,93,169,.3);border-radius:3px; }
+.tst-card{ margin:0;scroll-snap-align:start; }
+.tst-screen{
+  position:relative;
+  aspect-ratio:16/9;
+  border-radius:14px;
+  overflow:hidden;
+  cursor:pointer;
+  background:#0a0f24;
+  box-shadow:0 12px 34px rgba(10,15,35,.13);
+}
+.tst-screen img{ width:100%;height:100%;object-fit:cover;display:block; }
+.tst-screen .vsl-play{
+  width:52px;height:52px;
+  box-shadow:0 8px 24px rgba(0,0,0,.4),0 0 0 6px rgba(255,255,255,.1);
+}
+.tst-screen .vsl-play svg{ width:17px;height:17px;margin-left:3px; }
+.tst-cap{
+  display:flex;
+  flex-direction:column;
+  gap:.15rem;
+  padding:.85rem .2rem 0;
+}
+.tst-nome{
+  font-family:'Manrope',sans-serif;
+  font-size:15px;font-weight:700;
+  color:#12141a;
+}
+.tst-area{
+  font-family:'Manrope',sans-serif;
+  font-size:11px;font-weight:500;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:#7b8190;
+}
+
 @media(max-width:640px){
   .hero-h1{ font-size:clamp(26px,7.6vw,36px); }
   .hero-sub{ font-size:14.5px; }
@@ -845,6 +964,54 @@ html = troca(
 )
 
 # ══════════════════════════════════════════════════════════════════
+# TESTEMUNHOS EM VIDEO
+# Os videos sao os da propria Blue Bolt, recuperados da LP do Elementor.
+# Cada cartao mostra so a capa; o iframe do YouTube so entra ao clicar,
+# senao a pagina arrastava nove players de uma vez.
+# ══════════════════════════════════════════════════════════════════
+
+# O nome de cada pessoa vem gravado na propria capa: a legenda repete-o
+# para quem le a pagina de cima a baixo sem parar em cada fotograma.
+TESTEMUNHOS = [
+    ("8QXWiBi7Z8I", "capa-auto-avenida-scaled-1.webp", "Luís Novais", "Auto Avenida"),
+    ("qbhpgXOUC9I", "capa-infante-scaled-1.webp", "Dr. Marco Infante da Câmara", "Infante da Câmara"),
+    ("LbNL0YDUDdI", "capa-apametal-scaled-1.webp", "Rita Rodrigues", "Apametal"),
+    ("kl3K2hbLHmk", "capa-foot-draft-scaled-1.webp", "Bruno Pinto", "Foot Draft"),
+    ("pl0ah13B-CY", "capa-carmen-scaled-1.webp", "Carmen Ferreira", "Enfermagem"),
+    ("8XSuQEaG17U", "capa-mecia-scaled-1.webp", "Mécia Correia", "Marca pessoal"),
+    ("Aw5drpYunbo", "capa-natalia-scaled-1.webp", "Natália Teixeira", "Marca pessoal"),
+    ("x4krzjutqko", "capa_sara-scaled-1.webp", "Sara Moreira", "Marca pessoal"),
+]
+
+_cartoes = "".join(
+    f'<figure class="tst-card">'
+    f'<div class="vsl-screen tst-screen" data-video="{vid}" role="button" tabindex="0" '
+    f'aria-label="Ver o testemunho de {nome}">'
+    f'<img src="img/testemunhos/{capa}" alt="" loading="lazy" decoding="async">'
+    f'<span class="vsl-play" aria-hidden="true">'
+    f'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>'
+    f"</div>"
+    f'<figcaption class="tst-cap"><span class="tst-nome">{nome}</span>'
+    f'<span class="tst-area">{area}</span></figcaption>'
+    f"</figure>"
+    for vid, capa, nome, area in TESTEMUNHOS
+)
+
+TESTEMUNHOS_HTML = """<section id="testemunhos" class="tst-section">
+  <div class="tst-inner">
+    <div class="tst-head">
+      <div class="quem-eyebrow" data-reveal="fade">Resultados</div>
+      <h2 class="tst-h2" data-reveal data-delay="1">
+        <span class="tg">Em palavras deles, </span><span class="ta">não nossas.</span>
+      </h2>
+    </div>
+    <div class="tst-row" data-reveal="fade">""" + _cartoes + """</div>
+  </div>
+</section>
+
+"""
+
+# ══════════════════════════════════════════════════════════════════
 # HEAD — SEO, titulo, partilha
 # ══════════════════════════════════════════════════════════════════
 
@@ -951,7 +1118,25 @@ faixa = re.search(
 if not faixa:
     falhas.append("hero: nao encontrei a faixa de confianca")
 else:
-    html = html.replace(faixa.group(0), "\n\n      </div>\n    </div>\n  </section>")
+    html = html.replace(faixa.group(0), "\n      </div>\n    </div>\n  </section>")
+
+# ── Prova social por baixo do botao ─────────────────────────────────
+# Retratos da propria equipa da Blue Bolt, os mesmos do site. Sao seis:
+# mais do que isso e a pilha deixa de se ler e passa a mancha.
+EQUIPA = ["andreia", "bruno", "daniela", "mariana", "hugo", "diego"]
+CARAS = "".join(
+    f'<img src="img/prova/{n}.avif" alt="" width="38" height="38" loading="lazy" decoding="async">'
+    for n in EQUIPA
+)
+html = troca(
+    html,
+    "</div>\n\n      </div>\n    </div>\n  </section>",
+    '</div>\n\n        <div class="hero-prova" data-reveal="fade">\n'
+    f'          <span class="hero-prova-caras" aria-hidden="true">{CARAS}</span>\n'
+    '          <span class="hero-prova-txt"><strong>+400</strong> negócios transformados</span>\n'
+    '        </div>\n\n      </div>\n    </div>\n  </section>',
+    "prova social do hero",
+)
 
 html = troca(
     html,
@@ -1325,6 +1510,81 @@ html = troca(
     "'O seu pedido foi registado. A nossa equipa vai analisar o seu caso e entra em contacto em 24 horas com as oportunidades de IA para a sua empresa.</p>';",
     "'O seu pedido foi registado. A nossa equipa vai analisar o seu caso e entra em contacto em menos de 24 horas para agendar o diagnóstico.</p>';",
     "mensagem de sucesso",
+)
+
+html = troca(
+    html,
+    '<section class="cta-section">',
+    TESTEMUNHOS_HTML + '<section class="cta-section">',
+    "secção dos testemunhos",
+)
+
+# O facade do YouTube servia um video so; agora ha nove na pagina.
+html = troca(
+    html,
+    """  var box = document.querySelector('.vsl-screen');
+  if(!box) return;
+  function play(){""",
+    """  document.querySelectorAll('.vsl-screen').forEach(function(box){
+  function play(){""",
+    "facade do YouTube: abrir a todos os vídeos (início)",
+)
+html = troca(
+    html,
+    """  box.addEventListener('click', play);
+  box.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); play(); }
+  });
+})();""",
+    """  box.addEventListener('click', play);
+  box.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); play(); }
+  });
+  });
+})();""",
+    "facade do YouTube: abrir a todos os vídeos (fim)",
+)
+
+# ══════════════════════════════════════════════════════════════════
+# QUEM E O RICARDO — a peca da Blue Bolt AI, com os textos da agencia
+# Layout, foto e numeros ficam como estao; muda a copy, que era sobre IA.
+# ══════════════════════════════════════════════════════════════════
+
+html = troca(
+    html,
+    'alt="Ricardo, CEO da Blue Bolt e cofundador da Blue Bolt AI"',
+    'alt="Ricardo, CEO da Blue Bolt"',
+    "alt da foto do Ricardo",
+)
+html = troca(
+    html,
+    '<div class="expert-role">CEO da Blue Bolt · Cofundador da Blue Bolt AI</div>',
+    '<div class="expert-role">CEO da Blue Bolt · Google Partner · Meta Business Partner</div>',
+    "cargo do Ricardo",
+)
+html = troca(
+    html,
+    '<span class="tg">Quem está por trás da </span><span class="ta">Blue Bolt AI.</span>',
+    '<span class="tg">Quem está por trás da </span><span class="ta">Blue Bolt Agency.</span>',
+    "título da secção do Ricardo",
+)
+html = troca(
+    html,
+    "<p>Há uns anos, o Ricardo trabalhava doze a catorze horas por dia. A empresa crescia, mas a margem não acompanhava — cada vez mais despesas com pessoas, e o tempo nunca chegava. Sentia-se preso numa roda que não parava.</p>",
+    "<p>Há uns anos, o Ricardo geria um negócio que dependia de indicações. Uns meses entravam clientes, noutros não entrava nenhum — e não havia forma de saber porquê. Investir em anúncios era atirar dinheiro para o escuro e esperar.</p>",
+    "bio do Ricardo, 1.º parágrafo",
+)
+html = troca(
+    html,
+    "<p>Até perceber que a IA não veio para substituir pessoas. Veio para substituir o trabalho repetitivo e de pouco valor. <strong>Por isso construímos IA para nós primeiro — e funcionou tão bem que passámos a instalar o mesmo motor nas empresas dos nossos clientes.</strong></p>",
+    "<p>Até perceber que o problema nunca tinha sido o anúncio: era não haver sistema por trás dele. <strong>Por isso montámos o sistema para nós primeiro — e funcionou tão bem que passámos a instalá-lo nas empresas dos nossos clientes.</strong></p>",
+    "bio do Ricardo, 2.º parágrafo",
+)
+html = troca(
+    html,
+    "<p>A Blue Bolt acompanha mais de 400 negócios, é Google Partner e está no Top 5% das PME de Portugal. Conhecemos a tecnologia por dentro, porque é isso que fazemos todos os dias.</p>",
+    "<p>A Blue Bolt acompanha mais de 400 negócios, é Google Partner e Meta Business Partner, e está no Top 5% das PME de Portugal. Sabemos o que resulta porque o vemos acontecer todos os meses, em dezenas de contas.</p>",
+    "bio do Ricardo, 3.º parágrafo",
 )
 
 # ══════════════════════════════════════════════════════════════════
