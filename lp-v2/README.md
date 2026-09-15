@@ -67,23 +67,42 @@ duas notas — uma para a metade que estreita até à venda, outra para a que al
 depois dela. O funil tradicional saiu; só fica a ampulheta.
 
 O funil não é imagem: é SVG desenhado em `build.py`, onde a geometria é
-calculada em vez de escrita à mão. Cada fatia leva três peças — o corpo do cone,
-um aro claro por cima e uma cavidade escura lá dentro. É a cavidade que lhe dá
-espessura de taça; sem ela cada fatia lia-se como um triângulo chapado. As
-fatias ficam separadas por uma folga, para cada uma se ler como peça solta, e
-cada uma tem o seu ícone.
+calculada em vez de escrita à mão. Cada fatia é uma taça: o corpo entre duas
+elipses, um aro claro por cima e uma cavidade escura lá dentro. É a cavidade que
+lhe dá espessura; sem ela cada fatia lia-se como um triângulo chapado.
+
+O que faz a diferença entre parecer desenhado e parecer renderizado são três
+números e uma ordem:
+
+- **Achatamento de 0,10** (`ry = rx × 0,10`). Elipses mais abertas fazem o
+  conjunto ler-se como um cone contínuo em vez de peças empilhadas.
+- **Fatias de 78px** de altura. Mais altas parecem candeeiros, não taças.
+- **Folga medida entre silhuetas**, não entre centros: o ponto mais baixo de uma
+  fatia inclui o arco da elipse de baixo e o mais alto da seguinte inclui o da de
+  cima. Somar só altura + folga colava-as.
+- **Fatias desenhadas de baixo para cima**, para a sombra desfocada de cada uma
+  cair sobre a de baixo, que já está lá.
+
+O volume vem de dois gradientes sobrepostos — um vertical, em coordenadas do
+desenho, que faz a fatia escurecer para o fundo, e um horizontal, que lhe
+arredonda os lados — mais dois lampejos curtos no aro. A paleta vai do azul da
+marca ao verde, um degrau por etapa.
 
 As etiquetas vivem ao lado, alternando esquerda e direita, ligadas à fatia por
 uma linha de chamada com um ponto em cada ponta. Abaixo dos 900px o texto dentro
 do SVG ficaria minúsculo, por isso aí mostra-se só o funil e a mesma informação
 passa a uma lista normal em HTML.
 
-Três armadilhas de SVG que apanhei pelo caminho, todas da mesma família: **em
-SVG a ordem de desenho é o único z-index que existe**. O aro de cada fatia tapava
-a etiqueta da fatia anterior, e depois tapava-lhe o ícone — a solução é sempre a
-mesma, desenhar as formas todas primeiro e o que vai por cima só no fim. E a
-moldura (`viewBox`) ficou curta quando aumentei a altura das fatias, cortando o
-cone de baixo; passou a ser calculada a partir da geometria.
+Quatro armadilhas de SVG que apanhei pelo caminho. Três são da mesma família:
+**em SVG a ordem de desenho é o único z-index que existe**. O aro de cada fatia
+tapava a etiqueta da fatia anterior, e depois tapava-lhe o ícone — a solução é
+sempre a mesma, desenhar as formas todas primeiro e o que vai por cima só no fim.
+A moldura (`viewBox`) ficou curta quando aumentei a altura das fatias, cortando o
+cone de baixo; passou a ser calculada a partir da geometria. E a quarta: as duas
+versões do funil viviam na mesma página com os mesmos `id` de gradiente, e um
+`url(#...)` duplicado resolve sempre para o primeiro — que em ecrã estreito está
+escondido. O funil do telemóvel saía sem cor nenhuma. Cada versão passou a levar
+o seu prefixo.
 
 O botão secundário "Ver como funciona" saiu das duas posições onde aparecia
 (hero e CTA final) e os três selos deixaram o hero: passaram a uma faixa

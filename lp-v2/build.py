@@ -262,25 +262,26 @@ SECOES_CSS = """
 }
 
 /* ══ O funil em ampulheta, em 3D ══
-   Cada fatia leva corpo, aro claro por cima e cavidade escura la dentro —
-   e a cavidade que lhe da espessura de taca em vez de triangulo chapado.
-   As fatias ficam separadas por uma folga, para cada uma se ler como peca. */
+   Cada fatia e uma taca: o corpo entre duas elipses, o aro claro por cima e
+   a cavidade escura la dentro. O volume vem de dois gradientes sobrepostos —
+   um vertical, que faz a fatia escurecer para baixo, e um horizontal, que
+   lhe arredonda os lados. As fatias ficam separadas por uma folga medida
+   entre silhuetas, para cada uma se ler como peca solta. */
 .funil{ max-width:1180px;margin:0 auto; }
 .funil-largo,.funil-so{ margin:0; }
-.funil-svg{ width:100%;height:auto;display:block;overflow:visible; }
-.fatia-icone{ fill:none;stroke:#fff;stroke-width:1.7;stroke-linecap:round;stroke-linejoin="round"; }
-.fatia-icone{ stroke-linejoin:round; }
+.funil-svg{ width:100%;height:auto;display:block; }
 
-.chamada line{ stroke-width:1.4; }
+/* O SVG e desenhado a 1296 de largura e mostrado a ~1100: o texto encolhe
+   com ele, por isso os corpos vao um pouco acima do tamanho final. */
 .chamada-nome{
   font-family:'Manrope',sans-serif;
-  font-size:21px;
+  font-size:25px;
   font-weight:700;
   letter-spacing:-.01em;
 }
 .chamada-txt{
   font-family:'Manrope',sans-serif;
-  font-size:14.5px;
+  font-size:17px;
   font-weight:300;
   fill:var(--lt-inc-2);
 }
@@ -309,11 +310,7 @@ SECOES_CSS = """
 @media(max-width:900px){
   .funil-largo{ display:none; }
   .funil-curto{ display:block; }
-  .funil-so{ max-width:380px;margin-inline:auto; }
-}
-
-  .esfera-cam{ offset-distance:38%; }
-}
+  .funil-so{ max-width:340px;margin-inline:auto; }
 }
 
 @media(max-width:640px){
@@ -334,154 +331,262 @@ SECOES_CSS = """
 # geometria nao depender de numeros escritos a mao.
 # ══════════════════════════════════════════════════════════════════
 
-CX = 650                 # eixo da ampulheta
-ACHAT = 0.21             # achatamento das elipses: quanto mais de cima se olha
-ALTURA = 102             # altura de cada fatia
-FOLGA = 12               # espaco entre fatias, para cada uma se ler como peca solta
-RAIOS = [250, 193, 136, 79, 136, 193, 250]   # de cima para baixo; o meio e a cintura
+ACHAT = 0.10             # achatamento das elipses (ry = rx * ACHAT)
+ALTURA = 78              # altura do eixo de cada fatia
+FOLGA = 8                # folga entre a silhueta de uma fatia e a seguinte
+CAVA_RX = 0.90           # raio da cavidade, em fracao do raio exterior
+CAVA_RY = 0.84           # a cavidade e ainda mais achatada que o aro
+CAVA_DY = 0.05           # e desce um pouco, em unidades de ry do aro
+ICONE_PX = 34            # lado do icone, ja desenhado
 
-# (etiqueta, descricao em duas linhas, cor do corpo, aro claro, cavidade escura, icone)
+# (nome, descricao em duas linhas, raio de cima, raio de baixo, cor, icone)
 FATIAS = [
-    ("Atração", ("Campanhas em Meta e Google Ads que trazem", "o perfil certo, não só volume."),
-     "#4f9fe0", "#7cbdf0", "#2b74b4", "alvo"),
-    ("Oportunidade", ("Fluxos de email e WhatsApp que aquecem", "a lead antes do contacto comercial."),
-     "#3a86cf", "#6aa8e2", "#1f5f9e", "pessoas"),
-    ("Conversão", ("Scripts, playbook e CRM para nenhuma", "oportunidade se perder pelo caminho."),
-     "#1f6cb8", "#4a90d4", "#124c88", "visto"),
-    ("Retenção", ("Acompanhamento depois da venda, para", "o cliente voltar a comprar."),
-     "#11916f", "#2fb692", "#0a6b51", "voltar"),
-    ("Lealdade", ("Deixa de comparar preços e passa a", "escolher-nos por hábito."),
-     "#22a882", "#4cc7a2", "#147a5e", "estrela"),
-    ("Indicação", ("Cada cliente satisfeito traz o próximo,", "sem custo de aquisição."),
-     "#41bd97", "#6bd6b5", "#238b6b", "rede"),
+    ("Atração", ("Meta e Google Ads que trazem o", "perfil certo, não só volume."),
+     255, 200, "#2B5FE3", "alvo"),
+    ("Oportunidade", ("Email e WhatsApp que aquecem a", "lead antes do contacto comercial."),
+     200, 145, "#1D7BDF", "pessoas"),
+    ("Conversão", ("Scripts, playbook e CRM para não", "perder nenhuma oportunidade."),
+     145, 62, "#1296C9", "visto"),
+    ("Retenção", ("Acompanhamento depois da venda,", "para o cliente voltar a comprar."),
+     68, 130, "#10ACA2", "voltar"),
+    ("Lealdade", ("Deixa de comparar preços e passa", "a escolher-nos por hábito."),
+     130, 192, "#18BC7C", "estrela"),
+    ("Indicação", ("Cada cliente satisfeito traz o", "próximo, sem custo de aquisição."),
+     192, 258, "#33CC5C", "rede"),
 ]
 
 # Icones a 24x24, traco branco. Desenhados a mao para nao trazer dependencias.
 ICONES = {
-    "alvo": '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="#fff"/>',
-    "pessoas": '<circle cx="9" cy="8.5" r="3.2"/><path d="M3.2 19c0-3.2 2.6-5.3 5.8-5.3s5.8 2.1 5.8 5.3"/>'
-               '<path d="M16.6 6.2a3.2 3.2 0 0 1 0 5.9"/><path d="M17.6 14.1c2 .6 3.2 2.3 3.2 4.9"/>',
-    "visto": '<circle cx="12" cy="12" r="9"/><path d="M8 12.3l2.7 2.7L16.2 9.5"/>',
-    "voltar": '<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20.4 4.4v4.3h-4.3"/>',
-    "estrela": '<path d="M12 3.6l2.6 5.3 5.8.85-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.85z"/>',
-    "rede": '<circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/>'
-            '<path d="M8.3 10.8l7.4-3.6"/><path d="M8.3 13.2l7.4 3.6"/>',
+    "alvo": '<circle cx="12" cy="12" r="9.3"/><circle cx="12" cy="12" r="4.9"/>'
+            '<circle cx="12" cy="12" r="1.25" fill="#fff" stroke="none"/>',
+    "pessoas": '<circle cx="9.1" cy="8.1" r="3.25"/><path d="M3.1 18.9c0-3.35 2.7-5.45 6-5.45s6 2.1 6 5.45"/>'
+               '<circle cx="17.2" cy="9.1" r="2.45"/><path d="M16.8 14.2c2.65.12 4.3 2.02 4.3 4.9"/>',
+    "visto": '<circle cx="12" cy="12" r="9.3"/><path d="M7.5 12.3 10.6 15.4 16.5 9.1"/>',
+    "voltar": '<path d="M4.95 9.43A7.5 7.5 0 0 1 19.05 9.43"/><path d="M19.75 5.49 19.05 9.43 15.99 6.86"/>'
+              '<path d="M19.05 14.57A7.5 7.5 0 0 1 4.95 14.57"/><path d="M4.25 18.51 4.95 14.57 8.01 17.14"/>',
+    "estrela": '<path d="M12 3.6 14.29 9.45 20.56 9.82 15.71 13.81 17.29 19.88 12 16.5 6.71 19.88 '
+               '8.29 13.81 3.44 9.82 9.71 9.45Z"/>',
+    "rede": '<path d="M9.96 10.39 6.65 7.80M14.04 10.39 17.35 7.80M10.16 13.84 6.98 17.02M13.84 13.84 17.02 17.02"/>'
+            '<circle cx="12" cy="12" r="2.6"/><circle cx="5" cy="6.5" r="2.1"/><circle cx="19" cy="6.5" r="2.1"/>'
+            '<circle cx="5.5" cy="18.5" r="2.1"/><circle cx="18.5" cy="18.5" r="2.1"/>',
 }
 
 
-def _niveis():
-    """Devolve (yt, yb) de cada fatia, ja com a folga entre elas."""
-    fora, y = [], 60
-    for _ in FATIAS:
-        fora.append((y, y + ALTURA))
-        y = y + ALTURA + FOLGA
+# ── cor ─────────────────────────────────────────────────────────────
+
+def _rgb(cor):
+    return [int(cor[i:i + 2], 16) for i in (1, 3, 5)]
+
+
+def _hex(vals):
+    return "#" + "".join(f"{max(0, min(255, round(v))):02x}" for v in vals)
+
+
+def clarear(cor, q):
+    """Aproxima a cor do branco."""
+    return _hex([v + (255 - v) * q for v in _rgb(cor)])
+
+
+def escurecer(cor, q):
+    """Aproxima a cor do preto."""
+    return _hex([v * (1 - q) for v in _rgb(cor)])
+
+
+# ── geometria ───────────────────────────────────────────────────────
+# A folga mede-se entre silhuetas, nao entre centros: o ponto mais baixo
+# de uma fatia inclui o arco da elipse de baixo, e o mais alto da seguinte
+# inclui o arco da de cima. Somar so ALTURA + FOLGA colava-as.
+
+MARGEM_X = 54            # folga lateral a volta do funil
+MARGEM_TOPO = 22
+MARGEM_BASE = 30         # acomoda a sombra da ultima fatia
+ESPACO_TXT = 336         # largura reservada a cada coluna de etiquetas
+
+
+def _geometria():
+    """Para cada fatia: raios, achatamentos e os dois centros verticais."""
+    fora, y = [], MARGEM_TOPO
+    for _n, _d, rt, rb, cor, _ic in FATIAS:
+        ryt, ryb = rt * ACHAT, rb * ACHAT
+        yt = y + ryt
+        yb = yt + ALTURA
+        fora.append({"rt": rt, "rb": rb, "ryt": ryt, "ryb": ryb, "yt": yt, "yb": yb, "cor": cor})
+        y = yb + ryb + FOLGA
     return fora
 
 
-def _corpo(yt, rt, yb, rb):
-    """Superficie lateral entre duas elipses: as duas metades da frente."""
-    return (f"M{CX - rt} {yt} A{rt} {rt * ACHAT:.1f} 0 0 0 {CX + rt} {yt} "
-            f"L{CX + rb} {yb} A{rb} {rb * ACHAT:.1f} 0 0 1 {CX - rb} {yb} Z")
+GEO = _geometria()
+RAIO_MAX = max(max(g["rt"], g["rb"]) for g in GEO)
+LARGURA_FUNIL = round(RAIO_MAX * 2 + MARGEM_X * 2)
+ALTURA_TOTAL = round(GEO[-1]["yb"] + GEO[-1]["ryb"] + MARGEM_BASE)
+LARGURA_TOTAL = LARGURA_FUNIL + ESPACO_TXT * 2
+CX = LARGURA_TOTAL / 2
 
 
-def _fatia(i):
-    """Uma fatia: corpo, aro por cima e cavidade escura la dentro.
+def _n(v):
+    return f"{v:.2f}".rstrip("0").rstrip(".")
 
-    E a cavidade que da o aspeto de taca com espessura — sem ela cada fatia
-    lia-se como um triangulo chapado.
+
+def _defs(p):
+    """Um gradiente de corpo, de aro e de cavidade por fatia, mais o comum.
+
+    Os gradientes do corpo sao em coordenadas do desenho (userSpaceOnUse):
+    e assim que o escurecer acompanha a altura real da fatia em vez de se
+    repetir igual em todas.
     """
-    etiqueta, _desc, corpo_cor, aro_cor, cava_cor, icone = FATIAS[i]
-    yt, yb = _niveis()[i]
-    rt, rb = RAIOS[i], RAIOS[i + 1]
-    d = _corpo(yt, rt, yb, rb)
-    r_cava = rt * 0.855
+    partes = [f"""<linearGradient id="{p}curva" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#000" stop-opacity=".20"/>
+        <stop offset=".10" stop-color="#000" stop-opacity=".07"/>
+        <stop offset=".30" stop-color="#fff" stop-opacity=".13"/>
+        <stop offset=".52" stop-color="#fff" stop-opacity="0"/>
+        <stop offset=".88" stop-color="#000" stop-opacity=".09"/>
+        <stop offset="1" stop-color="#000" stop-opacity=".22"/>
+      </linearGradient>
+      <filter id="{p}sombra" x="-40%" y="-140%" width="180%" height="380%">
+        <feGaussianBlur stdDeviation="5.5"/>
+      </filter>"""]
+    for i, g in enumerate(GEO):
+        cor = g["cor"]
+        partes.append(
+            f'<linearGradient id="{p}corpo{i}" gradientUnits="userSpaceOnUse" '
+            f'x1="0" y1="{_n(g["yt"] - g["ryt"])}" x2="0" y2="{_n(g["yb"] + g["ryb"])}">'
+            f'<stop offset="0" stop-color="{clarear(cor, .22)}"/>'
+            f'<stop offset=".34" stop-color="{clarear(cor, .04)}"/>'
+            f'<stop offset="1" stop-color="{escurecer(cor, .26)}"/>'
+            f"</linearGradient>"
+            f'<linearGradient id="{p}aro{i}" gradientUnits="userSpaceOnUse" '
+            f'x1="0" y1="{_n(g["yt"] - g["ryt"])}" x2="0" y2="{_n(g["yt"] + g["ryt"])}">'
+            f'<stop offset="0" stop-color="{clarear(cor, .44)}"/>'
+            f'<stop offset="1" stop-color="{clarear(cor, .20)}"/>'
+            f"</linearGradient>"
+            f'<linearGradient id="{p}cava{i}" gradientUnits="userSpaceOnUse" '
+            f'x1="0" y1="{_n(g["yt"] - g["ryt"])}" x2="0" y2="{_n(g["yt"] + g["ryt"])}">'
+            f'<stop offset="0" stop-color="{escurecer(cor, .23)}"/>'
+            f'<stop offset="1" stop-color="{escurecer(cor, .40)}"/>'
+            f"</linearGradient>"
+        )
+    return "<defs>" + "".join(partes) + "</defs>"
+
+
+def _corpo(g):
+    """Superficie lateral entre as duas elipses: as metades da frente."""
+    return (f'M {_n(CX - g["rt"])} {_n(g["yt"])} '
+            f'A {_n(g["rt"])} {_n(g["ryt"])} 0 0 1 {_n(CX + g["rt"])} {_n(g["yt"])} '
+            f'L {_n(CX + g["rb"])} {_n(g["yb"])} '
+            f'A {_n(g["rb"])} {_n(g["ryb"])} 0 0 1 {_n(CX - g["rb"])} {_n(g["yb"])} Z')
+
+
+def _arco(g, a1, a2, opacidade, grossura):
+    """Lampejo no aro: um arco curto, para a peca ler como vidrada."""
+    import math
+    rx, ry = g["rt"] * .95, g["ryt"] * .95
+    p = lambda a: (CX + rx * math.cos(math.radians(a)), g["yt"] + ry * math.sin(math.radians(a)))
+    (x1, y1), (x2, y2) = p(a1), p(a2)
+    return (f'<path d="M {_n(x1)} {_n(y1)} A {_n(rx)} {_n(ry)} 0 0 1 {_n(x2)} {_n(y2)}" fill="none" '
+            f'stroke="#fff" stroke-opacity="{opacidade}" stroke-width="{_n(max(grossura, g["ryt"] * .075))}" '
+            f'stroke-linecap="round"/>')
+
+
+def _fatia(i, p):
+    """Uma fatia: sombra, corpo, aro, cavidade, lampejos e icone."""
+    g = GEO[i]
+    cor = g["cor"]
+    d = _corpo(g)
+
+    # A sombra cai na folga, por baixo. As fatias sao desenhadas de baixo
+    # para cima para esta ficar por cima da peca seguinte.
+    sy = g["yb"] + g["ryb"] + 4.5
+    sombra = (f'<ellipse cx="{_n(CX)}" cy="{_n(sy)}" rx="{_n(g["rb"] * .94)}" ry="{_n(g["rb"] * .085)}" '
+              f'fill="#0c2233" opacity=".21" filter="url(#{p}sombra)"/>')
+
+    cava_rx = g["rt"] * CAVA_RX
+    cava_ry = g["ryt"] * CAVA_RY
+    cava_y = g["yt"] + g["ryt"] * CAVA_DY
+
+    k = ICONE_PX / 24
+    iy = g["yt"] + .55 * ALTURA + g["ryt"] * .25
+    icone = (f'<g transform="translate({_n(CX)} {_n(iy)}) scale({_n(k)}) translate(-12 -12)" fill="none" '
+             f'stroke="#fff" stroke-width="2.05" stroke-linecap="round" stroke-linejoin="round">'
+             f'{ICONES[FATIAS[i][5]]}</g>')
+
     return (
-        f'<g class="fatia">'
-        f'<path d="{d}" fill="{corpo_cor}"/>'
-        f'<path d="{d}" fill="url(#volume)"/>'
-        f'<ellipse cx="{CX}" cy="{yt}" rx="{rt}" ry="{rt * ACHAT:.1f}" fill="{aro_cor}"/>'
-        f'<ellipse cx="{CX}" cy="{yt + 3}" rx="{r_cava:.0f}" ry="{r_cava * ACHAT:.1f}" fill="{cava_cor}"/>'
-        f"</g>"
+        "<g>"
+        + sombra
+        + f'<path d="{d}" fill="url(#{p}corpo{i})"/>'
+        + f'<path d="{d}" fill="url(#{p}curva)"/>'
+        + f'<path d="{d}" fill="none" stroke="{escurecer(cor, .36)}" stroke-opacity=".30" stroke-width=".9"/>'
+        + f'<ellipse cx="{_n(CX)}" cy="{_n(g["yt"])}" rx="{_n(g["rt"])}" ry="{_n(g["ryt"])}" fill="url(#{p}aro{i})"/>'
+        + f'<ellipse cx="{_n(CX)}" cy="{_n(cava_y)}" rx="{_n(cava_rx)}" ry="{_n(cava_ry)}" fill="url(#{p}cava{i})"/>'
+        + f'<ellipse cx="{_n(CX)}" cy="{_n(cava_y)}" rx="{_n(cava_rx)}" ry="{_n(cava_ry)}" fill="none" '
+          f'stroke="{escurecer(cor, .55)}" stroke-opacity=".22" stroke-width=".7"/>'
+        + _arco(g, 196, 250, ".46", 1.3)
+        + _arco(g, 300, 332, ".20", 1.1)
+        + icone
+        + "</g>"
     )
-
-
-def _icone(i):
-    """O icone vai por cima de todas as fatias.
-
-    Desenhado dentro da fatia, o aro da fatia seguinte — que vem depois —
-    cortava-o ao meio. Em SVG a ordem e o unico z-index que ha.
-    """
-    _n, _d, _c, _a, _cv, icone = FATIAS[i]
-    yt, yb = _niveis()[i]
-    rt = RAIOS[i]
-    y = yt + rt * ACHAT + (yb - yt - rt * ACHAT) * 0.46
-    return (f'<g class="fatia-icone" transform="translate({CX - 17} {y - 17:.0f}) scale(1.42)">'
-            f'{ICONES[icone]}</g>')
 
 
 def _etiqueta(i):
     """Etiqueta lateral com linha de chamada, alternando esquerda e direita."""
-    nome, (l1, l2), corpo_cor, _aro, _cava, _ic = FATIAS[i]
-    yt, yb = _niveis()[i]
-    rt, rb = RAIOS[i], RAIOS[i + 1]
-    ym = (yt + yb) / 2
-    borda = (rt + rb) / 2
-    esquerda = i % 2 == 0
-    if esquerda:
-        x_txt, ancora = 348, "end"
-        x_dot, x_fim = 364, CX - borda - 14
+    nome, (l1, l2), _rt, _rb, cor, _ic = FATIAS[i]
+    g = GEO[i]
+    ym = (g["yt"] + g["yb"]) / 2
+    borda = (g["rt"] + g["rb"]) / 2          # raio do cone a meia altura
+    escuro = escurecer(cor, .12)
+    if i % 2 == 0:
+        x_txt, ancora = CX - RAIO_MAX - MARGEM_X - 22, "end"
+        x_ponto, x_fim = x_txt + 16, CX - borda - 14
     else:
-        x_txt, ancora = 952, "start"
-        x_dot, x_fim = 936, CX + borda + 14
+        x_txt, ancora = CX + RAIO_MAX + MARGEM_X + 22, "start"
+        x_ponto, x_fim = x_txt - 16, CX + borda + 14
     return (
-        f'<g class="chamada">'
-        f'<line x1="{x_dot}" y1="{ym:.0f}" x2="{x_fim:.0f}" y2="{ym:.0f}" stroke="{corpo_cor}"/>'
-        f'<circle cx="{x_dot}" cy="{ym:.0f}" r="4.5" fill="{corpo_cor}"/>'
-        f'<circle cx="{x_fim:.0f}" cy="{ym:.0f}" r="4.5" fill="{corpo_cor}"/>'
-        f'<text x="{x_txt}" y="{ym - 20:.0f}" text-anchor="{ancora}" fill="{corpo_cor}" '
+        "<g>"
+        f'<line x1="{_n(x_ponto)}" y1="{_n(ym)}" x2="{_n(x_fim)}" y2="{_n(ym)}" stroke="{cor}" '
+        f'stroke-width="1.4" stroke-opacity=".75"/>'
+        f'<circle cx="{_n(x_ponto)}" cy="{_n(ym)}" r="4.5" fill="{cor}"/>'
+        f'<circle cx="{_n(x_fim)}" cy="{_n(ym)}" r="4.5" fill="{cor}"/>'
+        f'<text x="{_n(x_txt)}" y="{_n(ym - 23)}" text-anchor="{ancora}" fill="{escuro}" '
         f'class="chamada-nome">{nome}</text>'
-        f'<text x="{x_txt}" y="{ym + 6:.0f}" text-anchor="{ancora}" class="chamada-txt">{l1}</text>'
-        f'<text x="{x_txt}" y="{ym + 28:.0f}" text-anchor="{ancora}" class="chamada-txt">{l2}</text>'
-        f"</g>"
+        f'<text x="{_n(x_txt)}" y="{_n(ym + 7)}" text-anchor="{ancora}" class="chamada-txt">{l1}</text>'
+        f'<text x="{_n(x_txt)}" y="{_n(ym + 32)}" text-anchor="{ancora}" class="chamada-txt">{l2}</text>'
+        "</g>"
     )
 
-
-_DEFS = """<defs>
-      <linearGradient id="volume" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stop-color="#fff" stop-opacity=".26"/>
-        <stop offset="44%" stop-color="#fff" stop-opacity="0"/>
-        <stop offset="100%" stop-color="#000" stop-opacity=".20"/>
-      </linearGradient>
-    </defs>"""
 
 _ARIA = ("Funil em ampulheta: atração, oportunidade e conversão estreitam até à venda; "
          "retenção, lealdade e indicação alargam depois dela")
 
 
-def _altura_total():
-    """Fundo do ultimo cone, contando o arco da elipse de baixo."""
-    return _niveis()[-1][1] + RAIOS[-1] * ACHAT + 24
-
-
 def funil_svg(com_etiquetas=True):
-    fatias = "\n    ".join(_fatia(i) for i in range(len(FATIAS)))
-    icones = "\n    ".join(_icone(i) for i in range(len(FATIAS)))
+    """As fatias sao emitidas de baixo para cima e as etiquetas so no fim.
+
+    Duas razoes, a mesma raiz: em SVG a ordem de desenho e o unico z-index
+    que ha. De baixo para cima, a sombra de cada fatia cai sobre a de baixo,
+    que ja esta desenhada; e as etiquetas no fim nao sao cortadas pelo aro
+    da fatia seguinte.
+    """
+    # Cada variante leva o seu prefixo de id: as duas convivem na mesma
+    # pagina e um url(#...) duplicado resolveria sempre para a primeira,
+    # que em ecra estreito esta escondida — e o funil saia sem cor nenhuma.
+    p = "fn-" if com_etiquetas else "fc-"
+    fatias = "".join(_fatia(i, p) for i in reversed(range(len(FATIAS))))
     if not com_etiquetas:
         # So o funil, para ecras estreitos: mesma geometria, moldura recortada.
-        return (f'<svg class="funil-svg" viewBox="{CX - 272} 20 544 {_altura_total() - 20:.0f}" role="img" '
-                f'aria-label="{_ARIA}">\n    {_DEFS}\n    {fatias}\n    {icones}\n  </svg>')
-    chamadas = "\n    ".join(_etiqueta(i) for i in range(len(FATIAS)))
-    return (f'<svg class="funil-svg funil-svg-largo" viewBox="0 0 1300 {_altura_total():.0f}" role="img" '
-            f'aria-label="{_ARIA}">\n    {_DEFS}\n    {fatias}\n    {icones}\n    {chamadas}\n  </svg>')
+        x0 = CX - LARGURA_FUNIL / 2
+        return (f'<svg class="funil-svg" viewBox="{_n(x0)} 0 {LARGURA_FUNIL} {ALTURA_TOTAL}" '
+                f'role="img" aria-label="{_ARIA}">{_defs(p)}{fatias}</svg>')
+    chamadas = "".join(_etiqueta(i) for i in range(len(FATIAS)))
+    return (f'<svg class="funil-svg" viewBox="0 0 {LARGURA_TOTAL} {ALTURA_TOTAL}" '
+            f'role="img" aria-label="{_ARIA}">{_defs(p)}{fatias}{chamadas}</svg>')
 
 
 def funil_lista():
     """A mesma informacao em lista, para ecras estreitos."""
     itens = []
-    for nome, (l1, l2), cor, _a, _c, _i in FATIAS:
+    for nome, (l1, l2), _rt, _rb, cor, _ic in FATIAS:
         itens.append(
             f'<li class="funil-item"><span class="funil-item-ponto" style="background:{cor}"></span>'
-            f'<span><strong style="color:{cor}">{nome}</strong> {l1} {l2}</span></li>'
+            f'<span><strong style="color:{escurecer(cor, .12)}">{nome}</strong> {l1} {l2}</span></li>'
         )
     return '<ul class="funil-lista">' + "".join(itens) + "</ul>"
 
