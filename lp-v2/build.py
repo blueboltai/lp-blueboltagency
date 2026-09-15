@@ -134,39 +134,21 @@ SECOES_CSS = """
   background:linear-gradient(to top,#000122 0%,transparent 100%);
 }
 
-/* Titulo: DM Sans a bold para a primeira parte, Instrument Serif em italico
-   para o remate a azul — o mesmo par do modelo do Elementor. */
+/* Tipografia: a da propria pagina — Archia nos titulos, Manrope no corpo.
+   So se mexe na medida e na cor, que o hero centrado e o video por tras
+   obrigam a ajustar; os tipos de letra e os pesos ficam como estavam. */
 .hero-h1{
-  font-family:'DM Sans',sans-serif;
-  font-weight:700;
-  font-size:clamp(32px,4.6vw,66px);
-  line-height:1.08;
-  letter-spacing:-.03em;
-  max-width:min(1120px, 94%);
+  font-size:clamp(30px,4.2vw,58px);
+  line-height:1.12;
+  max-width:min(1060px, 94%);
   margin-inline:auto;
   margin-bottom:1.25rem;
   text-wrap:balance;
 }
-.hero-h1 .t1{
-  background:none;
-  -webkit-text-fill-color:#fff;
-  color:#fff;
-}
-.hero-h1 .t2{
-  font-family:'Instrument Serif',Georgia,serif;
-  font-style:italic;
-  font-weight:400;
-  letter-spacing:-.01em;
-  background:none;
-  -webkit-text-fill-color:#0072F5;
-  color:#0072F5;
-}
 .hero-sub{
-  font-family:'DM Sans',sans-serif;
-  font-size:clamp(15px,1.3vw,19px);
-  font-weight:500;
-  line-height:1.55;
-  color:rgba(255,255,255,.88);
+  font-size:clamp(15px,1.25vw,18px);
+  line-height:1.6;
+  color:rgba(255,255,255,.82);
   max-width:60ch;
   margin-inline:auto;
   margin-bottom:2.25rem;
@@ -223,7 +205,7 @@ SECOES_CSS = """
 }
 
 @media(max-width:640px){
-  .hero-h1{ max-width:100%; font-size:clamp(28px,8.4vw,40px); }
+  .hero-h1{ max-width:100%; font-size:clamp(26px,7.6vw,36px); }
   .hero-sub{ font-size:14.5px; }
   .hero-badge{ height:58px; }
 }
@@ -287,17 +269,6 @@ html = troca(html, 'src="ricardo.webp"', 'src="img/ricardo.avif"', "foto do Rica
 # HERO
 # ══════════════════════════════════════════════════════════════════
 
-# O hero usa a tipografia do modelo do Elementor: DM Sans para o peso forte,
-# Instrument Serif em italico para o remate a azul.
-html = troca(
-    html,
-    '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">',
-    '<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700'
-    '&family=Manrope:wght@300;400;500;600;700;800'
-    '&family=DM+Sans:wght@400;500;600;700;800'
-    '&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">',
-    "fontes DM Sans e Instrument Serif",
-)
 
 html = troca(
     html,
@@ -353,7 +324,7 @@ else:
         """<div class="hero-badges">
           <img class="hero-badge" src="img/google-partner.webp" alt="Google Partner" width="110" height="110" loading="lazy" decoding="async">
           <img class="hero-badge" src="img/meta-partner.webp" alt="Meta Business Partner" width="110" height="110" loading="lazy" decoding="async">
-          <img class="hero-badge" src="img/selo-top5.svg" alt="Scoring Top 5% — Melhores PME de Portugal 2025" width="129" height="129" loading="lazy" decoding="async">
+          <img class="hero-badge" src="img/selo-top5.png" alt="Scoring Top 5% — Melhores PME de Portugal 2025, 2.º ano consecutivo, Blue Bolt" width="420" height="382" loading="lazy" decoding="async">
         </div>
 
       </div>

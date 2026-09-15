@@ -45,11 +45,17 @@ são as únicas três menções a "Blue Bolt AI" que sobraram na página.
 
 **Hero** em azul Blue Bolt (`#000122`) com o vídeo do modelo do Elementor
 (`img/hero-video.webm`) a correr ao fundo, por baixo de um véu que garante o
-contraste do texto. O título usa o par tipográfico do modelo — DM Sans a bold
-para a primeira parte, Instrument Serif em itálico a `#0072F5` para o remate — e
-por baixo dos CTAs ficam os três selos: Google Partner, Meta Business Partner e
-Scoring Top 5% PME 2025. A faixa deslizante de provas que vinha da página de IA
-saiu, substituída por eles.
+contraste do texto. A tipografia é a da própria página — Archia no título,
+Manrope no corpo — e só a medida e a cor foram ajustadas, que o hero centrado
+e o vídeo por trás obrigam. Por baixo dos CTAs ficam os três selos: Google
+Partner, Meta Business Partner e Scoring Top 5% PME 2025. A faixa deslizante
+de provas que vinha da página de IA saiu, substituída por eles.
+
+O selo da Scoring vinha num SVG de 542 KB que era, na verdade, um PNG de
+1527×1527 embrulhado num `<pattern>` — o embrulho reenquadrava o desenho e
+tirava-lhe nitidez. Extraí o bitmap, recortei a margem transparente e reduzi-o
+para 420×382 (`img/selo-top5.png`, 123 KB). É o selo da Blue Bolt, NIF
+516 751 808, com a menção "2.º ano consecutivo".
 
 **Segunda dobra** passou a branco/cinza (`#f6f7f9`), com o texto e a grelha de
 fundo invertidos para tom escuro. É isso que faz a VSL ler como na referência:
