@@ -1,0 +1,7 @@
+# Os assets binários não passam por normalização de fim de linha.
+*.webp binary
+*.avif binary
+*.png binary
+*.jpg binary
+*.webm binary
+*.woff2 binary

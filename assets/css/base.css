@@ -1,0 +1,678 @@
+/* ==========================================================================
+   base.css — sistema de layout equivalente ao runtime do Elementor.
+   Escrito a mao; o page.css gerado assume estas regras.
+   ========================================================================== */
+
+:root {
+  --container-max-width: 1140px;
+  --container-padding: 10px;
+  --widgets-gap: 20px;
+
+  /* Variaveis usadas pelo CSS embutido no widget HTML do funil, que no site
+     original ficavam por definir (vinham de uma folha do tema que nao existe
+     no export). Valores neutros para a seccao branca onde o bloco vive. */
+  --sans: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --bord: rgba(15, 23, 42, 0.10);
+  --bord-b: rgba(15, 23, 42, 0.16);
+  --bg2: rgba(15, 23, 42, 0.04);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  color: #1f2937;
+  background: #000122;
+  overflow-x: hidden;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+}
+
+/* --------------------------------------------------------------------------
+   Containers
+   -------------------------------------------------------------------------- */
+
+.e-con {
+  position: relative;
+  width: 100%;
+  /* O Elementor nao limita containers com largura fixa, o que os faz transbordar
+     em ecrãs estreitos. Aqui limitamos, para nao haver scroll horizontal. */
+  max-width: 100%;
+  min-width: 0;
+  padding: var(--container-padding);
+  display: flex;
+  flex-direction: column;
+  gap: var(--widgets-gap);
+  background-repeat: no-repeat;
+}
+
+/* Um container "boxed" centra o conteudo dentro do inner; o exterior fica
+   responsavel pelo fundo, pelas margens e pelo padding. */
+.e-con-boxed {
+  gap: 0;
+}
+
+.e-con-boxed > .e-con-inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--widgets-gap);
+  width: 100%;
+  max-width: min(100%, var(--container-max-width));
+  margin-inline: auto;
+}
+
+.e-con > .e-con-inner > .e-widget,
+.e-con > .e-widget {
+  max-width: 100%;
+}
+
+/* Sobreposicao de fundo (background overlay); o page.css liga-a com
+   `display: block` apenas nos containers que a definem. */
+.e-con::before {
+  content: "";
+  display: none;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  z-index: 1;
+}
+
+.e-con > * {
+  position: relative;
+  z-index: 2;
+}
+
+.e-con > .e-con-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* --------------------------------------------------------------------------
+   Widgets
+   -------------------------------------------------------------------------- */
+
+/* Tal como no Elementor, um widget nao tem largura propria: num container em
+   coluna estica (align-items: normal), num container em linha ajusta-se ao
+   conteudo. Nao definir `width` aqui e o que mantem as duas leituras certas. */
+.e-widget {
+  position: relative;
+  min-width: 0;
+}
+
+.e-widget-image {
+  text-align: center;
+}
+
+.e-widget-image img {
+  display: inline-block;
+}
+
+.e-widget-image a {
+  display: inline-block;
+}
+
+.e-heading {
+  margin: 0;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: 1.2;
+  color: inherit;
+}
+
+.e-heading a {
+  text-decoration: none;
+}
+
+.e-text > :first-child {
+  margin-top: 0;
+}
+
+.e-text > :last-child {
+  margin-bottom: 0;
+}
+
+.e-text p {
+  margin: 0 0 1em;
+}
+
+.e-text ul,
+.e-text ol {
+  margin: 0 0 1em;
+  padding-inline-start: 1.25em;
+}
+
+/* Botoes ---------------------------------------------------------------- */
+
+.e-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 3px;
+  background-color: #2171ff;
+  color: #fff;
+  font: inherit;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  transition: box-shadow 0.25s ease, transform 0.25s ease, background-color 0.25s ease;
+}
+
+.e-button:hover {
+  transform: translateY(-1px);
+}
+
+.e-button-icon {
+  flex: none;
+}
+
+/* Icones embutidos: SVG com fill=currentColor, herdam a cor do contexto. */
+.icon {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  flex: none;
+}
+
+svg.icon {
+  vertical-align: middle;
+}
+
+/* Listas de icones ------------------------------------------------------ */
+
+.e-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.e-list-inline {
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 16px;
+}
+
+.e-list-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.e-list-item a {
+  text-decoration: none;
+}
+
+.e-list-icon {
+  font-size: 1em;
+}
+
+/* Classificacao (estrelas) ---------------------------------------------- */
+
+.e-rating {
+  display: flex;
+  justify-content: flex-start;
+  font-size: 16px;
+}
+
+.e-star {
+  width: 1em;
+  height: 1em;
+  display: inline-block;
+  font-size: 16px;
+  background: linear-gradient(90deg, #f0ad4e var(--fill, 100%), #ccd6df var(--fill, 100%));
+  -webkit-mask: url("../icons/star.svg") no-repeat center / contain;
+  mask: url("../icons/star.svg") no-repeat center / contain;
+}
+
+/* --------------------------------------------------------------------------
+   Carrossel
+   -------------------------------------------------------------------------- */
+
+.e-carousel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.e-carousel-viewport {
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
+}
+
+.e-carousel-track {
+  display: flex;
+  gap: var(--slide-gap, 20px);
+  transition: transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+  will-change: transform;
+}
+
+.e-slide {
+  flex: 0 0 calc((100% - (var(--slides, 3) - 1) * var(--slide-gap, 20px)) / var(--slides, 3));
+  min-width: 0;
+  display: flex;
+}
+
+.e-slide > * {
+  width: 100%;
+}
+
+.e-carousel-nav {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.10);
+  color: #fff;
+  cursor: pointer;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.e-carousel-nav::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+}
+
+.e-carousel-prev::before {
+  transform: rotate(135deg);
+  margin-inline-start: 3px;
+}
+
+.e-carousel-next::before {
+  transform: rotate(-45deg);
+  margin-inline-end: 3px;
+}
+
+.e-carousel-nav:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.e-carousel-nav[disabled] {
+  opacity: 0.3;
+  cursor: default;
+}
+
+@media (max-width: 1024px) {
+  .e-carousel {
+    --slides: 2;
+  }
+}
+
+@media (max-width: 767px) {
+  .e-carousel {
+    --slides: 1;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Acordeao
+   -------------------------------------------------------------------------- */
+
+.e-acc {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.e-acc-item {
+  border-style: solid;
+  border-width: 0 0 1px;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.e-acc-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  cursor: pointer;
+  list-style: none;
+  transition: color 0.2s ease;
+}
+
+.e-acc-title::-webkit-details-marker {
+  display: none;
+}
+
+.e-acc-icon {
+  flex: none;
+  width: 14px;
+  height: 14px;
+  background-color: currentColor;
+  -webkit-mask: url("../icons/plus.svg") no-repeat center / contain;
+  mask: url("../icons/plus.svg") no-repeat center / contain;
+  transition: transform 0.25s ease;
+}
+
+.e-acc-item[open] .e-acc-icon {
+  transform: rotate(45deg);
+}
+
+.e-acc-panel {
+  padding-block-end: 16px;
+  animation: e-acc-open 0.25s ease;
+}
+
+@keyframes e-acc-open {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Modal (off-canvas)
+   -------------------------------------------------------------------------- */
+
+.e-modal[hidden] {
+  display: none;
+}
+
+.e-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.e-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 1, 34, 0.82);
+  backdrop-filter: blur(4px);
+}
+
+.e-modal-panel {
+  position: relative;
+  width: min(600px, 100%);
+  max-height: 92vh;
+  overflow-y: auto;
+  border-radius: 20px;
+  animation: e-modal-in 0.25s ease;
+}
+
+@keyframes e-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+.e-modal-close {
+  border: none;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Formulario
+   -------------------------------------------------------------------------- */
+
+.e-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 11px;
+  width: 100%;
+}
+
+.e-field {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1 1 100%;
+}
+
+.e-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+}
+
+.e-req {
+  color: #ff6b6b;
+}
+
+.e-field input,
+.e-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font: inherit;
+}
+
+.e-field input::placeholder,
+.e-field textarea::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.e-field input:focus-visible,
+.e-field textarea:focus-visible {
+  outline: 2px solid #2171ff;
+  outline-offset: 1px;
+}
+
+.e-field-check {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.e-field-check input {
+  width: auto;
+  margin-top: 3px;
+  flex: none;
+  accent-color: #2171ff;
+}
+
+.e-form-submit {
+  flex: 1 1 100%;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 10px;
+  background: #2171ff;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: filter 0.2s ease;
+}
+
+.e-form-submit:hover {
+  filter: brightness(1.08);
+}
+
+.e-form-submit[disabled] {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.e-form-msg {
+  flex: 1 1 100%;
+  margin: 0;
+  font-size: 13px;
+  min-height: 1em;
+}
+
+.e-form-msg.is-error {
+  color: #ff8b8b;
+}
+
+.e-form-msg.is-ok {
+  color: #6ee7a8;
+}
+
+.e-field input:user-invalid,
+.e-field textarea:user-invalid {
+  border-color: #ff8b8b;
+}
+
+/* --------------------------------------------------------------------------
+   Video (facade do YouTube: so carrega o iframe depois do clique)
+   -------------------------------------------------------------------------- */
+
+.e-video {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 20px;
+  overflow: hidden;
+  background: #0b1020 center / cover no-repeat;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+
+.e-video::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 1, 34, 0.25);
+  transition: background 0.2s ease;
+}
+
+.e-video:hover::after {
+  background: rgba(0, 1, 34, 0.1);
+}
+
+.e-video-play {
+  position: relative;
+  z-index: 1;
+  width: 68px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.75);
+  display: grid;
+  place-items: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.e-video:hover .e-video-play {
+  background: #2171ff;
+  transform: scale(1.06);
+}
+
+.e-video-play::before {
+  content: "";
+  border-style: solid;
+  border-width: 9px 0 9px 15px;
+  border-color: transparent transparent transparent #fff;
+}
+
+.e-video iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.e-video.is-playing::after,
+.e-video.is-playing .e-video-play {
+  display: none;
+}
+
+/* --------------------------------------------------------------------------
+   Animacao de entrada
+   -------------------------------------------------------------------------- */
+
+/* Condicionado a `.js`: sem JavaScript o conteudo nunca fica escondido. */
+.js .e-anim {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.js .e-anim.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .js .e-anim {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .e-carousel-track {
+    transition: none;
+  }
+}
+
+/* Foco visivel consistente. */
+:where(a, button, summary, [tabindex]):focus-visible {
+  outline: 2px solid #5492ff;
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
