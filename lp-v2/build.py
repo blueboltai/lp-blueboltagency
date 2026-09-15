@@ -419,6 +419,118 @@ SECOES_CSS = """
   .funil-fig{ max-width:340px;margin-inline:auto; }
 }
 
+/* ══════════════════════════════════════════════════════════════════
+   A LINHA DO TEMPO — o mesmo sistema, redesenhado
+   O numero era um "01" gigante e esbatido numa coluna que existia para
+   uma foto que nunca chegou: ocupava metade da seccao a nao dizer nada.
+   Passa a ser o no que a linha de progresso atravessa, e o texto passa a
+   cartao — cada passo le-se como uma peca, nao como texto solto no preto.
+   ══════════════════════════════════════════════════════════════════ */
+
+#trajetoria .traj-list{ max-width:1060px;margin-inline:auto; }
+
+/* Os passos por ler ficavam a 20% e desfocados: a seccao lia-se sempre
+   como um so passo aceso no meio do escuro. A 45% e sem desfoque, ve-se
+   para onde se vai sem deixar de se perceber onde se esta. */
+#trajetoria .traj-item{
+  gap:0 7rem;
+  margin-bottom:clamp(1.75rem,3.5vw,2.75rem);
+  opacity:.45;
+  filter:none;
+}
+#trajetoria .traj-item.active{ opacity:1; }
+#trajetoria .traj-item::before{ display:none; }
+
+/* O no, na linha */
+.traj-no{
+  position:absolute;
+  left:50%;top:50%;
+  transform:translate(-50%,-50%);
+  width:58px;height:58px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  /* opaco de proposito: e ele que corta a linha por tras */
+  background:#070a16;
+  border:1px solid rgba(255,255,255,.1);
+  z-index:4;
+  transition:border-color .45s ease, box-shadow .45s ease, background .45s ease;
+}
+.traj-no span{
+  font-family:'Archia',sans-serif;
+  font-size:17px;
+  letter-spacing:-.02em;
+  color:rgba(255,255,255,.4);
+  transition:color .45s ease;
+}
+.traj-item.active .traj-no{
+  border-color:rgba(47,161,255,.5);
+  background:radial-gradient(120% 120% at 50% 0%, rgba(47,161,255,.2), #070a16 70%);
+  box-shadow:0 0 0 5px rgba(47,161,255,.07), 0 0 28px rgba(47,161,255,.3);
+}
+.traj-item.active .traj-no span{ color:#fff; }
+
+/* O passo passa a cartao */
+#trajetoria .traj-content{
+  position:relative;
+  padding:1.45rem 1.6rem;
+  border-radius:18px;
+  background:linear-gradient(160deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
+  border:1px solid rgba(255,255,255,.07);
+  transition:opacity .65s cubic-bezier(.16,1,.3,1), transform .65s cubic-bezier(.16,1,.3,1),
+             border-color .45s ease, background .45s ease;
+}
+#trajetoria .traj-item.active .traj-content{
+  border-color:rgba(47,161,255,.22);
+  background:linear-gradient(160deg, rgba(47,161,255,.07), rgba(255,255,255,.02));
+}
+/* Filete da cor da marca do lado que da para a linha */
+#trajetoria .traj-content::before{
+  content:'';
+  position:absolute;top:1.45rem;bottom:1.45rem;
+  width:2px;
+  border-radius:2px;
+  background:linear-gradient(to bottom, rgba(47,161,255,.7), rgba(0,93,169,0));
+  opacity:0;
+  transition:opacity .45s ease;
+}
+#trajetoria .traj-item.active .traj-content::before{ opacity:1; }
+/* Traco curto a ligar o cartao ao no */
+#trajetoria .traj-content::after{
+  content:'';
+  position:absolute;top:50%;
+  width:2.4rem;height:1px;
+  background:rgba(255,255,255,.12);
+  transition:background .45s ease;
+}
+#trajetoria .traj-item.active .traj-content::after{ background:rgba(47,161,255,.4); }
+
+#trajetoria .traj-item:nth-child(odd) .traj-content{ padding-right:1.6rem; }
+#trajetoria .traj-item:nth-child(odd) .traj-content::before{ right:0; }
+#trajetoria .traj-item:nth-child(odd) .traj-content::after{ left:100%; }
+#trajetoria .traj-item:nth-child(even) .traj-content{ padding-left:1.6rem; }
+#trajetoria .traj-item:nth-child(even) .traj-content::before{ left:0; }
+#trajetoria .traj-item:nth-child(even) .traj-content::after{ right:100%; }
+
+#trajetoria .traj-desc{ max-width:none;color:rgba(200,204,216,.62); }
+#trajetoria .traj-item:nth-child(odd) .traj-desc{ margin-left:0; }
+#trajetoria .traj-title{ font-size:clamp(17px,1.5vw,22px); }
+#trajetoria .traj-tag{ font-size:8.5px; }
+
+@media(max-width:768px){
+  #trajetoria .traj-item{ gap:.9rem;padding-left:4.75rem; }
+  .traj-no{
+    left:1.5rem;top:1.9rem;
+    width:44px;height:44px;
+  }
+  .traj-no span{ font-size:14px; }
+  #trajetoria .traj-content{ grid-row:1; }
+  #trajetoria .traj-item:nth-child(odd) .traj-content::after,
+  #trajetoria .traj-item:nth-child(even) .traj-content::after{ display:none; }
+  #trajetoria .traj-item:nth-child(odd) .traj-content::before,
+  #trajetoria .traj-item:nth-child(even) .traj-content::before{ left:0;right:auto; }
+}
+
 @media(max-width:640px){
   .hero-h1{ font-size:clamp(26px,7.6vw,36px); }
   .hero-sub{ font-size:14.5px; }
@@ -704,6 +816,33 @@ SEGUNDA_DOBRA = """<section id="quem">
 
   </div>
 </section>"""
+
+# ══════════════════════════════════════════════════════════════════
+# A LINHA DO TEMPO — o numero deixa de ser um fantasma na coluna vazia
+# e passa a ser o no que a linha de progresso atravessa.
+# ══════════════════════════════════════════════════════════════════
+
+n_nos = len(re.findall(r'<div class="traj-photo-wrap">\s*<div class="traj-date-panel">\s*'
+                       r'<div class="traj-date-panel-day">\d+</div>\s*</div>\s*</div>', html))
+if n_nos != 5:
+    falhas.append(f"linha do tempo: esperava 5 numeros, encontrei {n_nos}")
+html = re.sub(
+    r'<div class="traj-photo-wrap">\s*<div class="traj-date-panel">\s*'
+    r'<div class="traj-date-panel-day">(\d+)</div>\s*</div>\s*</div>',
+    lambda m: f'<div class="traj-no"><span>{m.group(1)}</span></div>',
+    html,
+)
+
+# O ultimo passo so acendia depois de a seccao ja ter saido do ecra: a
+# barra de progresso conta a altura toda da lista, mas o gatilho ficava
+# em idx/total. Comprimindo a escala, os cinco passos acendem dentro da
+# seccao, que e onde se esta a olhar.
+html = troca(
+    html,
+    "var threshold = (idx / total) + 0.02;",
+    "var threshold = (idx / total) * 0.8;",
+    "gatilho dos passos da linha do tempo",
+)
 
 # ══════════════════════════════════════════════════════════════════
 # HEAD — SEO, titulo, partilha
