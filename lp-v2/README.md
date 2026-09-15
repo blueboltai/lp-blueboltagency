@@ -26,6 +26,14 @@ python3 build.py     # reescreve index.html a partir do original
 
 Para mudar a copy, edita-se o `build.py`, não o `index.html`.
 
+## Sem barra de menu
+
+A barra fixa do topo foi removida — marcação e JS. Numa página de anúncios só
+oferecia saídas, e além disso tapava o título do hero. O CTA que lá vivia
+("Diagnóstico gratuito") já existe no hero e repete-se no fim da página. As
+regras de CSS do `#nav` ficaram na folha, por não se mexer no CSS original;
+não têm efeito nenhum.
+
 ## A secção do Ricardo
 
 `#autoridade` ficou **palavra por palavra** como estava, incluindo o título

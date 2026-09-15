@@ -33,6 +33,72 @@ def troca(html, antigo, novo, etiqueta, esperado=1):
 html = open(FONTE, encoding="utf-8").read()
 
 # ══════════════════════════════════════════════════════════════════
+# BARRA DE MENU — fora
+# Numa pagina de anuncios a barra so oferece saidas, e aqui tapava o titulo.
+# Sai a marcacao (nav + menu movel) e sai o JS que lhe pertencia, para nao
+# ficar codigo a procurar elementos que ja nao existem.
+# ══════════════════════════════════════════════════════════════════
+
+nav_markup = re.search(r"<!-- NAV -->.*?</div>\n\n", html, re.S)
+if not nav_markup:
+    falhas.append("barra de menu: nao encontrei o bloco do nav")
+else:
+    html = html.replace(nav_markup.group(0), "")
+
+html = troca(
+    html,
+    """// Nav aparece ao scroll
+(function(){
+  var nav = document.getElementById('nav');
+  var threshold = 80;
+  function onScroll(){
+    if(window.scrollY > threshold){
+      nav.classList.add('nav-visible');
+    } else {
+      nav.classList.remove('nav-visible');
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+})();
+
+/* Nav muda para estilo claro quando fica sobreposta ao bloco de fundo claro */
+(function(){
+  var nav = document.getElementById('nav');
+  var lightBand = document.querySelector('.light-theme');
+  if(!nav || !lightBand) return;
+  function checkLightBand(){
+    var r = lightBand.getBoundingClientRect();
+    var navH = nav.offsetHeight || 72;
+    if(r.top <= navH && r.bottom >= 0){
+      nav.classList.add('nav-on-light');
+    } else {
+      nav.classList.remove('nav-on-light');
+    }
+  }
+  window.addEventListener('scroll', checkLightBand, {passive:true});
+  window.addEventListener('resize', checkLightBand, {passive:true});
+  checkLightBand();
+})();
+
+function toggleNav(){
+  document.getElementById('mnav').classList.toggle('open');
+  document.getElementById('burger').classList.toggle('open');
+}
+""",
+    "",
+    "JS da barra de menu",
+)
+
+# Sem barra fixa por cima, o hero nao precisa da folga que a compensava.
+NAV_CSS = """
+/* ══ Sem barra de menu: o hero recupera a folga que a compensava ══ */
+#hero{ padding-top:4rem; }
+@media(max-width:900px){ #hero{ padding-top:3rem; } }
+@media(max-width:640px){ #hero{ padding-top:2.5rem; } }
+"""
+
+# ══════════════════════════════════════════════════════════════════
 # HEAD — SEO, titulo, partilha
 # ══════════════════════════════════════════════════════════════════
 
@@ -81,52 +147,7 @@ html = troca(
     '<img src="img/bluebolt-logo.webp" alt="Blue Bolt Agency" style=',
     "logo rodape",
 )
-html = troca(html, 'src="bluebolt-logo.webp"', 'src="img/bluebolt-logo.webp"', "logo nav")
 html = troca(html, 'src="ricardo.webp"', 'src="img/ricardo.avif"', "foto do Ricardo")
-
-# ══════════════════════════════════════════════════════════════════
-# NAV
-# ══════════════════════════════════════════════════════════════════
-
-html = troca(
-    html,
-    '<span class="nav-logo-txt">Blue Bolt <b>AI</b></span>',
-    '<span class="nav-logo-txt">Blue Bolt <b>Agency</b></span>',
-    "logotipo nav",
-)
-html = troca(
-    html,
-    """    <ul class="nav-links">
-      <li><a href="#trajetoria">Como funciona</a></li>
-      <li><a href="#bandeiras">O que faz</a></li>
-      <li><a href="#guia">O Motor de IA</a></li>
-      <li><a href="#autoridade">Quem somos</a></li>
-      <li><a href="bluebolt-ai-blog.html">Blog</a></li>
-    </ul>
-    <a href="#guia" class="nav-cta">Análise gratuita</a>""",
-    """    <ul class="nav-links">
-      <li><a href="#vsl">O sistema</a></li>
-      <li><a href="#trajetoria">Como funciona</a></li>
-      <li><a href="#bandeiras">O que implementamos</a></li>
-      <li><a href="#autoridade">Quem somos</a></li>
-    </ul>
-    <a href="#guia" class="nav-cta">Diagnóstico gratuito</a>""",
-    "links nav",
-)
-html = troca(
-    html,
-    """  <a href="#trajetoria" onclick="toggleNav()">Como funciona</a>
-  <a href="#bandeiras"  onclick="toggleNav()">O que faz</a>
-  <a href="#guia"       onclick="toggleNav()">O Motor de IA</a>
-  <a href="#autoridade" onclick="toggleNav()">Quem somos</a>
-  <a href="bluebolt-ai-blog.html" onclick="toggleNav()">Blog</a>""",
-    """  <a href="#vsl"        onclick="toggleNav()">O sistema</a>
-  <a href="#trajetoria" onclick="toggleNav()">Como funciona</a>
-  <a href="#bandeiras"  onclick="toggleNav()">O que implementamos</a>
-  <a href="#autoridade" onclick="toggleNav()">Quem somos</a>
-  <a href="#guia"       onclick="toggleNav()">Diagnóstico gratuito</a>""",
-    "menu movel",
-)
 
 # ══════════════════════════════════════════════════════════════════
 # HERO
@@ -301,7 +322,7 @@ VSL_JS = """
 })();
 """
 
-html = troca(html, "</style>", VSL_CSS + "</style>", "CSS da VSL")
+html = troca(html, "</style>", VSL_CSS + NAV_CSS + "</style>", "CSS da VSL e do hero")
 html = troca(html, '\n<!-- QUEM É -->', VSL_HTML + '\n<!-- QUEM É -->', "marcacao da VSL")
 html = troca(html, "\n/* Submissão do formulário de lead", VSL_JS + "\n/* Submissão do formulário de lead", "JS da VSL")
 
@@ -664,8 +685,6 @@ html = troca(
     '<a href="https://bluebolt.pt/politica-de-privacidade/" target="_blank" rel="noopener">Política de privacidade</a>',
     "legais do rodape",
 )
-html = troca(html, 'aria-label="Blue Bolt AI"', 'aria-label="Blue Bolt Agency"', "aria do logotipo")
-html = troca(html, 'alt="Blue Bolt AI"', 'alt="Blue Bolt Agency"', "alt do logotipo nav")
 
 # ══════════════════════════════════════════════════════════════════
 # DADOS ESTRUTURADOS (JSON-LD) — tem de descrever a empresa certa

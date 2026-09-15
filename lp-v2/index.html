@@ -2070,37 +2070,14 @@ a{text-decoration:none;color:inherit}
 @media(prefers-reduced-motion:reduce){
   .vsl-screen,.vsl-screen::after,.vsl-play{ transition:none; }
 }
+
+/* ══ Sem barra de menu: o hero recupera a folga que a compensava ══ */
+#hero{ padding-top:4rem; }
+@media(max-width:900px){ #hero{ padding-top:3rem; } }
+@media(max-width:640px){ #hero{ padding-top:2.5rem; } }
 </style>
 </head>
 <body>
-
-<!-- NAV -->
-<nav id="nav">
-  <div class="nav-inner">
-    <a href="#" class="nav-logo-link" aria-label="Blue Bolt Agency">
-      <img class="nav-logo-img" src="img/bluebolt-logo.webp" alt="Blue Bolt Agency">
-      <span class="nav-logo-txt">Blue Bolt <b>Agency</b></span>
-    </a>
-    <ul class="nav-links">
-      <li><a href="#vsl">O sistema</a></li>
-      <li><a href="#trajetoria">Como funciona</a></li>
-      <li><a href="#bandeiras">O que implementamos</a></li>
-      <li><a href="#autoridade">Quem somos</a></li>
-    </ul>
-    <a href="#guia" class="nav-cta">Diagnóstico gratuito</a>
-    <button class="burger" id="burger" onclick="toggleNav()">
-      <span></span><span></span><span></span>
-    </button>
-  </div>
-</nav>
-
-<div class="mnav" id="mnav">
-  <a href="#vsl"        onclick="toggleNav()">O sistema</a>
-  <a href="#trajetoria" onclick="toggleNav()">Como funciona</a>
-  <a href="#bandeiras"  onclick="toggleNav()">O que implementamos</a>
-  <a href="#autoridade" onclick="toggleNav()">Quem somos</a>
-  <a href="#guia"       onclick="toggleNav()">Diagnóstico gratuito</a>
-</div>
 
 <!-- HERO WRAP -->
 <div class="hero-wrap">
@@ -2646,44 +2623,6 @@ a{text-decoration:none;color:inherit}
 </footer>
 
 <script>
-// Nav aparece ao scroll
-(function(){
-  var nav = document.getElementById('nav');
-  var threshold = 80;
-  function onScroll(){
-    if(window.scrollY > threshold){
-      nav.classList.add('nav-visible');
-    } else {
-      nav.classList.remove('nav-visible');
-    }
-  }
-  window.addEventListener('scroll', onScroll, {passive:true});
-  onScroll();
-})();
-
-/* Nav muda para estilo claro quando fica sobreposta ao bloco de fundo claro */
-(function(){
-  var nav = document.getElementById('nav');
-  var lightBand = document.querySelector('.light-theme');
-  if(!nav || !lightBand) return;
-  function checkLightBand(){
-    var r = lightBand.getBoundingClientRect();
-    var navH = nav.offsetHeight || 72;
-    if(r.top <= navH && r.bottom >= 0){
-      nav.classList.add('nav-on-light');
-    } else {
-      nav.classList.remove('nav-on-light');
-    }
-  }
-  window.addEventListener('scroll', checkLightBand, {passive:true});
-  window.addEventListener('resize', checkLightBand, {passive:true});
-  checkLightBand();
-})();
-
-function toggleNav(){
-  document.getElementById('mnav').classList.toggle('open');
-  document.getElementById('burger').classList.toggle('open');
-}
 if(typeof gsap!=='undefined'){
   gsap.from('.hero-badge', {opacity:0,scale:.9,duration:.5,ease:'power2.out',delay:.1});
   gsap.from('.hero-h1',    {opacity:0,y:30,duration:1,ease:[.16,1,.3,1],delay:.25});
