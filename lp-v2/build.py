@@ -526,7 +526,7 @@ SECOES_CSS = """
   background:#f6f7f9;
   color:#12141a;
 }
-.tst-inner{ max-width:1240px;margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem); }
+.tst-inner{ max-width:1120px;margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem); }
 .tst-head{ text-align:center;margin-bottom:clamp(2.5rem,5vw,4rem); }
 .tst-section .quem-eyebrow{ color:#005da9; }
 .tst-h2{
@@ -559,7 +559,7 @@ SECOES_CSS = """
   scrollbar-width:thin;
   scrollbar-color:rgba(0,93,169,.35) transparent;
 }
-@media(min-width:1100px){ .tst-row{ grid-auto-columns:minmax(0,1fr);grid-auto-flow:row;grid-template-columns:repeat(4,minmax(0,1fr));overflow:visible; } }
+@media(min-width:900px){ .tst-row{ grid-auto-columns:minmax(0,1fr);grid-auto-flow:row;grid-template-columns:repeat(3,minmax(0,1fr));overflow:visible;row-gap:2.25rem; } }
 .tst-row::-webkit-scrollbar{ height:6px; }
 .tst-row::-webkit-scrollbar-thumb{ background:rgba(0,93,169,.3);border-radius:3px; }
 .tst-card{ margin:0;scroll-snap-align:start; }
@@ -828,15 +828,16 @@ TESTEMUNHOS = [
     ("kl3K2hbLHmk", "capa-foot-draft-scaled-1.webp", "Bruno Pinto", "Foot Draft"),
     ("pl0ah13B-CY", "capa-carmen-scaled-1.webp", "Carmen Ferreira", "Enfermagem"),
     ("8XSuQEaG17U", "capa-mecia-scaled-1.webp", "Mécia Correia", "Marca pessoal"),
-    ("Aw5drpYunbo", "capa-natalia-scaled-1.webp", "Natália Teixeira", "Marca pessoal"),
-    ("x4krzjutqko", "capa_sara-scaled-1.webp", "Sara Moreira", "Marca pessoal"),
 ]
+# Ficam seis, em duas filas de tres. Os outros dois testemunhos que temos —
+# Natália Teixeira e Sara Moreira — sao ambos de marca pessoal, que ja esta
+# representada; sairam para a fila nao ficar a dois.
 
 _cartoes = "".join(
     f'<figure class="tst-card">'
     f'<div class="vsl-screen tst-screen" data-video="{vid}" role="button" tabindex="0" '
     f'aria-label="Ver o testemunho de {nome}">'
-    f'<img src="img/testemunhos/{capa}" alt="" loading="lazy" decoding="async">'
+    f'<img src="img/testemunhos/{capa}" alt="" decoding="async" fetchpriority="low">'
     f'<span class="vsl-play" aria-hidden="true">'
     f'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>'
     f"</div>"
