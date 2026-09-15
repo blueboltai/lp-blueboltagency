@@ -140,10 +140,26 @@ SECOES_CSS = """
 .hero-h1{
   font-size:clamp(30px,4.2vw,58px);
   line-height:1.12;
-  max-width:min(1060px, 94%);
-  margin-inline:auto;
   margin-bottom:1.25rem;
   text-wrap:balance;
+}
+
+/* ══ Medida dos titulos ══
+   Os titulos de seccao vinham cada um com a largura do bloco onde calharam
+   ficar: 680, 786, 980 e 1100px. Passam a partilhar a mesma medida, e cada um
+   centra-se sozinho — a margem calculada deixa o titulo sair de um bloco mais
+   estreito sem precisar de saber a largura do pai. Ficam de fora os titulos
+   das duas seccoes em duas colunas (#guia e #autoridade): ali o titulo e a
+   largura da coluna, e forcar a mesma medida partia a grelha. */
+:root{ --medida-titulo: min(1020px, 100vw - 48px); }
+.hero-h1,
+#quem .prob-head .quem-h2,
+.traj-h2,
+.band-h2,
+.cta-h2{
+  width:var(--medida-titulo);
+  max-width:none;
+  margin-inline:calc(50% - var(--medida-titulo) / 2);
 }
 .hero-sub{
   font-size:clamp(15px,1.25vw,18px);
@@ -231,9 +247,9 @@ SECOES_CSS = """
   margin:0 auto clamp(3.5rem,7vw,6rem);
   text-align:center;
 }
-/* O titulo ocupa a largura toda do bloco; so o corpo do texto e que fica
-   estreito, para nao passar do comprimento de linha que se le bem. */
-.prob-head .quem-h2{ max-width:none;text-wrap:balance; }
+/* So o corpo do texto e que fica estreito, para nao passar do comprimento
+   de linha que se le bem; o titulo usa a medida comum. */
+.prob-head .quem-h2{ text-wrap:balance; }
 .prob-bio{
   display:flex;
   flex-direction:column;
@@ -286,6 +302,83 @@ SECOES_CSS = """
   fill:var(--lt-inc-2);
 }
 
+/* ══ Animacao ══
+   Tudo pendurado no `.revealed` que o observador ja punha no `.funil`: o
+   desenho esta completo desde o inicio e a animacao e um acrescento, nunca
+   a condicao para se ver o funil. Tres tempos:
+
+   1. as fatias caem de cima para baixo, uma a seguir a outra, como se o
+      funil se montasse;
+   2. as chamadas saem da fatia para fora — a linha desenha-se, o texto vem
+      atras;
+   3. depois de assentar, um lustro percorre os aros de cima para baixo, de
+      seis em seis segundos. E o unico movimento que fica, e e discreto. */
+.fatia{ transform-box:view-box; }
+.funil.revealed .fatia{
+  animation:fn-cai .8s cubic-bezier(.16,1,.3,1) backwards;
+  animation-delay:calc(var(--i) * .11s);
+}
+@keyframes fn-cai{
+  from{ opacity:0;transform:translateY(-26px); }
+  to{ opacity:1;transform:translateY(0); }
+}
+
+/* O lustro so arranca depois de as seis fatias terem assentado. */
+.funil.revealed .fn-lustro,
+.funil.revealed .fn-lustro-2{
+  animation:fn-brilha 6s ease-in-out infinite;
+  animation-delay:calc(1.4s + var(--i) * .2s);
+}
+@keyframes fn-brilha{
+  0%,62%,100%{ stroke-opacity:.42; }
+  72%{ stroke-opacity:.95; }
+}
+.funil.revealed .fn-lustro-2{ animation-name:fn-brilha-2; }
+@keyframes fn-brilha-2{
+  0%,62%,100%{ stroke-opacity:.18; }
+  72%{ stroke-opacity:.5; }
+}
+
+/* A linha de chamada desenha-se da fatia para fora; o texto vem a seguir. */
+.chamada{ opacity:0; }
+.funil.revealed .chamada{
+  animation:fn-entra .55s ease-out forwards;
+  animation-delay:calc(.5s + var(--i) * .11s);
+}
+@keyframes fn-entra{ to{ opacity:1; } }
+.chamada-linha{
+  stroke-dasharray:var(--tracado);
+  stroke-dashoffset:var(--tracado);
+}
+.funil.revealed .chamada-linha{
+  animation:fn-traca .5s ease-out forwards;
+  animation-delay:calc(.55s + var(--i) * .11s);
+}
+@keyframes fn-traca{ to{ stroke-dashoffset:0; } }
+
+/* Ao passar o rato numa fatia, ela sobe e as outras recuam um pouco.
+   O `:has()` e que faz isto so acontecer quando o rato esta mesmo sobre uma
+   fatia: com `.funil-svg:hover` bastava entrar na moldura do SVG — que e um
+   rectangulo com muito vazio — para o funil todo esmorecer. Onde nao houver
+   `:has()`, a regra cai e fica so o realce da fatia. */
+.fatia{ transition:transform .3s cubic-bezier(.16,1,.3,1), opacity .3s ease; }
+.funil-svg:has(.fatia:hover) .fatia{ opacity:.78; }
+.funil-svg:has(.fatia:hover) .fatia:hover{ opacity:1;transform:translateY(-5px); }
+/* A sombra estende-se para a folga; sem isto seria ela a apanhar o rato. */
+.fatia-sombra{ pointer-events:none; }
+
+@media(prefers-reduced-motion:reduce){
+  .funil.revealed .fatia,
+  .funil.revealed .chamada,
+  .funil.revealed .chamada-linha,
+  .funil.revealed .fn-lustro,
+  .funil.revealed .fn-lustro-2{ animation:none; }
+  .chamada{ opacity:1; }
+  .chamada-linha{ stroke-dasharray:none;stroke-dashoffset:0; }
+  .funil-svg:has(.fatia:hover) .fatia,
+  .funil-svg:has(.fatia:hover) .fatia:hover{ opacity:1;transform:none; }
+}
+
 /* Em ecras estreitos o texto dentro do SVG ficaria minusculo: mostra-se so
    o funil e a mesma informacao passa a lista normal, em HTML. */
 .funil-curto{ display:none; }
@@ -314,7 +407,7 @@ SECOES_CSS = """
 }
 
 @media(max-width:640px){
-  .hero-h1{ max-width:100%; font-size:clamp(26px,7.6vw,36px); }
+  .hero-h1{ font-size:clamp(26px,7.6vw,36px); }
   .hero-sub{ font-size:14.5px; }
 }
 @media(prefers-reduced-motion:reduce){
@@ -476,15 +569,15 @@ def _corpo(g):
             f'A {_n(g["rb"])} {_n(g["ryb"])} 0 0 1 {_n(CX - g["rb"])} {_n(g["yb"])} Z')
 
 
-def _arco(g, a1, a2, opacidade, grossura):
+def _arco(g, a1, a2, opacidade, grossura, classe):
     """Lampejo no aro: um arco curto, para a peca ler como vidrada."""
     import math
     rx, ry = g["rt"] * .95, g["ryt"] * .95
     p = lambda a: (CX + rx * math.cos(math.radians(a)), g["yt"] + ry * math.sin(math.radians(a)))
     (x1, y1), (x2, y2) = p(a1), p(a2)
-    return (f'<path d="M {_n(x1)} {_n(y1)} A {_n(rx)} {_n(ry)} 0 0 1 {_n(x2)} {_n(y2)}" fill="none" '
-            f'stroke="#fff" stroke-opacity="{opacidade}" stroke-width="{_n(max(grossura, g["ryt"] * .075))}" '
-            f'stroke-linecap="round"/>')
+    return (f'<path class="{classe}" d="M {_n(x1)} {_n(y1)} A {_n(rx)} {_n(ry)} 0 0 1 {_n(x2)} {_n(y2)}" '
+            f'fill="none" stroke="#fff" stroke-opacity="{opacidade}" '
+            f'stroke-width="{_n(max(grossura, g["ryt"] * .075))}" stroke-linecap="round"/>')
 
 
 def _fatia(i, p):
@@ -496,8 +589,8 @@ def _fatia(i, p):
     # A sombra cai na folga, por baixo. As fatias sao desenhadas de baixo
     # para cima para esta ficar por cima da peca seguinte.
     sy = g["yb"] + g["ryb"] + 4.5
-    sombra = (f'<ellipse cx="{_n(CX)}" cy="{_n(sy)}" rx="{_n(g["rb"] * .94)}" ry="{_n(g["rb"] * .085)}" '
-              f'fill="#0c2233" opacity=".21" filter="url(#{p}sombra)"/>')
+    sombra = (f'<ellipse class="fatia-sombra" cx="{_n(CX)}" cy="{_n(sy)}" rx="{_n(g["rb"] * .94)}" '
+              f'ry="{_n(g["rb"] * .085)}" fill="#0c2233" opacity=".21" filter="url(#{p}sombra)"/>')
 
     cava_rx = g["rt"] * CAVA_RX
     cava_ry = g["ryt"] * CAVA_RY
@@ -510,7 +603,7 @@ def _fatia(i, p):
              f'{ICONES[FATIAS[i][5]]}</g>')
 
     return (
-        "<g>"
+        f'<g class="fatia" style="--i:{i}">'
         + sombra
         + f'<path d="{d}" fill="url(#{p}corpo{i})"/>'
         + f'<path d="{d}" fill="url(#{p}curva)"/>'
@@ -519,8 +612,8 @@ def _fatia(i, p):
         + f'<ellipse cx="{_n(CX)}" cy="{_n(cava_y)}" rx="{_n(cava_rx)}" ry="{_n(cava_ry)}" fill="url(#{p}cava{i})"/>'
         + f'<ellipse cx="{_n(CX)}" cy="{_n(cava_y)}" rx="{_n(cava_rx)}" ry="{_n(cava_ry)}" fill="none" '
           f'stroke="{escurecer(cor, .55)}" stroke-opacity=".22" stroke-width=".7"/>'
-        + _arco(g, 196, 250, ".46", 1.3)
-        + _arco(g, 300, 332, ".20", 1.1)
+        + _arco(g, 196, 250, ".46", 1.3, "fn-lustro")
+        + _arco(g, 300, 332, ".20", 1.1, "fn-lustro-2")
         + icone
         + "</g>"
     )
@@ -539,10 +632,12 @@ def _etiqueta(i):
     else:
         x_txt, ancora = CX + RAIO_MAX + MARGEM_X + 22, "start"
         x_ponto, x_fim = x_txt - 16, CX + borda + 14
+    comprimento = abs(x_fim - x_ponto)
     return (
-        "<g>"
-        f'<line x1="{_n(x_ponto)}" y1="{_n(ym)}" x2="{_n(x_fim)}" y2="{_n(ym)}" stroke="{cor}" '
-        f'stroke-width="1.4" stroke-opacity=".75"/>'
+        f'<g class="chamada" style="--i:{i}">'
+        f'<line class="chamada-linha" x1="{_n(x_ponto)}" y1="{_n(ym)}" x2="{_n(x_fim)}" y2="{_n(ym)}" '
+        f'stroke="{cor}" stroke-width="1.4" stroke-opacity=".75" '
+        f'style="--tracado:{_n(comprimento)}"/>'
         f'<circle cx="{_n(x_ponto)}" cy="{_n(ym)}" r="4.5" fill="{cor}"/>'
         f'<circle cx="{_n(x_fim)}" cy="{_n(ym)}" r="4.5" fill="{cor}"/>'
         f'<text x="{_n(x_txt)}" y="{_n(ym - 23)}" text-anchor="{ancora}" fill="{escuro}" '

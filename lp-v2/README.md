@@ -57,6 +57,19 @@ tirava-lhe nitidez. Extraí o bitmap, recortei a margem transparente e reduzi-o
 para 420×382 (`img/selo-top5.png`, 123 KB). É o selo da Blue Bolt, NIF
 516 751 808, com a menção "2.º ano consecutivo".
 
+## A medida dos títulos
+
+Os títulos de secção vinham da página de IA cada um com a largura do bloco onde
+calharam ficar — 680, 786, 980 e 1100px — e por isso nenhum começava nem acabava
+no mesmo sítio. Passaram todos a partilhar uma medida só, `--medida-titulo`
+(1020px), e cada um centra-se sozinho com uma margem calculada, o que lhe permite
+sair de um bloco mais estreito sem precisar de saber a largura do pai. Medido no
+browser: hero, problema, trajetória, o que implementamos e CTA final ocupam agora
+exatamente a mesma faixa, 210→1230px.
+
+Ficam de fora os títulos de `#guia` e `#autoridade`: ali o título é uma das duas
+colunas da secção, e forçar-lhe a mesma medida partia a grelha.
+
 **Segunda dobra** passou a branco/cinza (`#f6f7f9`), com o texto e a grelha de
 fundo invertidos para tom escuro. É isso que faz a VSL ler como na referência:
 metade sobre o azul, metade sobre o claro.
@@ -92,6 +105,21 @@ As etiquetas vivem ao lado, alternando esquerda e direita, ligadas à fatia por
 uma linha de chamada com um ponto em cada ponta. Abaixo dos 900px o texto dentro
 do SVG ficaria minúsculo, por isso aí mostra-se só o funil e a mesma informação
 passa a uma lista normal em HTML.
+
+A animação está toda pendurada no `.revealed` que o observador da página já
+punha no `.funil` — o desenho está completo desde o início e a animação é um
+acréscimo, nunca a condição para se ver o funil. São três tempos: as fatias caem
+de cima para baixo, uma a seguir à outra, como se o funil se montasse; as
+chamadas saem da fatia para fora, primeiro a linha a desenhar-se e depois o
+texto; e, já com tudo assente, um lustro percorre os aros de seis em seis
+segundos — o único movimento que fica, e é discreto. Ao passar o rato numa
+fatia, ela sobe e as outras recuam.
+
+O realce ao passar o rato usa `:has()` e não `.funil-svg:hover`: a moldura do
+SVG é um retângulo com muito espaço vazio, e bastaria entrar nela para o funil
+todo esmorecer. Onde não houver `:has()` a regra cai e fica só o realce da
+fatia. Com `prefers-reduced-motion` não há animação nenhuma — o funil aparece
+feito.
 
 Quatro armadilhas de SVG que apanhei pelo caminho. Três são da mesma família:
 **em SVG a ordem de desenho é o único z-index que existe**. O aro de cada fatia
