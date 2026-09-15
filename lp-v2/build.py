@@ -289,37 +289,25 @@ SECOES_CSS = """
   font-weight:700;
 }
 
-/* ══ O funil em ampulheta, em 3D ══
-   Desenhado a partir do modelo da Blue Bolt feito na Canva. Cada fatia e uma
-   taca: o corpo entre duas elipses, o aro claro por cima e a cavidade escura
-   la dentro. O volume vem de dois gradientes sobrepostos — um vertical, que
-   faz a fatia escurecer para baixo, e um horizontal, que lhe arredonda os
-   lados. As duas metades tocam-se na cintura, onde fica o simbolo da venda. */
+/* ══ O funil em ampulheta ══
+   O desenho e da propria Blue Bolt, feito na Canva, e entra como imagem
+   com fundo transparente — por isso assenta no cinzento da seccao sem
+   trazer um rectangulo branco atras. Ao lado ficam as seis etapas. */
 .funil{
   display:grid;
-  grid-template-columns:minmax(0,420px) minmax(0,1fr);
+  grid-template-columns:minmax(0,400px) minmax(0,1fr);
   gap:clamp(2rem,5vw,4.5rem);
   align-items:center;
   max-width:1000px;
   margin:0 auto;
 }
 .funil-fig{ margin:0; }
-.funil-svg{ width:100%;height:auto;display:block; }
-
-.fatia-nome{
-  font-family:'Manrope',sans-serif;
-  font-size:23px;
-  font-weight:600;
-  letter-spacing:-.01em;
-  fill:#fff;
-  paint-order:stroke;
-}
-.funil-euro{
-  font-family:'Manrope',sans-serif;
-  font-size:17px;
-  font-weight:600;
-  fill:#fff;
-  fill-opacity:.8;
+.funil-img{
+  width:100%;
+  max-width:380px;
+  height:auto;
+  display:block;
+  margin-inline:auto;
 }
 
 /* ══ As seis etapas, ao lado do funil ══ */
@@ -350,73 +338,27 @@ SECOES_CSS = """
 }
 
 /* ══ Animacao ══
-   Tudo pendurado no `.revealed` que o observador ja punha no `.funil`: o
-   desenho esta completo desde o inicio e a animacao e um acrescento, nunca
-   a condicao para se ver o funil. As fatias caem de cima para baixo, uma a
-   seguir a outra, como se o funil se montasse; as etapas do lado entram a
-   seguir; e depois de assentar, um lustro percorre os aros de seis em seis
-   segundos. E o unico movimento que fica, e e discreto. */
-.fatia{ transform-box:view-box; }
-.funil.revealed .fatia{
-  animation:fn-cai .8s cubic-bezier(.16,1,.3,1) backwards;
-  animation-delay:calc(var(--i) * .11s);
-}
-@keyframes fn-cai{
-  from{ opacity:0;transform:translateY(-26px); }
-  to{ opacity:1;transform:translateY(0); }
-}
-.funil-euro{ opacity:0; }
-.funil.revealed .funil-euro{ animation:fn-entra .5s ease-out .95s forwards; }
-
+   Pendurada no `.revealed` que o observador ja punha no `.funil`: o funil
+   sobe e as etapas entram a seguir, uma a uma. O desenho esta completo
+   desde o inicio — a animacao e um acrescento, nao a condicao para se ver. */
+.funil-img{ opacity:0; }
+.funil.revealed .funil-img{ animation:fn-sobe .9s cubic-bezier(.16,1,.3,1) forwards; }
 .passo{ opacity:0; }
 .funil.revealed .passo{
   animation:fn-sobe .6s cubic-bezier(.16,1,.3,1) forwards;
-  animation-delay:calc(.35s + var(--i) * .09s);
+  animation-delay:calc(.3s + var(--i) * .09s);
 }
-@keyframes fn-entra{ to{ opacity:1; } }
-@keyframes fn-sobe{ from{ opacity:0;transform:translateY(14px); } to{ opacity:1;transform:none; } }
-
-/* O lustro so arranca depois de as seis fatias terem assentado. */
-.funil.revealed .fn-lustro,
-.funil.revealed .fn-lustro-2{
-  animation:fn-brilha 6s ease-in-out infinite;
-  animation-delay:calc(1.4s + var(--i) * .2s);
-}
-@keyframes fn-brilha{
-  0%,62%,100%{ stroke-opacity:.42; }
-  72%{ stroke-opacity:.95; }
-}
-.funil.revealed .fn-lustro-2{ animation-name:fn-brilha-2; }
-@keyframes fn-brilha-2{
-  0%,62%,100%{ stroke-opacity:.18; }
-  72%{ stroke-opacity:.5; }
-}
-
-/* Ao passar o rato numa fatia, ela sobe e as outras recuam um pouco.
-   O `:has()` e que faz isto so acontecer quando o rato esta mesmo sobre uma
-   fatia: com `.funil-svg:hover` bastava entrar na moldura do SVG — que e um
-   rectangulo com muito vazio — para o funil todo esmorecer. Onde nao houver
-   `:has()`, a regra cai e fica so o realce da fatia. */
-.fatia{ transition:transform .3s cubic-bezier(.16,1,.3,1), opacity .3s ease; }
-.funil-svg:has(.fatia:hover) .fatia{ opacity:.78; }
-.funil-svg:has(.fatia:hover) .fatia:hover{ opacity:1;transform:translateY(-5px); }
-/* A sombra estende-se para a folga; sem isto seria ela a apanhar o rato. */
-.fatia-sombra{ pointer-events:none; }
+@keyframes fn-sobe{ from{ opacity:0;transform:translateY(16px); } to{ opacity:1;transform:none; } }
 
 @media(prefers-reduced-motion:reduce){
-  .funil.revealed .fatia,
-  .funil.revealed .passo,
-  .funil.revealed .funil-euro,
-  .funil.revealed .fn-lustro,
-  .funil.revealed .fn-lustro-2{ animation:none; }
-  .passo,.funil-euro{ opacity:1; }
-  .funil-svg:has(.fatia:hover) .fatia,
-  .funil-svg:has(.fatia:hover) .fatia:hover{ opacity:1;transform:none; }
+  .funil.revealed .funil-img,
+  .funil.revealed .passo{ animation:none; }
+  .funil-img,.passo{ opacity:1; }
 }
 
 @media(max-width:860px){
   .funil{ grid-template-columns:1fr;gap:2.5rem; }
-  .funil-fig{ max-width:340px;margin-inline:auto; }
+  .funil-img{ max-width:320px; }
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -661,247 +603,38 @@ SECOES_CSS = """
 
 
 # ══════════════════════════════════════════════════════════════════
-# O FUNIL EM AMPULHETA, EM 3D
-# Desenhado a partir do modelo da Blue Bolt feito na Canva: todo azul,
-# com os nomes dentro das fatias, sem icones, e as duas metades unidas
-# na cintura, onde fica o simbolo da venda. Cada fatia e a superficie
-# lateral entre duas elipses; os valores sao calculados aqui, para a
-# geometria nao depender de numeros escritos a mao.
+# O FUNIL EM AMPULHETA
+# E o desenho da propria Blue Bolt, feito na Canva. Chegou como imagem e
+# como imagem fica — cheguei a redesenha-lo em SVG, mas o pedido foi usar
+# o original. O PNG de 1080x1350 ja vinha com fundo transparente: so foi
+# recortada a margem vazia e reduzido para 760px de largura (o dobro dos
+# ~380 a que aparece, para ficar nitido em ecra retina). Em webp com alfa
+# passa de 721KB a 75KB.
 # ══════════════════════════════════════════════════════════════════
 
-ACHAT = 0.095            # achatamento das elipses (ry = rx * ACHAT)
-CAVA_RX = 0.90           # raio da cavidade, em fracao do raio exterior
-CAVA_RY = 0.84           # a cavidade e ainda mais achatada que o aro
-CAVA_DY = 0.05           # e desce um pouco, em unidades de ry do aro
-RAIO_MINIMO_ARO = 26     # abaixo disto a fatia nao mostra aro nem cavidade
-
-# (nome, descricao, raio de cima, raio de baixo, altura, folga acima, cor)
-# A folga a None significa "unida a de cima": e o que fecha a cintura, onde
-# o cone que estreita e o que alarga partilham o mesmo ponto.
+# (nome, descricao, cor da fatia no desenho)
 FATIAS = [
-    ("Atração", "Campanhas em Meta e Google Ads que trazem o perfil certo, não só volume.",
-     247, 201, 120, 0, "#1B7BE8"),
-    ("Oportunidade", "Fluxos de email e WhatsApp que aquecem a lead antes do contacto comercial.",
-     190, 138, 116, 11, "#0E86F0"),
-    ("Conversão", "Scripts, playbook e CRM para não se perder nenhuma oportunidade pelo caminho.",
-     133, 6, 166, 13, "#12A3DE"),
-    ("Retenção", "Acompanhamento depois da venda, para o cliente voltar a comprar.",
-     6, 148, 130, None, "#1AB9D6"),
-    ("Fidelização", "Deixa de comparar preços e passa a escolher-nos por hábito.",
-     163, 200, 113, 9, "#0E6FD6"),
-    ("Indicação", "Cada cliente satisfeito traz o próximo, sem custo de aquisição.",
-     213, 258, 116, 9, "#0E3E90"),
+    ("Atração", "Campanhas em Meta e Google Ads que trazem o perfil certo, não só volume.", "#1B7BE8"),
+    ("Oportunidade", "Fluxos de email e WhatsApp que aquecem a lead antes do contacto comercial.", "#0E86F0"),
+    ("Conversão", "Scripts, playbook e CRM para não se perder nenhuma oportunidade pelo caminho.", "#12A3DE"),
+    ("Retenção", "Acompanhamento depois da venda, para o cliente voltar a comprar.", "#1AB9D6"),
+    ("Fidelização", "Deixa de comparar preços e passa a escolher-nos por hábito.", "#0E6FD6"),
+    ("Indicação", "Cada cliente satisfeito traz o próximo, sem custo de aquisição.", "#0E3E90"),
 ]
 
-
-# ── cor ─────────────────────────────────────────────────────────────
-
-def _rgb(cor):
-    return [int(cor[i:i + 2], 16) for i in (1, 3, 5)]
+_ARIA = ("Funil em ampulheta da Blue Bolt: atração, oportunidade e conversão estreitam até à "
+         "venda; retenção, fidelização e indicação alargam depois dela")
 
 
-def _hex(vals):
-    return "#" + "".join(f"{max(0, min(255, round(v))):02x}" for v in vals)
-
-
-def clarear(cor, q):
-    """Aproxima a cor do branco."""
-    return _hex([v + (255 - v) * q for v in _rgb(cor)])
-
-
-def escurecer(cor, q):
-    """Aproxima a cor do preto."""
-    return _hex([v * (1 - q) for v in _rgb(cor)])
-
-
-# ── geometria ───────────────────────────────────────────────────────
-# A folga mede-se entre silhuetas, nao entre centros: o ponto mais baixo
-# de uma fatia inclui o arco da elipse de baixo, e o mais alto da seguinte
-# inclui o arco da de cima. Somar so altura + folga colava-as.
-
-MARGEM_X = 46
-MARGEM_TOPO = 16
-MARGEM_BASE = 30         # acomoda a sombra da ultima fatia
-
-
-def _geometria():
-    fora = []
-    for nome, _d, rt, rb, alt, folga, cor in FATIAS:
-        ryt, ryb = rt * ACHAT, rb * ACHAT
-        if not fora:
-            yt = MARGEM_TOPO + ryt
-        elif folga is None:
-            yt = fora[-1]["yb"]                 # cintura: partilham o ponto
-        else:
-            yt = fora[-1]["yb"] + fora[-1]["ryb"] + folga + ryt
-        fora.append({"nome": nome, "rt": rt, "rb": rb, "ryt": ryt, "ryb": ryb,
-                     "yt": yt, "yb": yt + alt, "alt": alt, "cor": cor})
-    return fora
-
-
-GEO = _geometria()
-RAIO_MAX = max(max(g["rt"], g["rb"]) for g in GEO)
-LARGURA = round(RAIO_MAX * 2 + MARGEM_X * 2)
-ALTURA_TOTAL = round(GEO[-1]["yb"] + GEO[-1]["ryb"] + MARGEM_BASE)
-CX = LARGURA / 2
-CINTURA = GEO[2]["yb"]   # onde os dois cones se tocam
-
-
-def _n(v):
-    return f"{v:.2f}".rstrip("0").rstrip(".")
-
-
-def _defs():
-    """Um gradiente de corpo, de aro e de cavidade por fatia, mais o comum.
-
-    Os gradientes do corpo sao em coordenadas do desenho (userSpaceOnUse):
-    e assim que o escurecer acompanha a altura real da fatia em vez de se
-    repetir igual em todas.
-    """
-    partes = ["""<linearGradient id="fn-curva" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0" stop-color="#000" stop-opacity=".22"/>
-        <stop offset=".10" stop-color="#000" stop-opacity=".08"/>
-        <stop offset=".32" stop-color="#fff" stop-opacity=".15"/>
-        <stop offset=".54" stop-color="#fff" stop-opacity="0"/>
-        <stop offset=".88" stop-color="#000" stop-opacity=".10"/>
-        <stop offset="1" stop-color="#000" stop-opacity=".24"/>
-      </linearGradient>
-      <filter id="fn-sombra" x="-40%" y="-140%" width="180%" height="380%">
-        <feGaussianBlur stdDeviation="5.5"/>
-      </filter>"""]
-    for i, g in enumerate(GEO):
-        cor = g["cor"]
-        partes.append(
-            f'<linearGradient id="fn-corpo{i}" gradientUnits="userSpaceOnUse" '
-            f'x1="0" y1="{_n(g["yt"] - g["ryt"])}" x2="0" y2="{_n(g["yb"] + g["ryb"])}">'
-            f'<stop offset="0" stop-color="{clarear(cor, .24)}"/>'
-            f'<stop offset=".34" stop-color="{clarear(cor, .04)}"/>'
-            f'<stop offset="1" stop-color="{escurecer(cor, .30)}"/>'
-            f"</linearGradient>"
-            f'<linearGradient id="fn-aro{i}" gradientUnits="userSpaceOnUse" '
-            f'x1="0" y1="{_n(g["yt"] - g["ryt"])}" x2="0" y2="{_n(g["yt"] + g["ryt"])}">'
-            f'<stop offset="0" stop-color="{clarear(cor, .46)}"/>'
-            f'<stop offset="1" stop-color="{clarear(cor, .22)}"/>'
-            f"</linearGradient>"
-            f'<linearGradient id="fn-cava{i}" gradientUnits="userSpaceOnUse" '
-            f'x1="0" y1="{_n(g["yt"] - g["ryt"])}" x2="0" y2="{_n(g["yt"] + g["ryt"])}">'
-            f'<stop offset="0" stop-color="{escurecer(cor, .26)}"/>'
-            f'<stop offset="1" stop-color="{escurecer(cor, .44)}"/>'
-            f"</linearGradient>"
-        )
-    return "<defs>" + "".join(partes) + "</defs>"
-
-
-def _corpo(g):
-    """Superficie lateral entre as duas elipses: as metades da frente."""
-    return (f'M {_n(CX - g["rt"])} {_n(g["yt"])} '
-            f'A {_n(g["rt"])} {_n(g["ryt"])} 0 0 1 {_n(CX + g["rt"])} {_n(g["yt"])} '
-            f'L {_n(CX + g["rb"])} {_n(g["yb"])} '
-            f'A {_n(g["rb"])} {_n(g["ryb"])} 0 0 1 {_n(CX - g["rb"])} {_n(g["yb"])} Z')
-
-
-def _arco(g, a1, a2, opacidade, grossura, classe):
-    """Lampejo no aro: um arco curto, para a peca ler como vidrada."""
-    import math
-    rx, ry = g["rt"] * .95, g["ryt"] * .95
-    p = lambda a: (CX + rx * math.cos(math.radians(a)), g["yt"] + ry * math.sin(math.radians(a)))
-    (x1, y1), (x2, y2) = p(a1), p(a2)
-    return (f'<path class="{classe}" d="M {_n(x1)} {_n(y1)} A {_n(rx)} {_n(ry)} 0 0 1 {_n(x2)} {_n(y2)}" '
-            f'fill="none" stroke="#fff" stroke-opacity="{opacidade}" '
-            f'stroke-width="{_n(max(grossura, g["ryt"] * .075))}" stroke-linecap="round"/>')
-
-
-CORPO_LETRA = 23         # tamanho do nome dentro da fatia
-LARGURA_LETRA = 0.55     # largura media de um caracter, em fracao do corpo
-
-
-def _altura_do_nome(g, nome):
-    """A que altura da fatia o nome cabe entre as duas paredes do cone.
-
-    Procura-se o ponto mais baixo que sirva, que e onde a referencia os
-    poe; se nem no topo couber, fica no topo. Sem isto o nome da Conversao
-    — que estreita ate quase um ponto — saia por fora do cone.
-    """
-    meio = len(nome) * CORPO_LETRA * LARGURA_LETRA / 2 + 16
-    melhor = None
-    f = 0.80
-    while f >= 0.16:
-        raio = g["rt"] + (g["rb"] - g["rt"]) * f
-        if raio >= meio:
-            melhor = f
-            break
-        f -= 0.02
-    if melhor is None:
-        melhor = 0.16
-    return g["yt"] + g["alt"] * melhor + CORPO_LETRA * 0.34
-
-
-def _fatia(i):
-    """Uma fatia: sombra, corpo, aro, cavidade, lampejos e o nome."""
-    g = GEO[i]
-    cor = g["cor"]
-    d = _corpo(g)
-
-    # A sombra cai na folga, por baixo. As fatias sao desenhadas de baixo
-    # para cima para esta ficar por cima da peca seguinte.
-    sy = g["yb"] + g["ryb"] + 4.5
-    sombra = (f'<ellipse class="fatia-sombra" cx="{_n(CX)}" cy="{_n(sy)}" rx="{_n(g["rb"] * .94)}" '
-              f'ry="{_n(g["rb"] * .085)}" fill="#0c2233" opacity=".2" filter="url(#fn-sombra)"/>')
-
-    # Aro e cavidade so fazem sentido enquanto ha boca; na cintura nao ha.
-    if g["rt"] >= RAIO_MINIMO_ARO:
-        cava_rx, cava_ry = g["rt"] * CAVA_RX, g["ryt"] * CAVA_RY
-        cava_y = g["yt"] + g["ryt"] * CAVA_DY
-        boca = (
-            f'<ellipse cx="{_n(CX)}" cy="{_n(g["yt"])}" rx="{_n(g["rt"])}" ry="{_n(g["ryt"])}" '
-            f'fill="url(#fn-aro{i})"/>'
-            f'<ellipse cx="{_n(CX)}" cy="{_n(cava_y)}" rx="{_n(cava_rx)}" ry="{_n(cava_ry)}" '
-            f'fill="url(#fn-cava{i})"/>'
-            f'<ellipse cx="{_n(CX)}" cy="{_n(cava_y)}" rx="{_n(cava_rx)}" ry="{_n(cava_ry)}" '
-            f'fill="none" stroke="{escurecer(cor, .58)}" stroke-opacity=".22" stroke-width=".7"/>'
-            + _arco(g, 196, 250, ".48", 1.3, "fn-lustro")
-            + _arco(g, 300, 332, ".20", 1.1, "fn-lustro-2")
-        )
-    else:
-        boca = ""
-
-    nome = (f'<text class="fatia-nome" x="{_n(CX)}" y="{_n(_altura_do_nome(g, g["nome"]))}" '
-            f'text-anchor="middle">{g["nome"]}</text>')
-
-    return (
-        f'<g class="fatia" style="--i:{i}">'
-        + sombra
-        + f'<path d="{d}" fill="url(#fn-corpo{i})"/>'
-        + f'<path d="{d}" fill="url(#fn-curva)"/>'
-        + f'<path d="{d}" fill="none" stroke="{escurecer(cor, .38)}" stroke-opacity=".3" stroke-width=".9"/>'
-        + boca
-        + nome
-        + "</g>"
-    )
-
-
-_ARIA = ("Funil em ampulheta: atração, oportunidade e conversão estreitam até à venda; "
-         "retenção, fidelização e indicação alargam depois dela")
-
-
-def funil_svg():
-    """As fatias sao emitidas de baixo para cima.
-
-    Em SVG a ordem de desenho e o unico z-index que ha: assim a sombra de
-    cada fatia cai sobre a de baixo, que ja esta desenhada.
-    """
-    fatias = "".join(_fatia(i) for i in reversed(range(len(FATIAS))))
-    # O simbolo da venda, mesmo na cintura, onde os dois cones se tocam.
-    euro = (f'<text class="funil-euro" x="{_n(CX)}" y="{_n(CINTURA - 2)}" '
-            f'text-anchor="middle">€</text>')
-    return (f'<svg class="funil-svg" viewBox="0 0 {LARGURA} {ALTURA_TOTAL}" '
-            f'role="img" aria-label="{_ARIA}">{_defs()}{fatias}{euro}</svg>')
+def funil_img():
+    return (f'<img class="funil-img" src="img/funil-canva.webp" width="760" height="1121" '
+            f'alt="{_ARIA}" loading="lazy" decoding="async">')
 
 
 def funil_passos():
     """As seis etapas em texto, ao lado do funil."""
     itens = []
-    for i, (nome, desc, _rt, _rb, _a, _f, cor) in enumerate(FATIAS):
+    for i, (nome, desc, cor) in enumerate(FATIAS):
         itens.append(
             f'<li class="passo" style="--i:{i};--cor:{cor}">'
             f'<span class="passo-n">{i + 1:02d}</span>'
@@ -929,7 +662,7 @@ SEGUNDA_DOBRA = """<section id="quem">
     </div>
 
     <div class="funil" data-reveal="fade">
-      <figure class="funil-fig">""" + funil_svg() + """</figure>
+      <figure class="funil-fig">""" + funil_img() + """</figure>
       """ + funil_passos() + """
     </div>
 

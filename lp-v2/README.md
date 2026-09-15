@@ -79,62 +79,15 @@ cima o texto centrado (o problema de sistema), e por baixo o funil, ladeado por
 duas notas — uma para a metade que estreita até à venda, outra para a que alarga
 depois dela. O funil tradicional saiu; só fica a ampulheta.
 
-O funil não é imagem: é SVG desenhado em `build.py`, onde a geometria é
-calculada em vez de escrita à mão. Cada fatia é uma taça: o corpo entre duas
-elipses, um aro claro por cima e uma cavidade escura lá dentro. É a cavidade que
-lhe dá espessura; sem ela cada fatia lia-se como um triângulo chapado.
+O funil é o desenho da própria Blue Bolt, feito na Canva. Cheguei a
+redesenhá-lo em SVG — o link público da Canva só serve uma miniatura de
+400×500 — mas o pedido foi usar o original, e o PNG de 1080×1350 chegou
+depois. Já vinha com fundo transparente: só foi recortada a margem vazia e
+reduzido para 760px de largura, o dobro dos ~380 a que aparece, para ficar
+nítido em ecrã retina. Em webp com alfa passa de 721KB a 75KB.
 
-O que faz a diferença entre parecer desenhado e parecer renderizado são três
-números e uma ordem:
-
-- **Achatamento de 0,10** (`ry = rx × 0,10`). Elipses mais abertas fazem o
-  conjunto ler-se como um cone contínuo em vez de peças empilhadas.
-- **Fatias de 78px** de altura. Mais altas parecem candeeiros, não taças.
-- **Folga medida entre silhuetas**, não entre centros: o ponto mais baixo de uma
-  fatia inclui o arco da elipse de baixo e o mais alto da seguinte inclui o da de
-  cima. Somar só altura + folga colava-as.
-- **Fatias desenhadas de baixo para cima**, para a sombra desfocada de cada uma
-  cair sobre a de baixo, que já está lá.
-
-O volume vem de dois gradientes sobrepostos — um vertical, em coordenadas do
-desenho, que faz a fatia escurecer para o fundo, e um horizontal, que lhe
-arredonda os lados — mais dois lampejos curtos no aro. A paleta vai do azul da
-marca ao verde, um degrau por etapa.
-
-As etiquetas vivem ao lado, alternando esquerda e direita, ligadas à fatia por
-uma linha de chamada com um ponto em cada ponta. Abaixo dos 900px o texto dentro
-do SVG ficaria minúsculo, por isso aí mostra-se só o funil e a mesma informação
-passa a uma lista normal em HTML.
-
-A animação está toda pendurada no `.revealed` que o observador da página já
-punha no `.funil` — o desenho está completo desde o início e a animação é um
-acréscimo, nunca a condição para se ver o funil. São três tempos: as fatias caem
-de cima para baixo, uma a seguir à outra, como se o funil se montasse; as
-chamadas saem da fatia para fora, primeiro a linha a desenhar-se e depois o
-texto; e, já com tudo assente, um lustro percorre os aros de seis em seis
-segundos — o único movimento que fica, e é discreto. Ao passar o rato numa
-fatia, ela sobe e as outras recuam.
-
-O realce ao passar o rato usa `:has()` e não `.funil-svg:hover`: a moldura do
-SVG é um retângulo com muito espaço vazio, e bastaria entrar nela para o funil
-todo esmorecer. Onde não houver `:has()` a regra cai e fica só o realce da
-fatia. Com `prefers-reduced-motion` não há animação nenhuma — o funil aparece
-feito.
-
-Quatro armadilhas de SVG que apanhei pelo caminho. Três são da mesma família:
-**em SVG a ordem de desenho é o único z-index que existe**. O aro de cada fatia
-tapava a etiqueta da fatia anterior, e depois tapava-lhe o ícone — a solução é
-sempre a mesma, desenhar as formas todas primeiro e o que vai por cima só no fim.
-A moldura (`viewBox`) ficou curta quando aumentei a altura das fatias, cortando o
-cone de baixo; passou a ser calculada a partir da geometria. E a quarta: as duas
-versões do funil viviam na mesma página com os mesmos `id` de gradiente, e um
-`url(#...)` duplicado resolve sempre para o primeiro — que em ecrã estreito está
-escondido. O funil do telemóvel saía sem cor nenhuma. Cada versão passou a levar
-o seu prefixo.
-
-O botão secundário "Ver como funciona" saiu das duas posições onde aparecia
-(hero e CTA final) e os três selos deixaram o hero: passaram a uma faixa
-discreta no rodapé, a 72% de opacidade, que ganha cor ao passar o rato.
+Ao lado do funil ficam as seis etapas numeradas, cada uma com o número na cor
+da fatia correspondente. Abaixo dos 860px passam para baixo do desenho.
 
 ## A VSL
 

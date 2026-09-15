@@ -2264,37 +2264,25 @@ a{text-decoration:none;color:inherit}
   font-weight:700;
 }
 
-/* ══ O funil em ampulheta, em 3D ══
-   Desenhado a partir do modelo da Blue Bolt feito na Canva. Cada fatia e uma
-   taca: o corpo entre duas elipses, o aro claro por cima e a cavidade escura
-   la dentro. O volume vem de dois gradientes sobrepostos — um vertical, que
-   faz a fatia escurecer para baixo, e um horizontal, que lhe arredonda os
-   lados. As duas metades tocam-se na cintura, onde fica o simbolo da venda. */
+/* ══ O funil em ampulheta ══
+   O desenho e da propria Blue Bolt, feito na Canva, e entra como imagem
+   com fundo transparente — por isso assenta no cinzento da seccao sem
+   trazer um rectangulo branco atras. Ao lado ficam as seis etapas. */
 .funil{
   display:grid;
-  grid-template-columns:minmax(0,420px) minmax(0,1fr);
+  grid-template-columns:minmax(0,400px) minmax(0,1fr);
   gap:clamp(2rem,5vw,4.5rem);
   align-items:center;
   max-width:1000px;
   margin:0 auto;
 }
 .funil-fig{ margin:0; }
-.funil-svg{ width:100%;height:auto;display:block; }
-
-.fatia-nome{
-  font-family:'Manrope',sans-serif;
-  font-size:23px;
-  font-weight:600;
-  letter-spacing:-.01em;
-  fill:#fff;
-  paint-order:stroke;
-}
-.funil-euro{
-  font-family:'Manrope',sans-serif;
-  font-size:17px;
-  font-weight:600;
-  fill:#fff;
-  fill-opacity:.8;
+.funil-img{
+  width:100%;
+  max-width:380px;
+  height:auto;
+  display:block;
+  margin-inline:auto;
 }
 
 /* ══ As seis etapas, ao lado do funil ══ */
@@ -2325,73 +2313,27 @@ a{text-decoration:none;color:inherit}
 }
 
 /* ══ Animacao ══
-   Tudo pendurado no `.revealed` que o observador ja punha no `.funil`: o
-   desenho esta completo desde o inicio e a animacao e um acrescento, nunca
-   a condicao para se ver o funil. As fatias caem de cima para baixo, uma a
-   seguir a outra, como se o funil se montasse; as etapas do lado entram a
-   seguir; e depois de assentar, um lustro percorre os aros de seis em seis
-   segundos. E o unico movimento que fica, e e discreto. */
-.fatia{ transform-box:view-box; }
-.funil.revealed .fatia{
-  animation:fn-cai .8s cubic-bezier(.16,1,.3,1) backwards;
-  animation-delay:calc(var(--i) * .11s);
-}
-@keyframes fn-cai{
-  from{ opacity:0;transform:translateY(-26px); }
-  to{ opacity:1;transform:translateY(0); }
-}
-.funil-euro{ opacity:0; }
-.funil.revealed .funil-euro{ animation:fn-entra .5s ease-out .95s forwards; }
-
+   Pendurada no `.revealed` que o observador ja punha no `.funil`: o funil
+   sobe e as etapas entram a seguir, uma a uma. O desenho esta completo
+   desde o inicio — a animacao e um acrescento, nao a condicao para se ver. */
+.funil-img{ opacity:0; }
+.funil.revealed .funil-img{ animation:fn-sobe .9s cubic-bezier(.16,1,.3,1) forwards; }
 .passo{ opacity:0; }
 .funil.revealed .passo{
   animation:fn-sobe .6s cubic-bezier(.16,1,.3,1) forwards;
-  animation-delay:calc(.35s + var(--i) * .09s);
+  animation-delay:calc(.3s + var(--i) * .09s);
 }
-@keyframes fn-entra{ to{ opacity:1; } }
-@keyframes fn-sobe{ from{ opacity:0;transform:translateY(14px); } to{ opacity:1;transform:none; } }
-
-/* O lustro so arranca depois de as seis fatias terem assentado. */
-.funil.revealed .fn-lustro,
-.funil.revealed .fn-lustro-2{
-  animation:fn-brilha 6s ease-in-out infinite;
-  animation-delay:calc(1.4s + var(--i) * .2s);
-}
-@keyframes fn-brilha{
-  0%,62%,100%{ stroke-opacity:.42; }
-  72%{ stroke-opacity:.95; }
-}
-.funil.revealed .fn-lustro-2{ animation-name:fn-brilha-2; }
-@keyframes fn-brilha-2{
-  0%,62%,100%{ stroke-opacity:.18; }
-  72%{ stroke-opacity:.5; }
-}
-
-/* Ao passar o rato numa fatia, ela sobe e as outras recuam um pouco.
-   O `:has()` e que faz isto so acontecer quando o rato esta mesmo sobre uma
-   fatia: com `.funil-svg:hover` bastava entrar na moldura do SVG — que e um
-   rectangulo com muito vazio — para o funil todo esmorecer. Onde nao houver
-   `:has()`, a regra cai e fica so o realce da fatia. */
-.fatia{ transition:transform .3s cubic-bezier(.16,1,.3,1), opacity .3s ease; }
-.funil-svg:has(.fatia:hover) .fatia{ opacity:.78; }
-.funil-svg:has(.fatia:hover) .fatia:hover{ opacity:1;transform:translateY(-5px); }
-/* A sombra estende-se para a folga; sem isto seria ela a apanhar o rato. */
-.fatia-sombra{ pointer-events:none; }
+@keyframes fn-sobe{ from{ opacity:0;transform:translateY(16px); } to{ opacity:1;transform:none; } }
 
 @media(prefers-reduced-motion:reduce){
-  .funil.revealed .fatia,
-  .funil.revealed .passo,
-  .funil.revealed .funil-euro,
-  .funil.revealed .fn-lustro,
-  .funil.revealed .fn-lustro-2{ animation:none; }
-  .passo,.funil-euro{ opacity:1; }
-  .funil-svg:has(.fatia:hover) .fatia,
-  .funil-svg:has(.fatia:hover) .fatia:hover{ opacity:1;transform:none; }
+  .funil.revealed .funil-img,
+  .funil.revealed .passo{ animation:none; }
+  .funil-img,.passo{ opacity:1; }
 }
 
 @media(max-width:860px){
   .funil{ grid-template-columns:1fr;gap:2.5rem; }
-  .funil-fig{ max-width:340px;margin-inline:auto; }
+  .funil-img{ max-width:320px; }
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -2722,17 +2664,7 @@ a{text-decoration:none;color:inherit}
     </div>
 
     <div class="funil" data-reveal="fade">
-      <figure class="funil-fig"><svg class="funil-svg" viewBox="0 0 608 1029" role="img" aria-label="Funil em ampulheta: atração, oportunidade e conversão estreitam até à venda; retenção, fidelização e indicação alargam depois dela"><defs><linearGradient id="fn-curva" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0" stop-color="#000" stop-opacity=".22"/>
-        <stop offset=".10" stop-color="#000" stop-opacity=".08"/>
-        <stop offset=".32" stop-color="#fff" stop-opacity=".15"/>
-        <stop offset=".54" stop-color="#fff" stop-opacity="0"/>
-        <stop offset=".88" stop-color="#000" stop-opacity=".10"/>
-        <stop offset="1" stop-color="#000" stop-opacity=".24"/>
-      </linearGradient>
-      <filter id="fn-sombra" x="-40%" y="-140%" width="180%" height="380%">
-        <feGaussianBlur stdDeviation="5.5"/>
-      </filter><linearGradient id="fn-corpo0" gradientUnits="userSpaceOnUse" x1="0" y1="16" x2="0" y2="178.56"><stop offset="0" stop-color="#529bee"/><stop offset=".34" stop-color="#2480e9"/><stop offset="1" stop-color="#1356a2"/></linearGradient><linearGradient id="fn-aro0" gradientUnits="userSpaceOnUse" x1="0" y1="16" x2="0" y2="62.93"><stop offset="0" stop-color="#84b8f3"/><stop offset="1" stop-color="#4d98ed"/></linearGradient><linearGradient id="fn-cava0" gradientUnits="userSpaceOnUse" x1="0" y1="16" x2="0" y2="62.93"><stop offset="0" stop-color="#145bac"/><stop offset="1" stop-color="#0f4582"/></linearGradient><linearGradient id="fn-corpo1" gradientUnits="userSpaceOnUse" x1="0" y1="189.56" x2="0" y2="336.72"><stop offset="0" stop-color="#48a3f4"/><stop offset=".34" stop-color="#188bf1"/><stop offset="1" stop-color="#0a5ea8"/></linearGradient><linearGradient id="fn-aro1" gradientUnits="userSpaceOnUse" x1="0" y1="189.56" x2="0" y2="225.66"><stop offset="0" stop-color="#7dbef7"/><stop offset="1" stop-color="#43a1f3"/></linearGradient><linearGradient id="fn-cava1" gradientUnits="userSpaceOnUse" x1="0" y1="189.56" x2="0" y2="225.66"><stop offset="0" stop-color="#0a63b2"/><stop offset="1" stop-color="#084b86"/></linearGradient><linearGradient id="fn-corpo2" gradientUnits="userSpaceOnUse" x1="0" y1="349.72" x2="0" y2="528.93"><stop offset="0" stop-color="#4bb9e6"/><stop offset=".34" stop-color="#1ba7df"/><stop offset="1" stop-color="#0d729b"/></linearGradient><linearGradient id="fn-aro2" gradientUnits="userSpaceOnUse" x1="0" y1="349.72" x2="0" y2="374.99"><stop offset="0" stop-color="#7fcded"/><stop offset="1" stop-color="#46b7e5"/></linearGradient><linearGradient id="fn-cava2" gradientUnits="userSpaceOnUse" x1="0" y1="349.72" x2="0" y2="374.99"><stop offset="0" stop-color="#0d79a4"/><stop offset="1" stop-color="#0a5b7c"/></linearGradient><linearGradient id="fn-corpo3" gradientUnits="userSpaceOnUse" x1="0" y1="527.78" x2="0" y2="672.41"><stop offset="0" stop-color="#51cae0"/><stop offset=".34" stop-color="#23bcd8"/><stop offset="1" stop-color="#128296"/></linearGradient><linearGradient id="fn-aro3" gradientUnits="userSpaceOnUse" x1="0" y1="527.78" x2="0" y2="528.93"><stop offset="0" stop-color="#83d9e9"/><stop offset="1" stop-color="#4cc8df"/></linearGradient><linearGradient id="fn-cava3" gradientUnits="userSpaceOnUse" x1="0" y1="527.78" x2="0" y2="528.93"><stop offset="0" stop-color="#13899e"/><stop offset="1" stop-color="#0f6878"/></linearGradient><linearGradient id="fn-corpo4" gradientUnits="userSpaceOnUse" x1="0" y1="681.41" x2="0" y2="828.9"><stop offset="0" stop-color="#4892e0"/><stop offset=".34" stop-color="#1875d8"/><stop offset="1" stop-color="#0a4e96"/></linearGradient><linearGradient id="fn-aro4" gradientUnits="userSpaceOnUse" x1="0" y1="681.41" x2="0" y2="712.38"><stop offset="0" stop-color="#7db1e9"/><stop offset="1" stop-color="#438fdf"/></linearGradient><linearGradient id="fn-cava4" gradientUnits="userSpaceOnUse" x1="0" y1="681.41" x2="0" y2="712.38"><stop offset="0" stop-color="#0a529e"/><stop offset="1" stop-color="#083e78"/></linearGradient><linearGradient id="fn-corpo5" gradientUnits="userSpaceOnUse" x1="0" y1="837.9" x2="0" y2="998.64"><stop offset="0" stop-color="#486cab"/><stop offset=".34" stop-color="#184694"/><stop offset="1" stop-color="#0a2b65"/></linearGradient><linearGradient id="fn-aro5" gradientUnits="userSpaceOnUse" x1="0" y1="837.9" x2="0" y2="878.37"><stop offset="0" stop-color="#7d97c3"/><stop offset="1" stop-color="#4368a8"/></linearGradient><linearGradient id="fn-cava5" gradientUnits="userSpaceOnUse" x1="0" y1="837.9" x2="0" y2="878.37"><stop offset="0" stop-color="#0a2e6b"/><stop offset="1" stop-color="#082351"/></linearGradient></defs><g class="fatia" style="--i:5"><ellipse class="fatia-sombra" cx="304" cy="1003.14" rx="242.52" ry="21.93" fill="#0c2233" opacity=".2" filter="url(#fn-sombra)"/><path d="M 91 858.13 A 213 20.23 0 0 1 517 858.13 L 562 974.13 A 258 24.51 0 0 1 46 974.13 Z" fill="url(#fn-corpo5)"/><path d="M 91 858.13 A 213 20.23 0 0 1 517 858.13 L 562 974.13 A 258 24.51 0 0 1 46 974.13 Z" fill="url(#fn-curva)"/><path d="M 91 858.13 A 213 20.23 0 0 1 517 858.13 L 562 974.13 A 258 24.51 0 0 1 46 974.13 Z" fill="none" stroke="#092659" stroke-opacity=".3" stroke-width=".9"/><ellipse cx="304" cy="858.13" rx="213" ry="20.23" fill="url(#fn-aro5)"/><ellipse cx="304" cy="859.15" rx="191.7" ry="17" fill="url(#fn-cava5)"/><ellipse cx="304" cy="859.15" rx="191.7" ry="17" fill="none" stroke="#061a3c" stroke-opacity=".22" stroke-width=".7"/><path class="fn-lustro" d="M 109.49 852.84 A 202.35 19.22 0 0 1 234.79 840.07" fill="none" stroke="#fff" stroke-opacity=".48" stroke-width="1.52" stroke-linecap="round"/><path class="fn-lustro-2" d="M 405.18 841.49 A 202.35 19.22 0 0 1 482.66 849.11" fill="none" stroke="#fff" stroke-opacity=".20" stroke-width="1.52" stroke-linecap="round"/><text class="fatia-nome" x="304" y="958.75" text-anchor="middle">Indicação</text></g><g class="fatia" style="--i:4"><ellipse class="fatia-sombra" cx="304" cy="833.4" rx="188" ry="17" fill="#0c2233" opacity=".2" filter="url(#fn-sombra)"/><path d="M 141 696.9 A 163 15.48 0 0 1 467 696.9 L 504 809.9 A 200 19 0 0 1 104 809.9 Z" fill="url(#fn-corpo4)"/><path d="M 141 696.9 A 163 15.48 0 0 1 467 696.9 L 504 809.9 A 200 19 0 0 1 104 809.9 Z" fill="url(#fn-curva)"/><path d="M 141 696.9 A 163 15.48 0 0 1 467 696.9 L 504 809.9 A 200 19 0 0 1 104 809.9 Z" fill="none" stroke="#094585" stroke-opacity=".3" stroke-width=".9"/><ellipse cx="304" cy="696.9" rx="163" ry="15.48" fill="url(#fn-aro4)"/><ellipse cx="304" cy="697.67" rx="146.7" ry="13.01" fill="url(#fn-cava4)"/><ellipse cx="304" cy="697.67" rx="146.7" ry="13.01" fill="none" stroke="#062f5a" stroke-opacity=".22" stroke-width=".7"/><path class="fn-lustro" d="M 155.15 692.85 A 154.85 14.71 0 0 1 251.04 683.08" fill="none" stroke="#fff" stroke-opacity=".48" stroke-width="1.3" stroke-linecap="round"/><path class="fn-lustro-2" d="M 381.43 684.16 A 154.85 14.71 0 0 1 440.72 689.99" fill="none" stroke="#fff" stroke-opacity=".20" stroke-width="1.16" stroke-linecap="round"/><text class="fatia-nome" x="304" y="795.12" text-anchor="middle">Fidelização</text></g><g class="fatia" style="--i:3"><ellipse class="fatia-sombra" cx="304" cy="676.91" rx="139.12" ry="12.58" fill="#0c2233" opacity=".2" filter="url(#fn-sombra)"/><path d="M 298 528.36 A 6 0.57 0 0 1 310 528.36 L 452 658.36 A 148 14.06 0 0 1 156 658.36 Z" fill="url(#fn-corpo3)"/><path d="M 298 528.36 A 6 0.57 0 0 1 310 528.36 L 452 658.36 A 148 14.06 0 0 1 156 658.36 Z" fill="url(#fn-curva)"/><path d="M 298 528.36 A 6 0.57 0 0 1 310 528.36 L 452 658.36 A 148 14.06 0 0 1 156 658.36 Z" fill="none" stroke="#107385" stroke-opacity=".3" stroke-width=".9"/><text class="fatia-nome" x="304" y="640.18" text-anchor="middle">Retenção</text></g><g class="fatia" style="--i:2"><ellipse class="fatia-sombra" cx="304" cy="533.43" rx="5.64" ry="0.51" fill="#0c2233" opacity=".2" filter="url(#fn-sombra)"/><path d="M 171 362.36 A 133 12.63 0 0 1 437 362.36 L 310 528.36 A 6 0.57 0 0 1 298 528.36 Z" fill="url(#fn-corpo2)"/><path d="M 171 362.36 A 133 12.63 0 0 1 437 362.36 L 310 528.36 A 6 0.57 0 0 1 298 528.36 Z" fill="url(#fn-curva)"/><path d="M 171 362.36 A 133 12.63 0 0 1 437 362.36 L 310 528.36 A 6 0.57 0 0 1 298 528.36 Z" fill="none" stroke="#0b658a" stroke-opacity=".3" stroke-width=".9"/><ellipse cx="304" cy="362.36" rx="133" ry="12.63" fill="url(#fn-aro2)"/><ellipse cx="304" cy="362.99" rx="119.7" ry="10.61" fill="url(#fn-cava2)"/><ellipse cx="304" cy="362.99" rx="119.7" ry="10.61" fill="none" stroke="#08445d" stroke-opacity=".22" stroke-width=".7"/><path class="fn-lustro" d="M 182.54 359.05 A 126.35 12 0 0 1 260.79 351.08" fill="none" stroke="#fff" stroke-opacity=".48" stroke-width="1.3" stroke-linecap="round"/><path class="fn-lustro-2" d="M 367.18 351.96 A 126.35 12 0 0 1 415.56 356.72" fill="none" stroke="#fff" stroke-opacity=".20" stroke-width="1.1" stroke-linecap="round"/><text class="fatia-nome" x="304" y="446.53" text-anchor="middle">Conversão</text></g><g class="fatia" style="--i:1"><ellipse class="fatia-sombra" cx="304" cy="341.22" rx="129.72" ry="11.73" fill="#0c2233" opacity=".2" filter="url(#fn-sombra)"/><path d="M 114 207.61 A 190 18.05 0 0 1 494 207.61 L 442 323.61 A 138 13.11 0 0 1 166 323.61 Z" fill="url(#fn-corpo1)"/><path d="M 114 207.61 A 190 18.05 0 0 1 494 207.61 L 442 323.61 A 138 13.11 0 0 1 166 323.61 Z" fill="url(#fn-curva)"/><path d="M 114 207.61 A 190 18.05 0 0 1 494 207.61 L 442 323.61 A 138 13.11 0 0 1 166 323.61 Z" fill="none" stroke="#095395" stroke-opacity=".3" stroke-width=".9"/><ellipse cx="304" cy="207.61" rx="190" ry="18.05" fill="url(#fn-aro1)"/><ellipse cx="304" cy="208.51" rx="171" ry="15.16" fill="url(#fn-cava1)"/><ellipse cx="304" cy="208.51" rx="171" ry="15.16" fill="none" stroke="#063865" stroke-opacity=".22" stroke-width=".7"/><path class="fn-lustro" d="M 130.49 202.88 A 180.5 17.15 0 0 1 242.27 191.5" fill="none" stroke="#fff" stroke-opacity=".48" stroke-width="1.35" stroke-linecap="round"/><path class="fn-lustro-2" d="M 394.25 192.76 A 180.5 17.15 0 0 1 463.37 199.56" fill="none" stroke="#fff" stroke-opacity=".20" stroke-width="1.35" stroke-linecap="round"/><text class="fatia-nome" x="304" y="308.23" text-anchor="middle">Oportunidade</text></g><g class="fatia" style="--i:0"><ellipse class="fatia-sombra" cx="304" cy="183.06" rx="188.94" ry="17.09" fill="#0c2233" opacity=".2" filter="url(#fn-sombra)"/><path d="M 57 39.47 A 247 23.46 0 0 1 551 39.47 L 505 159.47 A 201 19.09 0 0 1 103 159.47 Z" fill="url(#fn-corpo0)"/><path d="M 57 39.47 A 247 23.46 0 0 1 551 39.47 L 505 159.47 A 201 19.09 0 0 1 103 159.47 Z" fill="url(#fn-curva)"/><path d="M 57 39.47 A 247 23.46 0 0 1 551 39.47 L 505 159.47 A 201 19.09 0 0 1 103 159.47 Z" fill="none" stroke="#114c90" stroke-opacity=".3" stroke-width=".9"/><ellipse cx="304" cy="39.47" rx="247" ry="23.46" fill="url(#fn-aro0)"/><ellipse cx="304" cy="40.64" rx="222.3" ry="19.71" fill="url(#fn-cava0)"/><ellipse cx="304" cy="40.64" rx="222.3" ry="19.71" fill="none" stroke="#0b3461" stroke-opacity=".22" stroke-width=".7"/><path class="fn-lustro" d="M 78.44 33.32 A 234.65 22.29 0 0 1 223.74 18.52" fill="none" stroke="#fff" stroke-opacity=".48" stroke-width="1.76" stroke-linecap="round"/><path class="fn-lustro-2" d="M 421.33 20.16 A 234.65 22.29 0 0 1 511.18 29" fill="none" stroke="#fff" stroke-opacity=".20" stroke-width="1.76" stroke-linecap="round"/><text class="fatia-nome" x="304" y="143.28" text-anchor="middle">Atração</text></g><text class="funil-euro" x="304" y="526.36" text-anchor="middle">€</text></svg></figure>
+      <figure class="funil-fig"><img class="funil-img" src="img/funil-canva.webp" width="760" height="1121" alt="Funil em ampulheta da Blue Bolt: atração, oportunidade e conversão estreitam até à venda; retenção, fidelização e indicação alargam depois dela" loading="lazy" decoding="async"></figure>
       <ol class="funil-passos"><li class="passo" style="--i:0;--cor:#1B7BE8"><span class="passo-n">01</span><span class="passo-txt"><strong>Atração</strong>Campanhas em Meta e Google Ads que trazem o perfil certo, não só volume.</span></li><li class="passo" style="--i:1;--cor:#0E86F0"><span class="passo-n">02</span><span class="passo-txt"><strong>Oportunidade</strong>Fluxos de email e WhatsApp que aquecem a lead antes do contacto comercial.</span></li><li class="passo" style="--i:2;--cor:#12A3DE"><span class="passo-n">03</span><span class="passo-txt"><strong>Conversão</strong>Scripts, playbook e CRM para não se perder nenhuma oportunidade pelo caminho.</span></li><li class="passo" style="--i:3;--cor:#1AB9D6"><span class="passo-n">04</span><span class="passo-txt"><strong>Retenção</strong>Acompanhamento depois da venda, para o cliente voltar a comprar.</span></li><li class="passo" style="--i:4;--cor:#0E6FD6"><span class="passo-n">05</span><span class="passo-txt"><strong>Fidelização</strong>Deixa de comparar preços e passa a escolher-nos por hábito.</span></li><li class="passo" style="--i:5;--cor:#0E3E90"><span class="passo-n">06</span><span class="passo-txt"><strong>Indicação</strong>Cada cliente satisfeito traz o próximo, sem custo de aquisição.</span></li></ol>
     </div>
 
