@@ -262,91 +262,56 @@ SECOES_CSS = """
 }
 
 /* ══ O funil em ampulheta, em 3D ══
-   Cada fatia e a superficie lateral entre duas elipses, com um aro por cima
-   e um gradiente de volume. Fica nitido em qualquer ecra e continua a ser
-   texto la dentro. As leads descem a convergir ate a venda e alargam depois. */
-.funil{
-  display:grid;
-  grid-template-columns:minmax(0,1fr) minmax(300px,430px);
-  align-items:center;
-  gap:clamp(28px,5vw,64px);
-  max-width:920px;
-  margin:0 auto;
-}
-.funil-glass{ margin:0;min-width:0; }
+   Cada fatia leva corpo, aro claro por cima e cavidade escura la dentro —
+   e a cavidade que lhe da espessura de taca em vez de triangulo chapado.
+   As fatias ficam separadas por uma folga, para cada uma se ler como peca. */
+.funil{ max-width:1180px;margin:0 auto; }
+.funil-largo,.funil-so{ margin:0; }
 .funil-svg{ width:100%;height:auto;display:block;overflow:visible; }
-.fatia-txt{
-  font-family:'Manrope',sans-serif;
-  font-size:15px;
-  font-weight:600;
-  text-anchor:middle;
-  letter-spacing:.005em;
-}
-/* ══ As esferas ══
-   Descem em espiral pela parede do cone. O caminho vai inline em cada uma
-   (offset-path), calculado no build; a escala e a opacidade acompanham a
-   volta — maior e mais nitida quando passa a frente, menor e mais apagada
-   quando passa por tras. Sao duas voltas inteiras, para fechar em fase. */
-.esferas{ filter:drop-shadow(0 3px 4px rgba(10,15,35,.28)); }
-.esfera-cam{
-  offset-rotate:0deg;
-  animation:esfera-desce 7s linear infinite;
-}
-@keyframes esfera-desce{
-  0%   { offset-distance:0% }
-  100% { offset-distance:100% }
-}
-.esfera{
-  animation:esfera-volta 7s linear infinite;
-  transform-box:fill-box;
-  transform-origin:center;
-}
-/* Duas voltas: a frente cai aos 25% e aos 75% do percurso. */
-@keyframes esfera-volta{
-  0%   { transform:scale(.72);opacity:.5 }
-  25%  { transform:scale(1.16);opacity:1 }
-  50%  { transform:scale(.72);opacity:.5 }
-  75%  { transform:scale(1.16);opacity:1 }
-  100% { transform:scale(.72);opacity:.5 }
-}
-.esfera-azul{ fill:url(#esferaAzul); }
-.esfera-verde{ fill:url(#esferaVerde); }
+.fatia-icone{ fill:none;stroke:#fff;stroke-width:1.7;stroke-linecap:round;stroke-linejoin="round"; }
+.fatia-icone{ stroke-linejoin:round; }
 
-/* As duas notas, empilhadas ao lado do funil */
-.funil-notas{
-  display:flex;
-  flex-direction:column;
-  gap:clamp(1.75rem,3.5vw,3rem);
-  justify-self:end;   /* encosta as notas ao funil, em vez de as deixar a boiar */
-}
-.funil-nota{ max-width:34ch; }
-.funil-nota-eyebrow{
-  display:block;
+.chamada line{ stroke-width:1.4; }
+.chamada-nome{
   font-family:'Manrope',sans-serif;
-  font-size:9px;
+  font-size:21px;
   font-weight:700;
-  letter-spacing:.28em;
-  text-transform:uppercase;
-  color:#005da9;
-  margin-bottom:.6rem;
+  letter-spacing:-.01em;
 }
-.funil-nota-base .funil-nota-eyebrow{ color:#0c8a66; }
-.funil-nota p{
+.chamada-txt{
   font-family:'Manrope',sans-serif;
   font-size:14.5px;
   font-weight:300;
-  line-height:1.7;
-  color:var(--lt-inc-2);
+  fill:var(--lt-inc-2);
 }
 
-@media(max-width:860px){
-  .funil{ grid-template-columns:1fr;gap:2.25rem; }
-  .funil-glass{ grid-row:1;max-width:400px;margin-inline:auto; }
-  .funil-notas{ grid-row:2;gap:1.75rem; }
-  .funil-nota{ max-width:52ch;margin-inline:auto;text-align:center; }
+/* Em ecras estreitos o texto dentro do SVG ficaria minusculo: mostra-se so
+   o funil e a mesma informacao passa a lista normal, em HTML. */
+.funil-curto{ display:none; }
+.funil-lista{ list-style:none;margin:2.25rem 0 0;padding:0;display:flex;flex-direction:column;gap:1rem; }
+.funil-item{
+  display:flex;
+  gap:12px;
+  font-family:'Manrope',sans-serif;
+  font-size:14.5px;
+  font-weight:300;
+  line-height:1.6;
+  color:var(--lt-inc-2);
 }
-@media(prefers-reduced-motion:reduce){
-  .esfera-cam,.esfera{ animation:none; }
+.funil-item strong{ font-weight:700; }
+.funil-item-ponto{
+  flex:none;
+  width:9px;height:9px;
+  border-radius:50%;
+  margin-top:.55em;
+}
+
+@media(max-width:900px){
+  .funil-largo{ display:none; }
+  .funil-curto{ display:block; }
+  .funil-so{ max-width:380px;margin-inline:auto; }
+}
+
   .esfera-cam{ offset-distance:38%; }
 }
 }
@@ -369,25 +334,48 @@ SECOES_CSS = """
 # geometria nao depender de numeros escritos a mao.
 # ══════════════════════════════════════════════════════════════════
 
-CX = 210                 # eixo da ampulheta
-ACHAT = 0.26             # achatamento das elipses: quanto mais baixo, mais de cima se olha
+CX = 650                 # eixo da ampulheta
+ACHAT = 0.21             # achatamento das elipses: quanto mais de cima se olha
+ALTURA = 102             # altura de cada fatia
+FOLGA = 12               # espaco entre fatias, para cada uma se ler como peca solta
+RAIOS = [250, 193, 136, 79, 136, 193, 250]   # de cima para baixo; o meio e a cintura
 
-# (y, raio) de cima para baixo. Os dois cones encostam na cintura, sem corte.
-NIVEIS = [(60, 185), (128, 141), (196, 97), (264, 48),
-          (332, 97), (400, 141), (468, 185)]
-CINTURA = 3              # indice do nivel mais estreito
-
+# (etiqueta, descricao em duas linhas, cor do corpo, aro claro, cavidade escura, icone)
 FATIAS = [
-    # (indice do nivel de cima, etiqueta, cor do corpo, cor do aro, cor do texto)
-    (0, "Atração",      "#cfe4f7", "#e8f3fc", "#15507f"),
-    (1, "Oportunidade", "#96c5ee", "#b7d9f5", "#123f66"),
-    (2, "Conversão",    "#1f74c0", "#4595d5", "#ffffff"),
-    (3, "Retenção",     "#0d8763", "#17a37b", "#ffffff"),
-    (4, "Lealdade",     "#83cab2", "#a3dac6", "#0a4d3a"),
-    (5, "Indicação",    "#cbe7dd", "#dff1e9", "#0a4d3a"),
+    ("Atração", ("Campanhas em Meta e Google Ads que trazem", "o perfil certo, não só volume."),
+     "#4f9fe0", "#7cbdf0", "#2b74b4", "alvo"),
+    ("Oportunidade", ("Fluxos de email e WhatsApp que aquecem", "a lead antes do contacto comercial."),
+     "#3a86cf", "#6aa8e2", "#1f5f9e", "pessoas"),
+    ("Conversão", ("Scripts, playbook e CRM para nenhuma", "oportunidade se perder pelo caminho."),
+     "#1f6cb8", "#4a90d4", "#124c88", "visto"),
+    ("Retenção", ("Acompanhamento depois da venda, para", "o cliente voltar a comprar."),
+     "#11916f", "#2fb692", "#0a6b51", "voltar"),
+    ("Lealdade", ("Deixa de comparar preços e passa a", "escolher-nos por hábito."),
+     "#22a882", "#4cc7a2", "#147a5e", "estrela"),
+    ("Indicação", ("Cada cliente satisfeito traz o próximo,", "sem custo de aquisição."),
+     "#41bd97", "#6bd6b5", "#238b6b", "rede"),
 ]
 
-VOLTAS = 2               # voltas inteiras: a escala das esferas fecha em fase
+# Icones a 24x24, traco branco. Desenhados a mao para nao trazer dependencias.
+ICONES = {
+    "alvo": '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="#fff"/>',
+    "pessoas": '<circle cx="9" cy="8.5" r="3.2"/><path d="M3.2 19c0-3.2 2.6-5.3 5.8-5.3s5.8 2.1 5.8 5.3"/>'
+               '<path d="M16.6 6.2a3.2 3.2 0 0 1 0 5.9"/><path d="M17.6 14.1c2 .6 3.2 2.3 3.2 4.9"/>',
+    "visto": '<circle cx="12" cy="12" r="9"/><path d="M8 12.3l2.7 2.7L16.2 9.5"/>',
+    "voltar": '<path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20.4 4.4v4.3h-4.3"/>',
+    "estrela": '<path d="M12 3.6l2.6 5.3 5.8.85-4.2 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.2-4.1 5.8-.85z"/>',
+    "rede": '<circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="6" r="2.6"/><circle cx="18" cy="18" r="2.6"/>'
+            '<path d="M8.3 10.8l7.4-3.6"/><path d="M8.3 13.2l7.4 3.6"/>',
+}
+
+
+def _niveis():
+    """Devolve (yt, yb) de cada fatia, ja com a folga entre elas."""
+    fora, y = [], 60
+    for _ in FATIAS:
+        fora.append((y, y + ALTURA))
+        y = y + ALTURA + FOLGA
+    return fora
 
 
 def _corpo(yt, rt, yb, rb):
@@ -396,95 +384,106 @@ def _corpo(yt, rt, yb, rb):
             f"L{CX + rb} {yb} A{rb} {rb * ACHAT:.1f} 0 0 1 {CX - rb} {yb} Z")
 
 
-def _helice(y0, y1, r0, r1, passos=72):
-    """Espiral projetada na parede do cone.
+def _fatia(i):
+    """Uma fatia: corpo, aro por cima e cavidade escura la dentro.
 
-    A cada altura, o raio acompanha o do cone e o angulo avanca — o que da
-    uma helice. A projecao achatada poe a esfera mais abaixo no ecra quando
-    esta a frente e mais acima quando esta atras, que e o que cria a
-    sensacao de ela dar a volta por dentro.
+    E a cavidade que da o aspeto de taca com espessura — sem ela cada fatia
+    lia-se como um triangulo chapado.
     """
-    import math
-    pontos = []
-    for i in range(passos + 1):
-        f = i / passos
-        y = y0 + (y1 - y0) * f
-        r = (r0 + (r1 - r0) * f) * 0.80
-        th = math.radians(-90 + 360 * VOLTAS * f)
-        pontos.append(f"{CX + r * math.cos(th):.1f} {y + r * ACHAT * math.sin(th):.1f}")
-    return "M" + " L".join(pontos)
+    etiqueta, _desc, corpo_cor, aro_cor, cava_cor, icone = FATIAS[i]
+    yt, yb = _niveis()[i]
+    rt, rb = RAIOS[i], RAIOS[i + 1]
+    d = _corpo(yt, rt, yb, rb)
+    r_cava = rt * 0.855
+    return (
+        f'<g class="fatia">'
+        f'<path d="{d}" fill="{corpo_cor}"/>'
+        f'<path d="{d}" fill="url(#volume)"/>'
+        f'<ellipse cx="{CX}" cy="{yt}" rx="{rt}" ry="{rt * ACHAT:.1f}" fill="{aro_cor}"/>'
+        f'<ellipse cx="{CX}" cy="{yt + 3}" rx="{r_cava:.0f}" ry="{r_cava * ACHAT:.1f}" fill="{cava_cor}"/>'
+        f"</g>"
+    )
 
 
-def _esferas():
-    """Esferas a descer em espiral: azuis ate a venda, verdes depois dela."""
-    yc, rc = NIVEIS[CINTURA]
-    caminho_topo = _helice(NIVEIS[0][1] * 0 + 58, yc - 6, NIVEIS[0][1], rc)
-    caminho_base = _helice(yc + 6, NIVEIS[-1][0] - 4, rc, NIVEIS[-1][1])
-    saida = []
-    for cor, caminho, quantas, base_atraso in (
-        ("azul", caminho_topo, 5, 0.0),
-        ("verde", caminho_base, 5, -2.5),
-    ):
-        for i in range(quantas):
-            atraso = base_atraso - i * 1.0
-            saida.append(
-                f'<g class="esfera-cam" style="offset-path:path(\'{caminho}\');'
-                f'animation-delay:{atraso:.2f}s">'
-                f'<circle class="esfera esfera-{cor}" r="8" '
-                f'style="animation-delay:{atraso:.2f}s"/></g>'
-            )
-    return "\n        ".join(saida)
+def _icone(i):
+    """O icone vai por cima de todas as fatias.
 
-
-def funil_svg():
-    """As formas todas primeiro, as etiquetas so no fim.
-
-    Se cada fatia levasse o seu texto, o aro da fatia seguinte — que e
-    desenhado depois — tapava-o. Separar os dois passos resolve-o sem
-    truques de z-index, que em SVG nao existem.
+    Desenhado dentro da fatia, o aro da fatia seguinte — que vem depois —
+    cortava-o ao meio. Em SVG a ordem e o unico z-index que ha.
     """
-    formas, etiquetas = [], []
-    for topo_i, etiqueta, corpo_cor, aro_cor, texto_cor in FATIAS:
-        yt, rt = NIVEIS[topo_i]
-        yb, rb = NIVEIS[topo_i + 1]
-        d = _corpo(yt, rt, yb, rb)
-        formas.append(
-            f'<g class="fatia">'
-            f'<ellipse cx="{CX}" cy="{yt}" rx="{rt}" ry="{rt * ACHAT:.1f}" fill="{aro_cor}"/>'
-            f'<path d="{d}" fill="{corpo_cor}"/>'
-            f'<path d="{d}" fill="url(#volume)"/>'
-            f"</g>"
-        )
-        # A etiqueta fica na banda livre da fatia, acima do aro seguinte.
-        y = yt + (yb - yt) * 0.46 + rt * ACHAT * 0.42
-        etiquetas.append(
-            f'<text x="{CX}" y="{y:.0f}" fill="{texto_cor}" class="fatia-txt">{etiqueta}</text>'
-        )
-    partes = formas + etiquetas
-    return """<svg class="funil-svg" viewBox="0 0 420 530" role="img"
-       aria-label="Funil em ampulheta: atração, oportunidade e conversão estreitam até à venda; retenção, lealdade e indicação alargam depois dela">
-    <defs>
+    _n, _d, _c, _a, _cv, icone = FATIAS[i]
+    yt, yb = _niveis()[i]
+    rt = RAIOS[i]
+    y = yt + rt * ACHAT + (yb - yt - rt * ACHAT) * 0.46
+    return (f'<g class="fatia-icone" transform="translate({CX - 17} {y - 17:.0f}) scale(1.42)">'
+            f'{ICONES[icone]}</g>')
+
+
+def _etiqueta(i):
+    """Etiqueta lateral com linha de chamada, alternando esquerda e direita."""
+    nome, (l1, l2), corpo_cor, _aro, _cava, _ic = FATIAS[i]
+    yt, yb = _niveis()[i]
+    rt, rb = RAIOS[i], RAIOS[i + 1]
+    ym = (yt + yb) / 2
+    borda = (rt + rb) / 2
+    esquerda = i % 2 == 0
+    if esquerda:
+        x_txt, ancora = 348, "end"
+        x_dot, x_fim = 364, CX - borda - 14
+    else:
+        x_txt, ancora = 952, "start"
+        x_dot, x_fim = 936, CX + borda + 14
+    return (
+        f'<g class="chamada">'
+        f'<line x1="{x_dot}" y1="{ym:.0f}" x2="{x_fim:.0f}" y2="{ym:.0f}" stroke="{corpo_cor}"/>'
+        f'<circle cx="{x_dot}" cy="{ym:.0f}" r="4.5" fill="{corpo_cor}"/>'
+        f'<circle cx="{x_fim:.0f}" cy="{ym:.0f}" r="4.5" fill="{corpo_cor}"/>'
+        f'<text x="{x_txt}" y="{ym - 20:.0f}" text-anchor="{ancora}" fill="{corpo_cor}" '
+        f'class="chamada-nome">{nome}</text>'
+        f'<text x="{x_txt}" y="{ym + 6:.0f}" text-anchor="{ancora}" class="chamada-txt">{l1}</text>'
+        f'<text x="{x_txt}" y="{ym + 28:.0f}" text-anchor="{ancora}" class="chamada-txt">{l2}</text>'
+        f"</g>"
+    )
+
+
+_DEFS = """<defs>
       <linearGradient id="volume" x1="0" y1="0" x2="1" y2="0">
-        <stop offset="0%" stop-color="#fff" stop-opacity=".30"/>
-        <stop offset="42%" stop-color="#fff" stop-opacity="0"/>
-        <stop offset="100%" stop-color="#000" stop-opacity=".16"/>
+        <stop offset="0%" stop-color="#fff" stop-opacity=".26"/>
+        <stop offset="44%" stop-color="#fff" stop-opacity="0"/>
+        <stop offset="100%" stop-color="#000" stop-opacity=".20"/>
       </linearGradient>
-      <radialGradient id="esferaAzul" cx="34%" cy="28%" r="72%">
-        <stop offset="0%" stop-color="#eaf5ff"/>
-        <stop offset="38%" stop-color="#57a8ff"/>
-        <stop offset="100%" stop-color="#0a4885"/>
-      </radialGradient>
-      <radialGradient id="esferaVerde" cx="34%" cy="28%" r="72%">
-        <stop offset="0%" stop-color="#e6fbf3"/>
-        <stop offset="38%" stop-color="#2fc298"/>
-        <stop offset="100%" stop-color="#075038"/>
-      </radialGradient>
-    </defs>
-    """ + "\n    ".join(partes) + f"""
-    <g class="esferas">
-        {_esferas()}
-    </g>
-  </svg>"""
+    </defs>"""
+
+_ARIA = ("Funil em ampulheta: atração, oportunidade e conversão estreitam até à venda; "
+         "retenção, lealdade e indicação alargam depois dela")
+
+
+def _altura_total():
+    """Fundo do ultimo cone, contando o arco da elipse de baixo."""
+    return _niveis()[-1][1] + RAIOS[-1] * ACHAT + 24
+
+
+def funil_svg(com_etiquetas=True):
+    fatias = "\n    ".join(_fatia(i) for i in range(len(FATIAS)))
+    icones = "\n    ".join(_icone(i) for i in range(len(FATIAS)))
+    if not com_etiquetas:
+        # So o funil, para ecras estreitos: mesma geometria, moldura recortada.
+        return (f'<svg class="funil-svg" viewBox="{CX - 272} 20 544 {_altura_total() - 20:.0f}" role="img" '
+                f'aria-label="{_ARIA}">\n    {_DEFS}\n    {fatias}\n    {icones}\n  </svg>')
+    chamadas = "\n    ".join(_etiqueta(i) for i in range(len(FATIAS)))
+    return (f'<svg class="funil-svg funil-svg-largo" viewBox="0 0 1300 {_altura_total():.0f}" role="img" '
+            f'aria-label="{_ARIA}">\n    {_DEFS}\n    {fatias}\n    {icones}\n    {chamadas}\n  </svg>')
+
+
+def funil_lista():
+    """A mesma informacao em lista, para ecras estreitos."""
+    itens = []
+    for nome, (l1, l2), cor, _a, _c, _i in FATIAS:
+        itens.append(
+            f'<li class="funil-item"><span class="funil-item-ponto" style="background:{cor}"></span>'
+            f'<span><strong style="color:{cor}">{nome}</strong> {l1} {l2}</span></li>'
+        )
+    return '<ul class="funil-lista">' + "".join(itens) + "</ul>"
 
 # A segunda dobra inteira. O funil e feito de bandas com clip-path, nao de
 # imagem: fica nitido em qualquer ecra, adapta-se e le-se por um leitor de ecra.
@@ -505,20 +504,11 @@ SEGUNDA_DOBRA = """<section id="quem">
     </div>
 
     <div class="funil" data-reveal="fade">
-
-      <div class="funil-notas">
-        <div class="funil-nota">
-          <span class="funil-nota-eyebrow">Antes da venda</span>
-          <p>Estreitamos de propósito. Cada etapa filtra até sobrar quem tem o problema, o orçamento e a urgência certos.</p>
-        </div>
-        <div class="funil-nota funil-nota-base">
-          <span class="funil-nota-eyebrow">Depois da venda</span>
-          <p>A partir daqui alarga. Cada cliente que fica compra outra vez e traz o próximo — e é aqui que a maioria das agências já saiu.</p>
-        </div>
+      <figure class="funil-largo">""" + funil_svg(True) + """</figure>
+      <div class="funil-curto">
+        <figure class="funil-so">""" + funil_svg(False) + """</figure>
+        """ + funil_lista() + """
       </div>
-
-      <figure class="funil-glass">""" + funil_svg() + """</figure>
-
     </div>
 
   </div>

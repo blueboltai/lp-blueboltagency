@@ -67,24 +67,23 @@ duas notas — uma para a metade que estreita até à venda, outra para a que al
 depois dela. O funil tradicional saiu; só fica a ampulheta.
 
 O funil não é imagem: é SVG desenhado em `build.py`, onde a geometria é
-calculada em vez de escrita à mão. Cada fatia é a superfície lateral entre duas
-elipses, com um aro por cima e um gradiente de volume — é isso que lhe dá o
-relevo. Os dois cones encostam na cintura, sem corte nem barra a separá-los.
+calculada em vez de escrita à mão. Cada fatia leva três peças — o corpo do cone,
+um aro claro por cima e uma cavidade escura lá dentro. É a cavidade que lhe dá
+espessura de taça; sem ela cada fatia lia-se como um triângulo chapado. As
+fatias ficam separadas por uma folga, para cada uma se ler como peça solta, e
+cada uma tem o seu ícone.
 
-As leads são esferas (gradiente radial com brilho, mais uma sombra no grupo)
-que descem em espiral pela parede do cone. O caminho de cada uma é uma hélice
-calculada no build e escrita inline como `offset-path`; a projeção achatada
-põe a esfera mais abaixo no ecrã quando passa à frente e mais acima quando
-passa por trás, e a escala e a opacidade acompanham — maior e nítida à frente,
-menor e apagada atrás. São **duas voltas inteiras**, porque é isso que faz a
-animação da escala fechar em fase com a da posição; com um número quebrado de
-voltas as duas dessincronizavam e a esfera "saltava" no reinício.
+As etiquetas vivem ao lado, alternando esquerda e direita, ligadas à fatia por
+uma linha de chamada com um ponto em cada ponta. Abaixo dos 900px o texto dentro
+do SVG ficaria minúsculo, por isso aí mostra-se só o funil e a mesma informação
+passa a uma lista normal em HTML.
 
-Duas armadilhas que valem nota. O aro de cada fatia é desenhado depois da fatia
-anterior, por isso tapava-lhe a etiqueta: a solução foi desenhar todas as formas
-primeiro e as etiquetas só no fim (em SVG não há `z-index`). E as bandas mediam-se
-em percentagem da coluna da grelha; com a coluna a `auto`, não tinham referência
-e colapsavam — a faixa do meio passou a ter medida própria.
+Três armadilhas de SVG que apanhei pelo caminho, todas da mesma família: **em
+SVG a ordem de desenho é o único z-index que existe**. O aro de cada fatia tapava
+a etiqueta da fatia anterior, e depois tapava-lhe o ícone — a solução é sempre a
+mesma, desenhar as formas todas primeiro e o que vai por cima só no fim. E a
+moldura (`viewBox`) ficou curta quando aumentei a altura das fatias, cortando o
+cone de baixo; passou a ser calculada a partir da geometria.
 
 O botão secundário "Ver como funciona" saiu das duas posições onde aparecia
 (hero e CTA final) e os três selos deixaram o hero: passaram a uma faixa
