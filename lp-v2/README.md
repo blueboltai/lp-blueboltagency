@@ -69,8 +69,16 @@ depois dela. O funil tradicional saiu; só fica a ampulheta.
 O funil não é imagem: é SVG desenhado em `build.py`, onde a geometria é
 calculada em vez de escrita à mão. Cada fatia é a superfície lateral entre duas
 elipses, com um aro por cima e um gradiente de volume — é isso que lhe dá o
-relevo. As leads são círculos que descem a convergir até à venda e a alargar
-depois dela.
+relevo. Os dois cones encostam na cintura, sem corte nem barra a separá-los.
+
+As leads são esferas (gradiente radial com brilho, mais uma sombra no grupo)
+que descem em espiral pela parede do cone. O caminho de cada uma é uma hélice
+calculada no build e escrita inline como `offset-path`; a projeção achatada
+põe a esfera mais abaixo no ecrã quando passa à frente e mais acima quando
+passa por trás, e a escala e a opacidade acompanham — maior e nítida à frente,
+menor e apagada atrás. São **duas voltas inteiras**, porque é isso que faz a
+animação da escala fechar em fase com a da posição; com um número quebrado de
+voltas as duas dessincronizavam e a esfera "saltava" no reinício.
 
 Duas armadilhas que valem nota. O aro de cada fatia é desenhado depois da fatia
 anterior, por isso tapava-lhe a etiqueta: a solução foi desenhar todas as formas

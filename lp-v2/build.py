@@ -282,30 +282,35 @@ SECOES_CSS = """
   text-anchor:middle;
   letter-spacing:.005em;
 }
-.venda line{ stroke:rgba(10,15,35,.2);stroke-width:1; }
-.venda-txt{
-  font-family:'Manrope',sans-serif;
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:.2em;
-  text-anchor:middle;
-  fill:#005da9;
+/* ══ As esferas ══
+   Descem em espiral pela parede do cone. O caminho vai inline em cada uma
+   (offset-path), calculado no build; a escala e a opacidade acompanham a
+   volta — maior e mais nitida quando passa a frente, menor e mais apagada
+   quando passa por tras. Sao duas voltas inteiras, para fechar em fase. */
+.esferas{ filter:drop-shadow(0 3px 4px rgba(10,15,35,.28)); }
+.esfera-cam{
+  offset-rotate:0deg;
+  animation:esfera-desce 7s linear infinite;
 }
-
-/* As leads */
-.lead{
-  transform-box:view-box;
-  transform-origin:0 0;
-  animation:lead-desce 3.6s linear infinite;
+@keyframes esfera-desce{
+  0%   { offset-distance:0% }
+  100% { offset-distance:100% }
 }
-.lead-topo{ fill:#2fa1ff; }
-.lead-base{ fill:#17a37b; }
-@keyframes lead-desce{
-  0%   { transform:translate(var(--x0),var(--y0));opacity:0 }
-  12%  { opacity:1 }
-  82%  { opacity:1 }
-  100% { transform:translate(var(--x1),var(--y1));opacity:0 }
+.esfera{
+  animation:esfera-volta 7s linear infinite;
+  transform-box:fill-box;
+  transform-origin:center;
 }
+/* Duas voltas: a frente cai aos 25% e aos 75% do percurso. */
+@keyframes esfera-volta{
+  0%   { transform:scale(.72);opacity:.5 }
+  25%  { transform:scale(1.16);opacity:1 }
+  50%  { transform:scale(.72);opacity:.5 }
+  75%  { transform:scale(1.16);opacity:1 }
+  100% { transform:scale(.72);opacity:.5 }
+}
+.esfera-azul{ fill:url(#esferaAzul); }
+.esfera-verde{ fill:url(#esferaVerde); }
 
 /* As duas notas, empilhadas ao lado do funil */
 .funil-notas{
@@ -341,7 +346,8 @@ SECOES_CSS = """
   .funil-nota{ max-width:52ch;margin-inline:auto;text-align:center; }
 }
 @media(prefers-reduced-motion:reduce){
-  .lead{ animation:none;opacity:.85;transform:translate(var(--x1),var(--y1)); }
+  .esfera-cam,.esfera{ animation:none; }
+  .esfera-cam{ offset-distance:38%; }
 }
 }
 
@@ -366,19 +372,22 @@ SECOES_CSS = """
 CX = 210                 # eixo da ampulheta
 ACHAT = 0.26             # achatamento das elipses: quanto mais baixo, mais de cima se olha
 
-# (y, raio) de cima para baixo. Estreita ate a venda e volta a alargar.
-NIVEIS = [(60, 185), (128, 141), (196, 97), (264, 53),
-          (300, 53), (368, 97), (436, 141), (504, 185)]
+# (y, raio) de cima para baixo. Os dois cones encostam na cintura, sem corte.
+NIVEIS = [(60, 185), (128, 141), (196, 97), (264, 48),
+          (332, 97), (400, 141), (468, 185)]
+CINTURA = 3              # indice do nivel mais estreito
 
 FATIAS = [
     # (indice do nivel de cima, etiqueta, cor do corpo, cor do aro, cor do texto)
     (0, "Atração",      "#cfe4f7", "#e8f3fc", "#15507f"),
     (1, "Oportunidade", "#96c5ee", "#b7d9f5", "#123f66"),
     (2, "Conversão",    "#1f74c0", "#4595d5", "#ffffff"),
-    (4, "Retenção",     "#0d8763", "#17a37b", "#ffffff"),
-    (5, "Lealdade",     "#83cab2", "#a3dac6", "#0a4d3a"),
-    (6, "Indicação",    "#cbe7dd", "#dff1e9", "#0a4d3a"),
+    (3, "Retenção",     "#0d8763", "#17a37b", "#ffffff"),
+    (4, "Lealdade",     "#83cab2", "#a3dac6", "#0a4d3a"),
+    (5, "Indicação",    "#cbe7dd", "#dff1e9", "#0a4d3a"),
 ]
+
+VOLTAS = 2               # voltas inteiras: a escala das esferas fecha em fase
 
 
 def _corpo(yt, rt, yb, rb):
@@ -387,23 +396,43 @@ def _corpo(yt, rt, yb, rb):
             f"L{CX + rb} {yb} A{rb} {rb * ACHAT:.1f} 0 0 1 {CX - rb} {yb} Z")
 
 
-def _leads():
-    """Pontos que descem: convergem ate a venda, alargam depois dela."""
-    topo = [(-152, -12), (-84, 2), (-22, 8), (46, -6), (112, 10), (164, -10)]
-    base = [(6, -146), (-8, -78), (3, 8), (-4, 78), (7, 150)]
+def _helice(y0, y1, r0, r1, passos=72):
+    """Espiral projetada na parede do cone.
+
+    A cada altura, o raio acompanha o do cone e o angulo avanca — o que da
+    uma helice. A projecao achatada poe a esfera mais abaixo no ecra quando
+    esta a frente e mais acima quando esta atras, que e o que cria a
+    sensacao de ela dar a volta por dentro.
+    """
+    import math
+    pontos = []
+    for i in range(passos + 1):
+        f = i / passos
+        y = y0 + (y1 - y0) * f
+        r = (r0 + (r1 - r0) * f) * 0.80
+        th = math.radians(-90 + 360 * VOLTAS * f)
+        pontos.append(f"{CX + r * math.cos(th):.1f} {y + r * ACHAT * math.sin(th):.1f}")
+    return "M" + " L".join(pontos)
+
+
+def _esferas():
+    """Esferas a descer em espiral: azuis ate a venda, verdes depois dela."""
+    yc, rc = NIVEIS[CINTURA]
+    caminho_topo = _helice(NIVEIS[0][1] * 0 + 58, yc - 6, NIVEIS[0][1], rc)
+    caminho_base = _helice(yc + 6, NIVEIS[-1][0] - 4, rc, NIVEIS[-1][1])
     saida = []
-    for i, (x0, x1) in enumerate(topo):
-        atraso = -i * 0.58
-        saida.append(
-            f'<circle class="lead lead-topo" cx="{CX}" cy="0" r="4.5" '
-            f'style="--x0:{x0}px;--y0:58px;--x1:{x1}px;--y1:262px;animation-delay:{atraso:.2f}s"/>'
-        )
-    for i, (x0, x1) in enumerate(base):
-        atraso = -0.3 - i * 0.62
-        saida.append(
-            f'<circle class="lead lead-base" cx="{CX}" cy="0" r="4.5" '
-            f'style="--x0:{x0}px;--y0:302px;--x1:{x1}px;--y1:500px;animation-delay:{atraso:.2f}s"/>'
-        )
+    for cor, caminho, quantas, base_atraso in (
+        ("azul", caminho_topo, 5, 0.0),
+        ("verde", caminho_base, 5, -2.5),
+    ):
+        for i in range(quantas):
+            atraso = base_atraso - i * 1.0
+            saida.append(
+                f'<g class="esfera-cam" style="offset-path:path(\'{caminho}\');'
+                f'animation-delay:{atraso:.2f}s">'
+                f'<circle class="esfera esfera-{cor}" r="8" '
+                f'style="animation-delay:{atraso:.2f}s"/></g>'
+            )
     return "\n        ".join(saida)
 
 
@@ -432,7 +461,7 @@ def funil_svg():
             f'<text x="{CX}" y="{y:.0f}" fill="{texto_cor}" class="fatia-txt">{etiqueta}</text>'
         )
     partes = formas + etiquetas
-    return """<svg class="funil-svg" viewBox="0 0 420 564" role="img"
+    return """<svg class="funil-svg" viewBox="0 0 420 530" role="img"
        aria-label="Funil em ampulheta: atração, oportunidade e conversão estreitam até à venda; retenção, lealdade e indicação alargam depois dela">
     <defs>
       <linearGradient id="volume" x1="0" y1="0" x2="1" y2="0">
@@ -440,18 +469,22 @@ def funil_svg():
         <stop offset="42%" stop-color="#fff" stop-opacity="0"/>
         <stop offset="100%" stop-color="#000" stop-opacity=".16"/>
       </linearGradient>
+      <radialGradient id="esferaAzul" cx="34%" cy="28%" r="72%">
+        <stop offset="0%" stop-color="#eaf5ff"/>
+        <stop offset="38%" stop-color="#57a8ff"/>
+        <stop offset="100%" stop-color="#0a4885"/>
+      </radialGradient>
+      <radialGradient id="esferaVerde" cx="34%" cy="28%" r="72%">
+        <stop offset="0%" stop-color="#e6fbf3"/>
+        <stop offset="38%" stop-color="#2fc298"/>
+        <stop offset="100%" stop-color="#075038"/>
+      </radialGradient>
     </defs>
     """ + "\n    ".join(partes) + f"""
-    <g class="venda">
-      <line x1="46" y1="282" x2="168" y2="282"/>
-      <line x1="252" y1="282" x2="374" y2="282"/>
-      <text x="{CX}" y="286" class="venda-txt">€ VENDA</text>
-    </g>
-    <g class="leads">
-        {_leads()}
+    <g class="esferas">
+        {_esferas()}
     </g>
   </svg>"""
-
 
 # A segunda dobra inteira. O funil e feito de bandas com clip-path, nao de
 # imagem: fica nitido em qualquer ecra, adapta-se e le-se por um leitor de ecra.

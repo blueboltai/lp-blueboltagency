@@ -2257,30 +2257,35 @@ a{text-decoration:none;color:inherit}
   text-anchor:middle;
   letter-spacing:.005em;
 }
-.venda line{ stroke:rgba(10,15,35,.2);stroke-width:1; }
-.venda-txt{
-  font-family:'Manrope',sans-serif;
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:.2em;
-  text-anchor:middle;
-  fill:#005da9;
+/* ══ As esferas ══
+   Descem em espiral pela parede do cone. O caminho vai inline em cada uma
+   (offset-path), calculado no build; a escala e a opacidade acompanham a
+   volta — maior e mais nitida quando passa a frente, menor e mais apagada
+   quando passa por tras. Sao duas voltas inteiras, para fechar em fase. */
+.esferas{ filter:drop-shadow(0 3px 4px rgba(10,15,35,.28)); }
+.esfera-cam{
+  offset-rotate:0deg;
+  animation:esfera-desce 7s linear infinite;
 }
-
-/* As leads */
-.lead{
-  transform-box:view-box;
-  transform-origin:0 0;
-  animation:lead-desce 3.6s linear infinite;
+@keyframes esfera-desce{
+  0%   { offset-distance:0% }
+  100% { offset-distance:100% }
 }
-.lead-topo{ fill:#2fa1ff; }
-.lead-base{ fill:#17a37b; }
-@keyframes lead-desce{
-  0%   { transform:translate(var(--x0),var(--y0));opacity:0 }
-  12%  { opacity:1 }
-  82%  { opacity:1 }
-  100% { transform:translate(var(--x1),var(--y1));opacity:0 }
+.esfera{
+  animation:esfera-volta 7s linear infinite;
+  transform-box:fill-box;
+  transform-origin:center;
 }
+/* Duas voltas: a frente cai aos 25% e aos 75% do percurso. */
+@keyframes esfera-volta{
+  0%   { transform:scale(.72);opacity:.5 }
+  25%  { transform:scale(1.16);opacity:1 }
+  50%  { transform:scale(.72);opacity:.5 }
+  75%  { transform:scale(1.16);opacity:1 }
+  100% { transform:scale(.72);opacity:.5 }
+}
+.esfera-azul{ fill:url(#esferaAzul); }
+.esfera-verde{ fill:url(#esferaVerde); }
 
 /* As duas notas, empilhadas ao lado do funil */
 .funil-notas{
@@ -2316,7 +2321,8 @@ a{text-decoration:none;color:inherit}
   .funil-nota{ max-width:52ch;margin-inline:auto;text-align:center; }
 }
 @media(prefers-reduced-motion:reduce){
-  .lead{ animation:none;opacity:.85;transform:translate(var(--x1),var(--y1)); }
+  .esfera-cam,.esfera{ animation:none; }
+  .esfera-cam{ offset-distance:38%; }
 }
 }
 
@@ -2425,7 +2431,7 @@ a{text-decoration:none;color:inherit}
         </div>
       </div>
 
-      <figure class="funil-glass"><svg class="funil-svg" viewBox="0 0 420 564" role="img"
+      <figure class="funil-glass"><svg class="funil-svg" viewBox="0 0 420 530" role="img"
        aria-label="Funil em ampulheta: atração, oportunidade e conversão estreitam até à venda; retenção, lealdade e indicação alargam depois dela">
     <defs>
       <linearGradient id="volume" x1="0" y1="0" x2="1" y2="0">
@@ -2433,36 +2439,40 @@ a{text-decoration:none;color:inherit}
         <stop offset="42%" stop-color="#fff" stop-opacity="0"/>
         <stop offset="100%" stop-color="#000" stop-opacity=".16"/>
       </linearGradient>
+      <radialGradient id="esferaAzul" cx="34%" cy="28%" r="72%">
+        <stop offset="0%" stop-color="#eaf5ff"/>
+        <stop offset="38%" stop-color="#57a8ff"/>
+        <stop offset="100%" stop-color="#0a4885"/>
+      </radialGradient>
+      <radialGradient id="esferaVerde" cx="34%" cy="28%" r="72%">
+        <stop offset="0%" stop-color="#e6fbf3"/>
+        <stop offset="38%" stop-color="#2fc298"/>
+        <stop offset="100%" stop-color="#075038"/>
+      </radialGradient>
     </defs>
     <g class="fatia"><ellipse cx="210" cy="60" rx="185" ry="48.1" fill="#e8f3fc"/><path d="M25 60 A185 48.1 0 0 0 395 60 L351 128 A141 36.7 0 0 1 69 128 Z" fill="#cfe4f7"/><path d="M25 60 A185 48.1 0 0 0 395 60 L351 128 A141 36.7 0 0 1 69 128 Z" fill="url(#volume)"/></g>
     <g class="fatia"><ellipse cx="210" cy="128" rx="141" ry="36.7" fill="#b7d9f5"/><path d="M69 128 A141 36.7 0 0 0 351 128 L307 196 A97 25.2 0 0 1 113 196 Z" fill="#96c5ee"/><path d="M69 128 A141 36.7 0 0 0 351 128 L307 196 A97 25.2 0 0 1 113 196 Z" fill="url(#volume)"/></g>
-    <g class="fatia"><ellipse cx="210" cy="196" rx="97" ry="25.2" fill="#4595d5"/><path d="M113 196 A97 25.2 0 0 0 307 196 L263 264 A53 13.8 0 0 1 157 264 Z" fill="#1f74c0"/><path d="M113 196 A97 25.2 0 0 0 307 196 L263 264 A53 13.8 0 0 1 157 264 Z" fill="url(#volume)"/></g>
-    <g class="fatia"><ellipse cx="210" cy="300" rx="53" ry="13.8" fill="#17a37b"/><path d="M157 300 A53 13.8 0 0 0 263 300 L307 368 A97 25.2 0 0 1 113 368 Z" fill="#0d8763"/><path d="M157 300 A53 13.8 0 0 0 263 300 L307 368 A97 25.2 0 0 1 113 368 Z" fill="url(#volume)"/></g>
-    <g class="fatia"><ellipse cx="210" cy="368" rx="97" ry="25.2" fill="#a3dac6"/><path d="M113 368 A97 25.2 0 0 0 307 368 L351 436 A141 36.7 0 0 1 69 436 Z" fill="#83cab2"/><path d="M113 368 A97 25.2 0 0 0 307 368 L351 436 A141 36.7 0 0 1 69 436 Z" fill="url(#volume)"/></g>
-    <g class="fatia"><ellipse cx="210" cy="436" rx="141" ry="36.7" fill="#dff1e9"/><path d="M69 436 A141 36.7 0 0 0 351 436 L395 504 A185 48.1 0 0 1 25 504 Z" fill="#cbe7dd"/><path d="M69 436 A141 36.7 0 0 0 351 436 L395 504 A185 48.1 0 0 1 25 504 Z" fill="url(#volume)"/></g>
+    <g class="fatia"><ellipse cx="210" cy="196" rx="97" ry="25.2" fill="#4595d5"/><path d="M113 196 A97 25.2 0 0 0 307 196 L258 264 A48 12.5 0 0 1 162 264 Z" fill="#1f74c0"/><path d="M113 196 A97 25.2 0 0 0 307 196 L258 264 A48 12.5 0 0 1 162 264 Z" fill="url(#volume)"/></g>
+    <g class="fatia"><ellipse cx="210" cy="264" rx="48" ry="12.5" fill="#17a37b"/><path d="M162 264 A48 12.5 0 0 0 258 264 L307 332 A97 25.2 0 0 1 113 332 Z" fill="#0d8763"/><path d="M162 264 A48 12.5 0 0 0 258 264 L307 332 A97 25.2 0 0 1 113 332 Z" fill="url(#volume)"/></g>
+    <g class="fatia"><ellipse cx="210" cy="332" rx="97" ry="25.2" fill="#a3dac6"/><path d="M113 332 A97 25.2 0 0 0 307 332 L351 400 A141 36.7 0 0 1 69 400 Z" fill="#83cab2"/><path d="M113 332 A97 25.2 0 0 0 307 332 L351 400 A141 36.7 0 0 1 69 400 Z" fill="url(#volume)"/></g>
+    <g class="fatia"><ellipse cx="210" cy="400" rx="141" ry="36.7" fill="#dff1e9"/><path d="M69 400 A141 36.7 0 0 0 351 400 L395 468 A185 48.1 0 0 1 25 468 Z" fill="#cbe7dd"/><path d="M69 400 A141 36.7 0 0 0 351 400 L395 468 A185 48.1 0 0 1 25 468 Z" fill="url(#volume)"/></g>
     <text x="210" y="111" fill="#15507f" class="fatia-txt">Atração</text>
     <text x="210" y="175" fill="#123f66" class="fatia-txt">Oportunidade</text>
     <text x="210" y="238" fill="#ffffff" class="fatia-txt">Conversão</text>
-    <text x="210" y="337" fill="#ffffff" class="fatia-txt">Retenção</text>
-    <text x="210" y="410" fill="#0a4d3a" class="fatia-txt">Lealdade</text>
-    <text x="210" y="483" fill="#0a4d3a" class="fatia-txt">Indicação</text>
-    <g class="venda">
-      <line x1="46" y1="282" x2="168" y2="282"/>
-      <line x1="252" y1="282" x2="374" y2="282"/>
-      <text x="210" y="286" class="venda-txt">€ VENDA</text>
-    </g>
-    <g class="leads">
-        <circle class="lead lead-topo" cx="210" cy="0" r="4.5" style="--x0:-152px;--y0:58px;--x1:-12px;--y1:262px;animation-delay:0.00s"/>
-        <circle class="lead lead-topo" cx="210" cy="0" r="4.5" style="--x0:-84px;--y0:58px;--x1:2px;--y1:262px;animation-delay:-0.58s"/>
-        <circle class="lead lead-topo" cx="210" cy="0" r="4.5" style="--x0:-22px;--y0:58px;--x1:8px;--y1:262px;animation-delay:-1.16s"/>
-        <circle class="lead lead-topo" cx="210" cy="0" r="4.5" style="--x0:46px;--y0:58px;--x1:-6px;--y1:262px;animation-delay:-1.74s"/>
-        <circle class="lead lead-topo" cx="210" cy="0" r="4.5" style="--x0:112px;--y0:58px;--x1:10px;--y1:262px;animation-delay:-2.32s"/>
-        <circle class="lead lead-topo" cx="210" cy="0" r="4.5" style="--x0:164px;--y0:58px;--x1:-10px;--y1:262px;animation-delay:-2.90s"/>
-        <circle class="lead lead-base" cx="210" cy="0" r="4.5" style="--x0:6px;--y0:302px;--x1:-146px;--y1:500px;animation-delay:-0.30s"/>
-        <circle class="lead lead-base" cx="210" cy="0" r="4.5" style="--x0:-8px;--y0:302px;--x1:-78px;--y1:500px;animation-delay:-0.92s"/>
-        <circle class="lead lead-base" cx="210" cy="0" r="4.5" style="--x0:3px;--y0:302px;--x1:8px;--y1:500px;animation-delay:-1.54s"/>
-        <circle class="lead lead-base" cx="210" cy="0" r="4.5" style="--x0:-4px;--y0:302px;--x1:78px;--y1:500px;animation-delay:-2.16s"/>
-        <circle class="lead lead-base" cx="210" cy="0" r="4.5" style="--x0:7px;--y0:302px;--x1:150px;--y1:500px;animation-delay:-2.78s"/>
+    <text x="210" y="301" fill="#ffffff" class="fatia-txt">Retenção</text>
+    <text x="210" y="374" fill="#0a4d3a" class="fatia-txt">Lealdade</text>
+    <text x="210" y="447" fill="#0a4d3a" class="fatia-txt">Indicação</text>
+    <g class="esferas">
+        <g class="esfera-cam" style="offset-path:path('M210.0 19.5 L235.4 23.3 L259.6 28.1 L281.7 34.0 L301.2 40.8 L317.5 48.4 L330.3 56.6 L339.1 65.2 L343.8 74.1 L344.3 83.0 L340.8 91.8 L333.3 100.2 L322.4 108.2 L308.2 115.5 L291.4 122.1 L272.6 127.9 L252.3 132.7 L231.2 136.5 L210.0 139.4 L189.3 141.3 L169.8 142.3 L152.0 142.5 L136.4 141.9 L123.4 140.8 L113.5 139.2 L106.7 137.2 L103.2 135.1 L103.1 133.0 L106.2 131.0 L112.4 129.3 L121.4 128.0 L132.8 127.3 L146.2 127.1 L161.1 127.7 L177.1 128.9 L193.6 131.0 L210.0 133.8 L225.9 137.3 L240.8 141.5 L254.3 146.4 L266.0 151.8 L275.6 157.6 L282.8 163.7 L287.6 170.1 L289.8 176.6 L289.5 183.0 L286.8 189.3 L281.8 195.4 L274.9 201.1 L266.2 206.4 L256.2 211.2 L245.2 215.5 L233.5 219.3 L221.7 222.5 L210.0 225.1 L198.8 227.2 L188.5 228.9 L179.4 230.1 L171.6 231.0 L165.4 231.6 L160.9 232.0 L158.2 232.3 L157.2 232.6 L157.9 233.0 L160.2 233.5 L163.9 234.2 L168.8 235.2 L174.8 236.4 L181.4 238.0 L188.5 240.0 L195.8 242.3 L203.1 245.0 L210.0 248.0');animation-delay:0.00s"><circle class="esfera esfera-azul" r="8" style="animation-delay:0.00s"/></g>
+        <g class="esfera-cam" style="offset-path:path('M210.0 19.5 L235.4 23.3 L259.6 28.1 L281.7 34.0 L301.2 40.8 L317.5 48.4 L330.3 56.6 L339.1 65.2 L343.8 74.1 L344.3 83.0 L340.8 91.8 L333.3 100.2 L322.4 108.2 L308.2 115.5 L291.4 122.1 L272.6 127.9 L252.3 132.7 L231.2 136.5 L210.0 139.4 L189.3 141.3 L169.8 142.3 L152.0 142.5 L136.4 141.9 L123.4 140.8 L113.5 139.2 L106.7 137.2 L103.2 135.1 L103.1 133.0 L106.2 131.0 L112.4 129.3 L121.4 128.0 L132.8 127.3 L146.2 127.1 L161.1 127.7 L177.1 128.9 L193.6 131.0 L210.0 133.8 L225.9 137.3 L240.8 141.5 L254.3 146.4 L266.0 151.8 L275.6 157.6 L282.8 163.7 L287.6 170.1 L289.8 176.6 L289.5 183.0 L286.8 189.3 L281.8 195.4 L274.9 201.1 L266.2 206.4 L256.2 211.2 L245.2 215.5 L233.5 219.3 L221.7 222.5 L210.0 225.1 L198.8 227.2 L188.5 228.9 L179.4 230.1 L171.6 231.0 L165.4 231.6 L160.9 232.0 L158.2 232.3 L157.2 232.6 L157.9 233.0 L160.2 233.5 L163.9 234.2 L168.8 235.2 L174.8 236.4 L181.4 238.0 L188.5 240.0 L195.8 242.3 L203.1 245.0 L210.0 248.0');animation-delay:-1.00s"><circle class="esfera esfera-azul" r="8" style="animation-delay:-1.00s"/></g>
+        <g class="esfera-cam" style="offset-path:path('M210.0 19.5 L235.4 23.3 L259.6 28.1 L281.7 34.0 L301.2 40.8 L317.5 48.4 L330.3 56.6 L339.1 65.2 L343.8 74.1 L344.3 83.0 L340.8 91.8 L333.3 100.2 L322.4 108.2 L308.2 115.5 L291.4 122.1 L272.6 127.9 L252.3 132.7 L231.2 136.5 L210.0 139.4 L189.3 141.3 L169.8 142.3 L152.0 142.5 L136.4 141.9 L123.4 140.8 L113.5 139.2 L106.7 137.2 L103.2 135.1 L103.1 133.0 L106.2 131.0 L112.4 129.3 L121.4 128.0 L132.8 127.3 L146.2 127.1 L161.1 127.7 L177.1 128.9 L193.6 131.0 L210.0 133.8 L225.9 137.3 L240.8 141.5 L254.3 146.4 L266.0 151.8 L275.6 157.6 L282.8 163.7 L287.6 170.1 L289.8 176.6 L289.5 183.0 L286.8 189.3 L281.8 195.4 L274.9 201.1 L266.2 206.4 L256.2 211.2 L245.2 215.5 L233.5 219.3 L221.7 222.5 L210.0 225.1 L198.8 227.2 L188.5 228.9 L179.4 230.1 L171.6 231.0 L165.4 231.6 L160.9 232.0 L158.2 232.3 L157.2 232.6 L157.9 233.0 L160.2 233.5 L163.9 234.2 L168.8 235.2 L174.8 236.4 L181.4 238.0 L188.5 240.0 L195.8 242.3 L203.1 245.0 L210.0 248.0');animation-delay:-2.00s"><circle class="esfera esfera-azul" r="8" style="animation-delay:-2.00s"/></g>
+        <g class="esfera-cam" style="offset-path:path('M210.0 19.5 L235.4 23.3 L259.6 28.1 L281.7 34.0 L301.2 40.8 L317.5 48.4 L330.3 56.6 L339.1 65.2 L343.8 74.1 L344.3 83.0 L340.8 91.8 L333.3 100.2 L322.4 108.2 L308.2 115.5 L291.4 122.1 L272.6 127.9 L252.3 132.7 L231.2 136.5 L210.0 139.4 L189.3 141.3 L169.8 142.3 L152.0 142.5 L136.4 141.9 L123.4 140.8 L113.5 139.2 L106.7 137.2 L103.2 135.1 L103.1 133.0 L106.2 131.0 L112.4 129.3 L121.4 128.0 L132.8 127.3 L146.2 127.1 L161.1 127.7 L177.1 128.9 L193.6 131.0 L210.0 133.8 L225.9 137.3 L240.8 141.5 L254.3 146.4 L266.0 151.8 L275.6 157.6 L282.8 163.7 L287.6 170.1 L289.8 176.6 L289.5 183.0 L286.8 189.3 L281.8 195.4 L274.9 201.1 L266.2 206.4 L256.2 211.2 L245.2 215.5 L233.5 219.3 L221.7 222.5 L210.0 225.1 L198.8 227.2 L188.5 228.9 L179.4 230.1 L171.6 231.0 L165.4 231.6 L160.9 232.0 L158.2 232.3 L157.2 232.6 L157.9 233.0 L160.2 233.5 L163.9 234.2 L168.8 235.2 L174.8 236.4 L181.4 238.0 L188.5 240.0 L195.8 242.3 L203.1 245.0 L210.0 248.0');animation-delay:-3.00s"><circle class="esfera esfera-azul" r="8" style="animation-delay:-3.00s"/></g>
+        <g class="esfera-cam" style="offset-path:path('M210.0 19.5 L235.4 23.3 L259.6 28.1 L281.7 34.0 L301.2 40.8 L317.5 48.4 L330.3 56.6 L339.1 65.2 L343.8 74.1 L344.3 83.0 L340.8 91.8 L333.3 100.2 L322.4 108.2 L308.2 115.5 L291.4 122.1 L272.6 127.9 L252.3 132.7 L231.2 136.5 L210.0 139.4 L189.3 141.3 L169.8 142.3 L152.0 142.5 L136.4 141.9 L123.4 140.8 L113.5 139.2 L106.7 137.2 L103.2 135.1 L103.1 133.0 L106.2 131.0 L112.4 129.3 L121.4 128.0 L132.8 127.3 L146.2 127.1 L161.1 127.7 L177.1 128.9 L193.6 131.0 L210.0 133.8 L225.9 137.3 L240.8 141.5 L254.3 146.4 L266.0 151.8 L275.6 157.6 L282.8 163.7 L287.6 170.1 L289.8 176.6 L289.5 183.0 L286.8 189.3 L281.8 195.4 L274.9 201.1 L266.2 206.4 L256.2 211.2 L245.2 215.5 L233.5 219.3 L221.7 222.5 L210.0 225.1 L198.8 227.2 L188.5 228.9 L179.4 230.1 L171.6 231.0 L165.4 231.6 L160.9 232.0 L158.2 232.3 L157.2 232.6 L157.9 233.0 L160.2 233.5 L163.9 234.2 L168.8 235.2 L174.8 236.4 L181.4 238.0 L188.5 240.0 L195.8 242.3 L203.1 245.0 L210.0 248.0');animation-delay:-4.00s"><circle class="esfera esfera-azul" r="8" style="animation-delay:-4.00s"/></g>
+        <g class="esfera-cam" style="offset-path:path('M210.0 260.0 L216.9 262.5 L224.2 265.3 L231.5 268.4 L238.6 271.9 L245.2 275.8 L251.2 280.0 L256.1 284.5 L259.8 289.3 L262.1 294.2 L262.8 299.4 L261.8 304.5 L259.1 309.7 L254.6 314.8 L248.4 319.6 L240.6 324.2 L231.5 328.4 L221.2 332.3 L210.0 335.6 L198.3 338.4 L186.5 340.7 L174.8 342.4 L163.8 343.6 L153.8 344.2 L145.1 344.4 L138.2 344.2 L133.2 343.6 L130.5 342.8 L130.2 341.8 L132.4 340.8 L137.2 339.9 L144.4 339.2 L154.0 338.9 L165.7 339.0 L179.2 339.6 L194.1 340.8 L210.0 342.8 L226.4 345.4 L242.9 348.9 L258.9 353.1 L273.8 358.0 L287.2 363.6 L298.6 369.9 L307.6 376.6 L313.8 383.8 L316.9 391.2 L316.8 398.8 L313.3 406.4 L306.5 413.8 L296.6 420.9 L283.6 427.5 L268.0 433.5 L250.2 438.8 L230.7 443.3 L210.0 446.9 L188.8 449.5 L167.7 451.1 L147.4 451.8 L128.6 451.5 L111.8 450.4 L97.6 448.5 L86.7 446.0 L79.2 443.1 L75.7 439.8 L76.2 436.3 L80.9 432.9 L89.7 429.8 L102.5 427.1 L118.8 425.0 L138.3 423.6 L160.4 423.2 L184.6 423.8 L210.0 425.5');animation-delay:-2.50s"><circle class="esfera esfera-verde" r="8" style="animation-delay:-2.50s"/></g>
+        <g class="esfera-cam" style="offset-path:path('M210.0 260.0 L216.9 262.5 L224.2 265.3 L231.5 268.4 L238.6 271.9 L245.2 275.8 L251.2 280.0 L256.1 284.5 L259.8 289.3 L262.1 294.2 L262.8 299.4 L261.8 304.5 L259.1 309.7 L254.6 314.8 L248.4 319.6 L240.6 324.2 L231.5 328.4 L221.2 332.3 L210.0 335.6 L198.3 338.4 L186.5 340.7 L174.8 342.4 L163.8 343.6 L153.8 344.2 L145.1 344.4 L138.2 344.2 L133.2 343.6 L130.5 342.8 L130.2 341.8 L132.4 340.8 L137.2 339.9 L144.4 339.2 L154.0 338.9 L165.7 339.0 L179.2 339.6 L194.1 340.8 L210.0 342.8 L226.4 345.4 L242.9 348.9 L258.9 353.1 L273.8 358.0 L287.2 363.6 L298.6 369.9 L307.6 376.6 L313.8 383.8 L316.9 391.2 L316.8 398.8 L313.3 406.4 L306.5 413.8 L296.6 420.9 L283.6 427.5 L268.0 433.5 L250.2 438.8 L230.7 443.3 L210.0 446.9 L188.8 449.5 L167.7 451.1 L147.4 451.8 L128.6 451.5 L111.8 450.4 L97.6 448.5 L86.7 446.0 L79.2 443.1 L75.7 439.8 L76.2 436.3 L80.9 432.9 L89.7 429.8 L102.5 427.1 L118.8 425.0 L138.3 423.6 L160.4 423.2 L184.6 423.8 L210.0 425.5');animation-delay:-3.50s"><circle class="esfera esfera-verde" r="8" style="animation-delay:-3.50s"/></g>
+        <g class="esfera-cam" style="offset-path:path('M210.0 260.0 L216.9 262.5 L224.2 265.3 L231.5 268.4 L238.6 271.9 L245.2 275.8 L251.2 280.0 L256.1 284.5 L259.8 289.3 L262.1 294.2 L262.8 299.4 L261.8 304.5 L259.1 309.7 L254.6 314.8 L248.4 319.6 L240.6 324.2 L231.5 328.4 L221.2 332.3 L210.0 335.6 L198.3 338.4 L186.5 340.7 L174.8 342.4 L163.8 343.6 L153.8 344.2 L145.1 344.4 L138.2 344.2 L133.2 343.6 L130.5 342.8 L130.2 341.8 L132.4 340.8 L137.2 339.9 L144.4 339.2 L154.0 338.9 L165.7 339.0 L179.2 339.6 L194.1 340.8 L210.0 342.8 L226.4 345.4 L242.9 348.9 L258.9 353.1 L273.8 358.0 L287.2 363.6 L298.6 369.9 L307.6 376.6 L313.8 383.8 L316.9 391.2 L316.8 398.8 L313.3 406.4 L306.5 413.8 L296.6 420.9 L283.6 427.5 L268.0 433.5 L250.2 438.8 L230.7 443.3 L210.0 446.9 L188.8 449.5 L167.7 451.1 L147.4 451.8 L128.6 451.5 L111.8 450.4 L97.6 448.5 L86.7 446.0 L79.2 443.1 L75.7 439.8 L76.2 436.3 L80.9 432.9 L89.7 429.8 L102.5 427.1 L118.8 425.0 L138.3 423.6 L160.4 423.2 L184.6 423.8 L210.0 425.5');animation-delay:-4.50s"><circle class="esfera esfera-verde" r="8" style="animation-delay:-4.50s"/></g>
+        <g class="esfera-cam" style="offset-path:path('M210.0 260.0 L216.9 262.5 L224.2 265.3 L231.5 268.4 L238.6 271.9 L245.2 275.8 L251.2 280.0 L256.1 284.5 L259.8 289.3 L262.1 294.2 L262.8 299.4 L261.8 304.5 L259.1 309.7 L254.6 314.8 L248.4 319.6 L240.6 324.2 L231.5 328.4 L221.2 332.3 L210.0 335.6 L198.3 338.4 L186.5 340.7 L174.8 342.4 L163.8 343.6 L153.8 344.2 L145.1 344.4 L138.2 344.2 L133.2 343.6 L130.5 342.8 L130.2 341.8 L132.4 340.8 L137.2 339.9 L144.4 339.2 L154.0 338.9 L165.7 339.0 L179.2 339.6 L194.1 340.8 L210.0 342.8 L226.4 345.4 L242.9 348.9 L258.9 353.1 L273.8 358.0 L287.2 363.6 L298.6 369.9 L307.6 376.6 L313.8 383.8 L316.9 391.2 L316.8 398.8 L313.3 406.4 L306.5 413.8 L296.6 420.9 L283.6 427.5 L268.0 433.5 L250.2 438.8 L230.7 443.3 L210.0 446.9 L188.8 449.5 L167.7 451.1 L147.4 451.8 L128.6 451.5 L111.8 450.4 L97.6 448.5 L86.7 446.0 L79.2 443.1 L75.7 439.8 L76.2 436.3 L80.9 432.9 L89.7 429.8 L102.5 427.1 L118.8 425.0 L138.3 423.6 L160.4 423.2 L184.6 423.8 L210.0 425.5');animation-delay:-5.50s"><circle class="esfera esfera-verde" r="8" style="animation-delay:-5.50s"/></g>
+        <g class="esfera-cam" style="offset-path:path('M210.0 260.0 L216.9 262.5 L224.2 265.3 L231.5 268.4 L238.6 271.9 L245.2 275.8 L251.2 280.0 L256.1 284.5 L259.8 289.3 L262.1 294.2 L262.8 299.4 L261.8 304.5 L259.1 309.7 L254.6 314.8 L248.4 319.6 L240.6 324.2 L231.5 328.4 L221.2 332.3 L210.0 335.6 L198.3 338.4 L186.5 340.7 L174.8 342.4 L163.8 343.6 L153.8 344.2 L145.1 344.4 L138.2 344.2 L133.2 343.6 L130.5 342.8 L130.2 341.8 L132.4 340.8 L137.2 339.9 L144.4 339.2 L154.0 338.9 L165.7 339.0 L179.2 339.6 L194.1 340.8 L210.0 342.8 L226.4 345.4 L242.9 348.9 L258.9 353.1 L273.8 358.0 L287.2 363.6 L298.6 369.9 L307.6 376.6 L313.8 383.8 L316.9 391.2 L316.8 398.8 L313.3 406.4 L306.5 413.8 L296.6 420.9 L283.6 427.5 L268.0 433.5 L250.2 438.8 L230.7 443.3 L210.0 446.9 L188.8 449.5 L167.7 451.1 L147.4 451.8 L128.6 451.5 L111.8 450.4 L97.6 448.5 L86.7 446.0 L79.2 443.1 L75.7 439.8 L76.2 436.3 L80.9 432.9 L89.7 429.8 L102.5 427.1 L118.8 425.0 L138.3 423.6 L160.4 423.2 L184.6 423.8 L210.0 425.5');animation-delay:-6.50s"><circle class="esfera esfera-verde" r="8" style="animation-delay:-6.50s"/></g>
     </g>
   </svg></figure>
 
