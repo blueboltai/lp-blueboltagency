@@ -227,11 +227,13 @@ SECOES_CSS = """
   max-width:1100px;
 }
 .prob-head{
-  max-width:64ch;
+  max-width:min(980px,100%);
   margin:0 auto clamp(3.5rem,7vw,6rem);
   text-align:center;
 }
-.prob-head .quem-h2{ max-width:22ch;margin-inline:auto; }
+/* O titulo ocupa a largura toda do bloco; so o corpo do texto e que fica
+   estreito, para nao passar do comprimento de linha que se le bem. */
+.prob-head .quem-h2{ max-width:none;text-wrap:balance; }
 .prob-bio{
   display:flex;
   flex-direction:column;
@@ -241,6 +243,8 @@ SECOES_CSS = """
   font-weight:300;
   line-height:1.75;
   color:var(--lt-inc-2);
+  max-width:64ch;
+  margin-inline:auto;
 }
 .prob-bio strong{ color:var(--lt-inc);font-weight:600; }
 .prob-callout{
@@ -257,74 +261,60 @@ SECOES_CSS = """
   color:var(--lt-inc);
 }
 
-/* ══ O funil em ampulheta ══
-   Cada banda e um trapezio recortado com clip-path — nitido em qualquer
-   ecra, sem imagens, e o texto continua a ser texto. A largura estreita
-   ate a venda e volta a alargar depois dela: e a forma que conta a ideia. */
+/* ══ O funil em ampulheta, em 3D ══
+   Cada fatia e a superficie lateral entre duas elipses, com um aro por cima
+   e um gradiente de volume. Fica nitido em qualquer ecra e continua a ser
+   texto la dentro. As leads descem a convergir ate a venda e alargam depois. */
 .funil{
   display:grid;
-  /* A faixa do meio tem de ter medida propria: com `auto` as bandas, que se
-     medem em percentagem da coluna, nao tinham referencia e colapsavam. */
-  grid-template-columns:1fr clamp(300px,36vw,500px) 1fr;
+  grid-template-columns:minmax(0,1fr) minmax(300px,430px);
   align-items:center;
-  gap:clamp(20px,3.5vw,52px);
-  max-width:1000px;
+  gap:clamp(28px,5vw,64px);
+  max-width:920px;
   margin:0 auto;
 }
-.funil-glass{
-  grid-column:2;
-  grid-row:1;
-  width:100%;
-  margin:0;
-}
-.funil-band{
-  height:clamp(54px,6.4vw,70px);
-  margin-bottom:6px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
+.funil-glass{ margin:0;min-width:0; }
+.funil-svg{ width:100%;height:auto;display:block;overflow:visible; }
+.fatia-txt{
   font-family:'Manrope',sans-serif;
-  font-size:clamp(12px,1.05vw,14px);
+  font-size:15px;
   font-weight:600;
-  letter-spacing:.01em;
-  transition:transform .35s cubic-bezier(.16,1,.3,1);
+  text-anchor:middle;
+  letter-spacing:.005em;
 }
-.funil-glass:hover .funil-band{ transform:scaleX(1.015); }
-
-.fb-1{ clip-path:polygon(0% 0,100% 0,88% 100%,12% 100%);   background:rgba(47,161,255,.13); color:#1b4f82; }
-.fb-2{ clip-path:polygon(12% 0,88% 0,76% 100%,24% 100%);   background:rgba(47,161,255,.24); color:#143f6b; }
-.fb-3{ clip-path:polygon(24% 0,76% 0,65% 100%,35% 100%);   background:#005da9; color:#fff; }
-.fb-4{ clip-path:polygon(35% 0,65% 0,76% 100%,24% 100%);   background:#0c8a66; color:#fff; }
-.fb-5{ clip-path:polygon(24% 0,76% 0,88% 100%,12% 100%);   background:rgba(16,168,124,.26); color:#0b5943; }
-.fb-6{ clip-path:polygon(12% 0,88% 0,100% 100%,0% 100%);   background:rgba(16,168,124,.14); color:#0b5943; margin-bottom:0; }
-
-.funil-venda{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:16px 0;
-}
-.funil-venda::before,
-.funil-venda::after{
-  content:'';
-  flex:1;
-  height:1px;
-}
-.funil-venda::before{ background:linear-gradient(90deg,transparent,rgba(10,15,35,.2)); }
-.funil-venda::after{ background:linear-gradient(90deg,rgba(10,15,35,.2),transparent); }
-.funil-venda-pill{
+.venda line{ stroke:rgba(10,15,35,.2);stroke-width:1; }
+.venda-txt{
   font-family:'Manrope',sans-serif;
-  font-size:10px;
+  font-size:11px;
   font-weight:700;
-  letter-spacing:.22em;
-  text-transform:uppercase;
-  color:#005da9;
-  white-space:nowrap;
+  letter-spacing:.2em;
+  text-anchor:middle;
+  fill:#005da9;
 }
 
-.funil-nota{ max-width:30ch; }
-.funil-nota-topo{ grid-column:1;grid-row:1;align-self:start;text-align:right;padding-top:clamp(8px,2vw,28px); }
-.funil-nota-base{ grid-column:3;grid-row:1;align-self:end;text-align:left;padding-bottom:clamp(8px,2vw,28px); }
+/* As leads */
+.lead{
+  transform-box:view-box;
+  transform-origin:0 0;
+  animation:lead-desce 3.6s linear infinite;
+}
+.lead-topo{ fill:#2fa1ff; }
+.lead-base{ fill:#17a37b; }
+@keyframes lead-desce{
+  0%   { transform:translate(var(--x0),var(--y0));opacity:0 }
+  12%  { opacity:1 }
+  82%  { opacity:1 }
+  100% { transform:translate(var(--x1),var(--y1));opacity:0 }
+}
+
+/* As duas notas, empilhadas ao lado do funil */
+.funil-notas{
+  display:flex;
+  flex-direction:column;
+  gap:clamp(1.75rem,3.5vw,3rem);
+  justify-self:end;   /* encosta as notas ao funil, em vez de as deixar a boiar */
+}
+.funil-nota{ max-width:34ch; }
 .funil-nota-eyebrow{
   display:block;
   font-family:'Manrope',sans-serif;
@@ -338,21 +328,21 @@ SECOES_CSS = """
 .funil-nota-base .funil-nota-eyebrow{ color:#0c8a66; }
 .funil-nota p{
   font-family:'Manrope',sans-serif;
-  font-size:13.5px;
+  font-size:14.5px;
   font-weight:300;
-  line-height:1.65;
-  color:var(--lt-inc-3);
+  line-height:1.7;
+  color:var(--lt-inc-2);
 }
 
-@media(max-width:900px){
-  .funil{ grid-template-columns:1fr;gap:1.75rem; }
-  .funil-glass{ grid-column:1;grid-row:2;max-width:440px;margin-inline:auto; }
-  .funil-nota{ max-width:46ch;margin-inline:auto;text-align:center; }
-  .funil-nota-topo{ grid-column:1;grid-row:1;padding:0; }
-  .funil-nota-base{ grid-column:1;grid-row:3;padding:0; }
+@media(max-width:860px){
+  .funil{ grid-template-columns:1fr;gap:2.25rem; }
+  .funil-glass{ grid-row:1;max-width:400px;margin-inline:auto; }
+  .funil-notas{ grid-row:2;gap:1.75rem; }
+  .funil-nota{ max-width:52ch;margin-inline:auto;text-align:center; }
 }
 @media(prefers-reduced-motion:reduce){
-  .funil-glass:hover .funil-band{ transform:none; }
+  .lead{ animation:none;opacity:.85;transform:translate(var(--x1),var(--y1)); }
+}
 }
 
 @media(max-width:640px){
@@ -363,6 +353,105 @@ SECOES_CSS = """
   .hero-bg-video{ display:none; }
 }
 """
+
+
+# ══════════════════════════════════════════════════════════════════
+# O FUNIL EM AMPULHETA, EM 3D
+# Desenhado em SVG e nao em imagem: cada fatia e a superficie lateral
+# entre duas elipses, o que da a leitura de volume sem deixar de ser
+# nitido em qualquer ecra. Os valores sao calculados aqui, para a
+# geometria nao depender de numeros escritos a mao.
+# ══════════════════════════════════════════════════════════════════
+
+CX = 210                 # eixo da ampulheta
+ACHAT = 0.26             # achatamento das elipses: quanto mais baixo, mais de cima se olha
+
+# (y, raio) de cima para baixo. Estreita ate a venda e volta a alargar.
+NIVEIS = [(60, 185), (128, 141), (196, 97), (264, 53),
+          (300, 53), (368, 97), (436, 141), (504, 185)]
+
+FATIAS = [
+    # (indice do nivel de cima, etiqueta, cor do corpo, cor do aro, cor do texto)
+    (0, "Atração",      "#cfe4f7", "#e8f3fc", "#15507f"),
+    (1, "Oportunidade", "#96c5ee", "#b7d9f5", "#123f66"),
+    (2, "Conversão",    "#1f74c0", "#4595d5", "#ffffff"),
+    (4, "Retenção",     "#0d8763", "#17a37b", "#ffffff"),
+    (5, "Lealdade",     "#83cab2", "#a3dac6", "#0a4d3a"),
+    (6, "Indicação",    "#cbe7dd", "#dff1e9", "#0a4d3a"),
+]
+
+
+def _corpo(yt, rt, yb, rb):
+    """Superficie lateral entre duas elipses: as duas metades da frente."""
+    return (f"M{CX - rt} {yt} A{rt} {rt * ACHAT:.1f} 0 0 0 {CX + rt} {yt} "
+            f"L{CX + rb} {yb} A{rb} {rb * ACHAT:.1f} 0 0 1 {CX - rb} {yb} Z")
+
+
+def _leads():
+    """Pontos que descem: convergem ate a venda, alargam depois dela."""
+    topo = [(-152, -12), (-84, 2), (-22, 8), (46, -6), (112, 10), (164, -10)]
+    base = [(6, -146), (-8, -78), (3, 8), (-4, 78), (7, 150)]
+    saida = []
+    for i, (x0, x1) in enumerate(topo):
+        atraso = -i * 0.58
+        saida.append(
+            f'<circle class="lead lead-topo" cx="{CX}" cy="0" r="4.5" '
+            f'style="--x0:{x0}px;--y0:58px;--x1:{x1}px;--y1:262px;animation-delay:{atraso:.2f}s"/>'
+        )
+    for i, (x0, x1) in enumerate(base):
+        atraso = -0.3 - i * 0.62
+        saida.append(
+            f'<circle class="lead lead-base" cx="{CX}" cy="0" r="4.5" '
+            f'style="--x0:{x0}px;--y0:302px;--x1:{x1}px;--y1:500px;animation-delay:{atraso:.2f}s"/>'
+        )
+    return "\n        ".join(saida)
+
+
+def funil_svg():
+    """As formas todas primeiro, as etiquetas so no fim.
+
+    Se cada fatia levasse o seu texto, o aro da fatia seguinte — que e
+    desenhado depois — tapava-o. Separar os dois passos resolve-o sem
+    truques de z-index, que em SVG nao existem.
+    """
+    formas, etiquetas = [], []
+    for topo_i, etiqueta, corpo_cor, aro_cor, texto_cor in FATIAS:
+        yt, rt = NIVEIS[topo_i]
+        yb, rb = NIVEIS[topo_i + 1]
+        d = _corpo(yt, rt, yb, rb)
+        formas.append(
+            f'<g class="fatia">'
+            f'<ellipse cx="{CX}" cy="{yt}" rx="{rt}" ry="{rt * ACHAT:.1f}" fill="{aro_cor}"/>'
+            f'<path d="{d}" fill="{corpo_cor}"/>'
+            f'<path d="{d}" fill="url(#volume)"/>'
+            f"</g>"
+        )
+        # A etiqueta fica na banda livre da fatia, acima do aro seguinte.
+        y = yt + (yb - yt) * 0.46 + rt * ACHAT * 0.42
+        etiquetas.append(
+            f'<text x="{CX}" y="{y:.0f}" fill="{texto_cor}" class="fatia-txt">{etiqueta}</text>'
+        )
+    partes = formas + etiquetas
+    return """<svg class="funil-svg" viewBox="0 0 420 564" role="img"
+       aria-label="Funil em ampulheta: atração, oportunidade e conversão estreitam até à venda; retenção, lealdade e indicação alargam depois dela">
+    <defs>
+      <linearGradient id="volume" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0%" stop-color="#fff" stop-opacity=".30"/>
+        <stop offset="42%" stop-color="#fff" stop-opacity="0"/>
+        <stop offset="100%" stop-color="#000" stop-opacity=".16"/>
+      </linearGradient>
+    </defs>
+    """ + "\n    ".join(partes) + f"""
+    <g class="venda">
+      <line x1="46" y1="282" x2="168" y2="282"/>
+      <line x1="252" y1="282" x2="374" y2="282"/>
+      <text x="{CX}" y="286" class="venda-txt">€ VENDA</text>
+    </g>
+    <g class="leads">
+        {_leads()}
+    </g>
+  </svg>"""
+
 
 # A segunda dobra inteira. O funil e feito de bandas com clip-path, nao de
 # imagem: fica nitido em qualquer ecra, adapta-se e le-se por um leitor de ecra.
@@ -384,27 +473,18 @@ SEGUNDA_DOBRA = """<section id="quem">
 
     <div class="funil" data-reveal="fade">
 
-      <figure class="funil-glass" aria-label="Funil em ampulheta: da atração à conversão, e da retenção à indicação">
-        <div class="funil-band fb-1"><span>Atração</span></div>
-        <div class="funil-band fb-2"><span>Oportunidade</span></div>
-        <div class="funil-band fb-3"><span>Conversão</span></div>
-
-        <div class="funil-venda"><span class="funil-venda-pill">€ Venda</span></div>
-
-        <div class="funil-band fb-4"><span>Retenção</span></div>
-        <div class="funil-band fb-5"><span>Lealdade</span></div>
-        <div class="funil-band fb-6"><span>Indicação</span></div>
-      </figure>
-
-      <div class="funil-nota funil-nota-topo">
-        <span class="funil-nota-eyebrow">Antes da venda</span>
-        <p>Estreitamos de propósito. Cada etapa filtra até sobrar quem tem o problema, o orçamento e a urgência certos.</p>
+      <div class="funil-notas">
+        <div class="funil-nota">
+          <span class="funil-nota-eyebrow">Antes da venda</span>
+          <p>Estreitamos de propósito. Cada etapa filtra até sobrar quem tem o problema, o orçamento e a urgência certos.</p>
+        </div>
+        <div class="funil-nota funil-nota-base">
+          <span class="funil-nota-eyebrow">Depois da venda</span>
+          <p>A partir daqui alarga. Cada cliente que fica compra outra vez e traz o próximo — e é aqui que a maioria das agências já saiu.</p>
+        </div>
       </div>
 
-      <div class="funil-nota funil-nota-base">
-        <span class="funil-nota-eyebrow">Depois da venda</span>
-        <p>A partir daqui alarga. Cada cliente que fica compra outra vez e traz o próximo — e é aqui que a maioria das agências já saiu.</p>
-      </div>
+      <figure class="funil-glass">""" + funil_svg() + """</figure>
 
     </div>
 

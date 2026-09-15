@@ -66,12 +66,17 @@ cima o texto centrado (o problema de sistema), e por baixo o funil, ladeado por
 duas notas — uma para a metade que estreita até à venda, outra para a que alarga
 depois dela. O funil tradicional saiu; só fica a ampulheta.
 
-O funil não é imagem. Cada banda é um trapézio recortado com `clip-path`, por
-isso fica nítido em qualquer ecrã, adapta-se à largura e o texto continua a ser
-texto — um leitor de ecrã lê as sete etapas pela ordem certa. A largura conta a
-ideia sozinha: estreita de `Atração` a `Conversão`, marca a venda numa linha
-fina, e volta a alargar de `Retenção` a `Indicação`. O azul acompanha a
-aquisição, o verde o pós-venda.
+O funil não é imagem: é SVG desenhado em `build.py`, onde a geometria é
+calculada em vez de escrita à mão. Cada fatia é a superfície lateral entre duas
+elipses, com um aro por cima e um gradiente de volume — é isso que lhe dá o
+relevo. As leads são círculos que descem a convergir até à venda e a alargar
+depois dela.
+
+Duas armadilhas que valem nota. O aro de cada fatia é desenhado depois da fatia
+anterior, por isso tapava-lhe a etiqueta: a solução foi desenhar todas as formas
+primeiro e as etiquetas só no fim (em SVG não há `z-index`). E as bandas mediam-se
+em percentagem da coluna da grelha; com a coluna a `auto`, não tinham referência
+e colapsavam — a faixa do meio passou a ter medida própria.
 
 O botão secundário "Ver como funciona" saiu das duas posições onde aparecia
 (hero e CTA final) e os três selos deixaram o hero: passaram a uma faixa
