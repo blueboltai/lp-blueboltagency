@@ -362,115 +362,119 @@ SECOES_CSS = """
 }
 
 /* ══════════════════════════════════════════════════════════════════
-   A LINHA DO TEMPO — o mesmo sistema, redesenhado
-   O numero era um "01" gigante e esbatido numa coluna que existia para
-   uma foto que nunca chegou: ocupava metade da seccao a nao dizer nada.
-   Passa a ser o no que a linha de progresso atravessa, e o texto passa a
-   cartao — cada passo le-se como uma peca, nao como texto solto no preto.
+   A LINHA DO TEMPO — em lista, nao em ziguezague
+   O desenho alternado deixava, a qualquer altura, mais de metade da
+   seccao em preto: cinco passos a ocupar 1600px para dizer o que cabe em
+   550. Os passos passam a linhas de largura toda — numero, etiqueta e
+   titulo a esquerda, texto a direita — separadas por um filete, com o
+   carril a esquerda a encher conforme se desce. Continua a ser a linha do
+   tempo; deixa de ser um ziguezague com o dobro do espaco vazio.
    ══════════════════════════════════════════════════════════════════ */
 
-#trajetoria .traj-list{ max-width:1060px;margin-inline:auto; }
-
-/* Os passos por ler ficavam a 20% e desfocados: a seccao lia-se sempre
-   como um so passo aceso no meio do escuro. A 45% e sem desfoque, ve-se
-   para onde se vai sem deixar de se perceber onde se esta. */
-#trajetoria .traj-item{
-  gap:0 7rem;
-  margin-bottom:clamp(1.75rem,3.5vw,2.75rem);
-  opacity:.45;
-  filter:none;
+#trajetoria .traj-list{
+  max-width:var(--medida-titulo);
+  margin-inline:calc(50% - var(--medida-titulo) / 2);
+  min-height:0;
 }
+/* O carril passa da coluna do meio para a esquerda, ao pe dos numeros. */
+#trajetoria .traj-list::before,
+#trajetoria .traj-progress-line{ left:23px;transform:none; }
+#trajetoria .traj-progress-dot{ left:50%;transform:translateX(-50%); }
+
+#trajetoria .traj-item{
+  display:grid;
+  grid-template-columns:70px minmax(0,1fr);
+  gap:0;
+  align-items:start;
+  margin-bottom:0;
+  padding:clamp(1.4rem,2.4vw,1.9rem) 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+  opacity:.5;
+  filter:none;
+  transition:opacity .55s ease;
+}
+#trajetoria .traj-item:first-child{ padding-top:0; }
+#trajetoria .traj-item:last-child{ border-bottom:0; }
 #trajetoria .traj-item.active{ opacity:1; }
 #trajetoria .traj-item::before{ display:none; }
+/* A entrada vinha de lado, do tempo em que os passos alternavam esquerda e
+   direita. Numa lista alinhada isso lia-se como desalinhamento; sobe. */
+#trajetoria .traj-item:nth-child(odd) .traj-content,
+#trajetoria .traj-item:nth-child(even) .traj-content{ transform:translateY(12px); }
+#trajetoria .traj-item.active .traj-content{ transform:none; }
 
-/* O no, na linha */
+/* O no, no carril */
 .traj-no{
-  position:absolute;
-  left:50%;top:50%;
-  transform:translate(-50%,-50%);
-  width:58px;height:58px;
+  grid-column:1;
+  grid-row:1;
+  justify-self:start;
+  align-self:start;
+  margin-top:-4px;
+  width:46px;height:46px;
   display:grid;
   place-items:center;
   border-radius:50%;
-  /* opaco de proposito: e ele que corta a linha por tras */
+  /* opaco de proposito: e ele que corta o carril por tras */
   background:#070a16;
   border:1px solid rgba(255,255,255,.1);
-  z-index:4;
+  position:relative;
+  z-index:3;
   transition:border-color .45s ease, box-shadow .45s ease, background .45s ease;
 }
 .traj-no span{
   font-family:'Archia',sans-serif;
-  font-size:17px;
+  font-size:15px;
   letter-spacing:-.02em;
-  color:rgba(255,255,255,.4);
+  color:rgba(255,255,255,.42);
   transition:color .45s ease;
 }
 .traj-item.active .traj-no{
   border-color:rgba(47,161,255,.5);
-  background:radial-gradient(120% 120% at 50% 0%, rgba(47,161,255,.2), #070a16 70%);
-  box-shadow:0 0 0 5px rgba(47,161,255,.07), 0 0 28px rgba(47,161,255,.3);
+  background:radial-gradient(120% 120% at 50% 0%, rgba(47,161,255,.22), #070a16 70%);
+  box-shadow:0 0 0 4px rgba(47,161,255,.07), 0 0 22px rgba(47,161,255,.28);
 }
 .traj-item.active .traj-no span{ color:#fff; }
 
-/* O passo passa a cartao */
+/* A direita do numero, duas colunas: etiqueta e titulo numa, texto na
+   outra. A linha fica com a altura do que la esta dentro — era o segundo
+   `row` implicito do titulo que abria o vazio por baixo de cada passo. */
 #trajetoria .traj-content{
-  position:relative;
-  padding:1.45rem 1.6rem;
-  border-radius:18px;
-  background:linear-gradient(160deg, rgba(255,255,255,.05), rgba(255,255,255,.015));
-  border:1px solid rgba(255,255,255,.07);
-  transition:opacity .65s cubic-bezier(.16,1,.3,1), transform .65s cubic-bezier(.16,1,.3,1),
-             border-color .45s ease, background .45s ease;
+  grid-column:2;
+  grid-row:1;
+  display:grid;
+  grid-template-columns:minmax(0,290px) minmax(0,1fr);
+  grid-template-rows:auto auto;
+  column-gap:clamp(1.5rem,3vw,3rem);
+  align-items:start;
+  text-align:left;
+  padding:0;
 }
-#trajetoria .traj-item.active .traj-content{
-  border-color:rgba(47,161,255,.22);
-  background:linear-gradient(160deg, rgba(47,161,255,.07), rgba(255,255,255,.02));
+#trajetoria .traj-year{ grid-column:1;grid-row:1;margin-bottom:.4rem; }
+#trajetoria .traj-tag{ display:none; }
+#trajetoria .traj-title{
+  grid-column:1;
+  grid-row:2;
+  font-size:clamp(17px,1.5vw,21px);
+  margin:0;
 }
-/* Filete da cor da marca do lado que da para a linha */
-#trajetoria .traj-content::before{
-  content:'';
-  position:absolute;top:1.45rem;bottom:1.45rem;
-  width:2px;
-  border-radius:2px;
-  background:linear-gradient(to bottom, rgba(47,161,255,.7), rgba(0,93,169,0));
-  opacity:0;
-  transition:opacity .45s ease;
+#trajetoria .traj-desc{
+  grid-column:2;
+  grid-row:1 / span 2;
+  max-width:none;
+  margin:0;
+  font-size:14px;
+  line-height:1.7;
+  color:rgba(200,204,216,.6);
 }
-#trajetoria .traj-item.active .traj-content::before{ opacity:1; }
-/* Traco curto a ligar o cartao ao no */
-#trajetoria .traj-content::after{
-  content:'';
-  position:absolute;top:50%;
-  width:2.4rem;height:1px;
-  background:rgba(255,255,255,.12);
-  transition:background .45s ease;
-}
-#trajetoria .traj-item.active .traj-content::after{ background:rgba(47,161,255,.4); }
 
-#trajetoria .traj-item:nth-child(odd) .traj-content{ padding-right:1.6rem; }
-#trajetoria .traj-item:nth-child(odd) .traj-content::before{ right:0; }
-#trajetoria .traj-item:nth-child(odd) .traj-content::after{ left:100%; }
-#trajetoria .traj-item:nth-child(even) .traj-content{ padding-left:1.6rem; }
-#trajetoria .traj-item:nth-child(even) .traj-content::before{ left:0; }
-#trajetoria .traj-item:nth-child(even) .traj-content::after{ right:100%; }
-
-#trajetoria .traj-desc{ max-width:none;color:rgba(200,204,216,.62); }
-#trajetoria .traj-item:nth-child(odd) .traj-desc{ margin-left:0; }
-#trajetoria .traj-title{ font-size:clamp(17px,1.5vw,22px); }
-#trajetoria .traj-tag{ font-size:8.5px; }
-
-@media(max-width:768px){
-  #trajetoria .traj-item{ gap:.9rem;padding-left:4.75rem; }
-  .traj-no{
-    left:1.5rem;top:1.9rem;
-    width:44px;height:44px;
-  }
-  .traj-no span{ font-size:14px; }
-  #trajetoria .traj-content{ grid-row:1; }
-  #trajetoria .traj-item:nth-child(odd) .traj-content::after,
-  #trajetoria .traj-item:nth-child(even) .traj-content::after{ display:none; }
-  #trajetoria .traj-item:nth-child(odd) .traj-content::before,
-  #trajetoria .traj-item:nth-child(even) .traj-content::before{ left:0;right:auto; }
+@media(max-width:820px){
+  #trajetoria .traj-item{ grid-template-columns:52px minmax(0,1fr); }
+  #trajetoria .traj-content{ grid-template-columns:1fr;grid-template-rows:auto auto auto; }
+  #trajetoria .traj-desc{ grid-column:1;grid-row:3;margin-top:.55rem; }
+  #trajetoria .traj-list::before,
+  #trajetoria .traj-progress-line{ left:19px; }
+  .traj-no{ width:38px;height:38px; }
+  .traj-no span{ font-size:13px; }
 }
 
 /* ══ Prova social, por baixo do botao do hero ══
@@ -793,7 +797,10 @@ html = troca(
     '<img src="img/bluebolt-logo.webp" alt="Blue Bolt Agency" style=',
     "logo rodape",
 )
-html = troca(html, 'src="ricardo.webp"', 'src="img/ricardo.avif"', "foto do Ricardo")
+# O retrato original da pagina de IA, apanhado em blueboltai.online.
+# Vinha a 1440x1800; reduzido para 1000px de largura (o dobro dos ~500 a
+# que aparece), passa de 432KB a 202KB.
+html = troca(html, 'src="ricardo.webp"', 'src="img/ricardo.webp"', "foto do Ricardo")
 
 # ══════════════════════════════════════════════════════════════════
 # HERO

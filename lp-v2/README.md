@@ -103,12 +103,13 @@ visita — numa LP de anúncios isso conta.
 
 ## Imagens
 
-A página de IA não está online, por isso três ficheiros não puderam ser
-recuperados e foram substituídos por equivalentes do repositório:
+A página de IA está em `blueboltai.online` — daí vieram o retrato do Ricardo
+(`img/ricardo.webp`, reduzido de 1440×1800 para 1000px de largura, 432KB → 202KB)
+e o logótipo. Faltou só um ficheiro, substituído por um equivalente do
+repositório:
 
 | Original | Substituto | Nota |
 | --- | --- | --- |
-| `ricardo.webp` | `img/ricardo.avif` | Retrato do Ricardo da secção de equipa |
 | `bluebolt-logo.webp` | `img/bluebolt-logo.webp` | Logótipo Blue Bolt |
 | `bluebolt-ai-brand.png` | `img/equipa.webp` | A foto do robô era da oferta de IA; entra a foto da equipa |
 
