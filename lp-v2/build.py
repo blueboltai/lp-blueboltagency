@@ -154,20 +154,51 @@ SECOES_CSS = """
   margin-bottom:2.25rem;
 }
 
-/* Selos de confianca */
-.hero-badges{
+/* ══ Credenciais no rodape ══
+   Em repouso ficam quase apagadas — leem-se como uma nota de rodape, nao
+   como um bloco de logotipos. Ao passar o rato recuperam a cor toda. */
+.ft-creds{
   display:flex;
-  flex-wrap:wrap;
   align-items:center;
-  justify-content:center;
-  gap:clamp(20px,3.4vw,46px);
-  width:100%;
-  padding-top:clamp(2rem,4vw,3.25rem);
+  flex-wrap:wrap;
+  gap:clamp(16px,3vw,36px);
+  padding:30px 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
 }
-.hero-badge{
-  height:clamp(66px,7vw,104px);
+.ft-creds-label{
+  font-family:'Manrope',sans-serif;
+  font-size:9px;
+  font-weight:500;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.26);
+  white-space:nowrap;
+}
+.ft-creds-row{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:clamp(14px,2.4vw,28px);
+}
+.ft-cred{
+  height:60px;
   width:auto;
   object-fit:contain;
+  opacity:.72;
+  filter:grayscale(.3);
+  transition:opacity .35s ease, filter .35s ease;
+}
+.ft-cred:hover,
+.ft-cred:focus-visible{
+  opacity:1;
+  filter:none;
+}
+.light-theme .ft-creds{ border-bottom-color:rgba(10,15,35,.09); }
+.light-theme .ft-creds-label{ color:rgba(10,15,35,.38); }
+
+@media(max-width:640px){
+  .ft-creds{ gap:14px;padding:24px 0; }
+  .ft-cred{ height:46px; }
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -190,29 +221,195 @@ SECOES_CSS = """
   background:linear-gradient(to bottom,#12141a 0%,#3a3f4a 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-#quem .quem-bio{ color:var(--lt-inc-2); }
-#quem .quem-bio strong{ color:var(--lt-inc); font-weight:600; }
-#quem .quem-creds{ border-top-color:rgba(10,15,35,.1); }
-#quem .quem-cred-value{ color:var(--lt-inc); }
-#quem .quem-img-glow{ background:rgba(0,114,245,.07); }
-#quem .quem-corner-glow{ background:rgba(0,114,245,.14); }
+/* A seccao passou a ser uma coluna centrada: o texto em cima, o funil a seguir. */
+#quem .quem-inner{
+  display:block;
+  max-width:1100px;
+}
+.prob-head{
+  max-width:64ch;
+  margin:0 auto clamp(3.5rem,7vw,6rem);
+  text-align:center;
+}
+.prob-head .quem-h2{ max-width:22ch;margin-inline:auto; }
+.prob-bio{
+  display:flex;
+  flex-direction:column;
+  gap:1.25rem;
+  font-family:'Manrope',sans-serif;
+  font-size:16px;
+  font-weight:300;
+  line-height:1.75;
+  color:var(--lt-inc-2);
+}
+.prob-bio strong{ color:var(--lt-inc);font-weight:600; }
+.prob-callout{
+  margin:2.25rem auto 0;
+  max-width:52ch;
+  padding:1.1rem 1.75rem;
+  border-radius:16px;
+  background:rgba(47,161,255,.08);
+  border:1px solid rgba(0,93,169,.16);
+  font-family:'Manrope',sans-serif;
+  font-size:15.5px;
+  font-weight:500;
+  line-height:1.6;
+  color:var(--lt-inc);
+}
 
-/* O cartao da imagem mantem-se escuro: contrasta com o fundo claro e
-   segura as estatisticas em branco que ja la viviam. */
-#quem .quem-visual{
-  border-color:rgba(10,15,35,.08);
-  box-shadow:0 30px 70px rgba(10,15,35,.16);
+/* ══ O funil em ampulheta ══
+   Cada banda e um trapezio recortado com clip-path — nitido em qualquer
+   ecra, sem imagens, e o texto continua a ser texto. A largura estreita
+   ate a venda e volta a alargar depois dela: e a forma que conta a ideia. */
+.funil{
+  display:grid;
+  /* A faixa do meio tem de ter medida propria: com `auto` as bandas, que se
+     medem em percentagem da coluna, nao tinham referencia e colapsavam. */
+  grid-template-columns:1fr clamp(300px,36vw,500px) 1fr;
+  align-items:center;
+  gap:clamp(20px,3.5vw,52px);
+  max-width:1000px;
+  margin:0 auto;
+}
+.funil-glass{
+  grid-column:2;
+  grid-row:1;
+  width:100%;
+  margin:0;
+}
+.funil-band{
+  height:clamp(54px,6.4vw,70px);
+  margin-bottom:6px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Manrope',sans-serif;
+  font-size:clamp(12px,1.05vw,14px);
+  font-weight:600;
+  letter-spacing:.01em;
+  transition:transform .35s cubic-bezier(.16,1,.3,1);
+}
+.funil-glass:hover .funil-band{ transform:scaleX(1.015); }
+
+.fb-1{ clip-path:polygon(0% 0,100% 0,88% 100%,12% 100%);   background:rgba(47,161,255,.13); color:#1b4f82; }
+.fb-2{ clip-path:polygon(12% 0,88% 0,76% 100%,24% 100%);   background:rgba(47,161,255,.24); color:#143f6b; }
+.fb-3{ clip-path:polygon(24% 0,76% 0,65% 100%,35% 100%);   background:#005da9; color:#fff; }
+.fb-4{ clip-path:polygon(35% 0,65% 0,76% 100%,24% 100%);   background:#0c8a66; color:#fff; }
+.fb-5{ clip-path:polygon(24% 0,76% 0,88% 100%,12% 100%);   background:rgba(16,168,124,.26); color:#0b5943; }
+.fb-6{ clip-path:polygon(12% 0,88% 0,100% 100%,0% 100%);   background:rgba(16,168,124,.14); color:#0b5943; margin-bottom:0; }
+
+.funil-venda{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px 0;
+}
+.funil-venda::before,
+.funil-venda::after{
+  content:'';
+  flex:1;
+  height:1px;
+}
+.funil-venda::before{ background:linear-gradient(90deg,transparent,rgba(10,15,35,.2)); }
+.funil-venda::after{ background:linear-gradient(90deg,rgba(10,15,35,.2),transparent); }
+.funil-venda-pill{
+  font-family:'Manrope',sans-serif;
+  font-size:10px;
+  font-weight:700;
+  letter-spacing:.22em;
+  text-transform:uppercase;
+  color:#005da9;
+  white-space:nowrap;
+}
+
+.funil-nota{ max-width:30ch; }
+.funil-nota-topo{ grid-column:1;grid-row:1;align-self:start;text-align:right;padding-top:clamp(8px,2vw,28px); }
+.funil-nota-base{ grid-column:3;grid-row:1;align-self:end;text-align:left;padding-bottom:clamp(8px,2vw,28px); }
+.funil-nota-eyebrow{
+  display:block;
+  font-family:'Manrope',sans-serif;
+  font-size:9px;
+  font-weight:700;
+  letter-spacing:.28em;
+  text-transform:uppercase;
+  color:#005da9;
+  margin-bottom:.6rem;
+}
+.funil-nota-base .funil-nota-eyebrow{ color:#0c8a66; }
+.funil-nota p{
+  font-family:'Manrope',sans-serif;
+  font-size:13.5px;
+  font-weight:300;
+  line-height:1.65;
+  color:var(--lt-inc-3);
+}
+
+@media(max-width:900px){
+  .funil{ grid-template-columns:1fr;gap:1.75rem; }
+  .funil-glass{ grid-column:1;grid-row:2;max-width:440px;margin-inline:auto; }
+  .funil-nota{ max-width:46ch;margin-inline:auto;text-align:center; }
+  .funil-nota-topo{ grid-column:1;grid-row:1;padding:0; }
+  .funil-nota-base{ grid-column:1;grid-row:3;padding:0; }
+}
+@media(prefers-reduced-motion:reduce){
+  .funil-glass:hover .funil-band{ transform:none; }
 }
 
 @media(max-width:640px){
   .hero-h1{ max-width:100%; font-size:clamp(26px,7.6vw,36px); }
   .hero-sub{ font-size:14.5px; }
-  .hero-badge{ height:58px; }
 }
 @media(prefers-reduced-motion:reduce){
   .hero-bg-video{ display:none; }
 }
 """
+
+# A segunda dobra inteira. O funil e feito de bandas com clip-path, nao de
+# imagem: fica nitido em qualquer ecra, adapta-se e le-se por um leitor de ecra.
+SEGUNDA_DOBRA = """<section id="quem">
+  <div class="quem-inner">
+
+    <div class="prob-head">
+      <div class="quem-eyebrow" data-reveal="fade">O problema</div>
+      <h2 class="quem-h2" data-reveal data-delay="1">
+        <span class="tg">Se já tem anúncios e está à procura de uma agência, é porque </span><span class="ta">algo não está a funcionar como devia.</span>
+      </h2>
+      <div class="prob-bio" data-reveal data-delay="2">
+        <p>O digital não é barato nem fácil, e qualquer agência que diga o contrário está a vender o que quer ouvir, não o que precisa de saber.</p>
+        <p>A maior parte das empresas de serviços que nos procura tem <strong>problema de sistema.</strong> Anúncios sem funil não convertem. Funil sem nutrição não aquece. Leads sem processo comercial não fecham.</p>
+        <p>Cada etapa que falha é faturação que fica pelo caminho.</p>
+      </div>
+      <p class="prob-callout" data-reveal data-delay="3">Para a maioria das agências, atrair leads é o objetivo final. Para nós, é o ponto de partida.</p>
+    </div>
+
+    <div class="funil" data-reveal="fade">
+
+      <figure class="funil-glass" aria-label="Funil em ampulheta: da atração à conversão, e da retenção à indicação">
+        <div class="funil-band fb-1"><span>Atração</span></div>
+        <div class="funil-band fb-2"><span>Oportunidade</span></div>
+        <div class="funil-band fb-3"><span>Conversão</span></div>
+
+        <div class="funil-venda"><span class="funil-venda-pill">€ Venda</span></div>
+
+        <div class="funil-band fb-4"><span>Retenção</span></div>
+        <div class="funil-band fb-5"><span>Lealdade</span></div>
+        <div class="funil-band fb-6"><span>Indicação</span></div>
+      </figure>
+
+      <div class="funil-nota funil-nota-topo">
+        <span class="funil-nota-eyebrow">Antes da venda</span>
+        <p>Estreitamos de propósito. Cada etapa filtra até sobrar quem tem o problema, o orçamento e a urgência certos.</p>
+      </div>
+
+      <div class="funil-nota funil-nota-base">
+        <span class="funil-nota-eyebrow">Depois da venda</span>
+        <p>A partir daqui alarga. Cada cliente que fica compra outra vez e traz o próximo — e é aqui que a maioria das agências já saiu.</p>
+      </div>
+
+    </div>
+
+  </div>
+</section>"""
 
 # ══════════════════════════════════════════════════════════════════
 # HEAD — SEO, titulo, partilha
@@ -310,27 +507,48 @@ html = troca(
     "vídeo de fundo do hero",
 )
 
-# ── Selos de confiança no lugar da faixa deslizante ──────────────────
+# ── O hero fica so com o titulo, o subtitulo e um CTA ────────────────
+# A faixa deslizante de provas sai e nada a substitui: as credenciais passam
+# para o rodape. O botao secundario tambem sai, para o hero ter um so caminho.
 faixa = re.search(
-    r'<div class="hero-trust-strip">.*?</div>\n\n      </div>\n    </div>\n  </section>',
+    r'\n *<div class="hero-trust-strip">.*?</div>\n\n      </div>\n    </div>\n  </section>',
     html,
     re.S,
 )
 if not faixa:
-    falhas.append("selos: nao encontrei a faixa de confianca")
+    falhas.append("hero: nao encontrei a faixa de confianca")
 else:
-    html = html.replace(
-        faixa.group(0),
-        """<div class="hero-badges">
-          <img class="hero-badge" src="img/google-partner.webp" alt="Google Partner" width="110" height="110" loading="lazy" decoding="async">
-          <img class="hero-badge" src="img/meta-partner.webp" alt="Meta Business Partner" width="110" height="110" loading="lazy" decoding="async">
-          <img class="hero-badge" src="img/selo-top5.png" alt="Scoring Top 5% — Melhores PME de Portugal 2025, 2.º ano consecutivo, Blue Bolt" width="420" height="382" loading="lazy" decoding="async">
-        </div>
+    html = html.replace(faixa.group(0), "\n\n      </div>\n    </div>\n  </section>")
 
+html = troca(
+    html,
+    '\n          <a href="#trajetoria" class="btn-secondary">Ver como funciona</a>',
+    "",
+    "botão secundário do hero",
+)
+html = troca(
+    html,
+    '\n      <a href="#trajetoria" class="cta-btn-sec">Ver como funciona</a>',
+    "",
+    "botão secundário do CTA final",
+)
+
+# ── Credenciais no rodape: uma linha discreta, que ganha cor ao passar ─
+html = troca(
+    html,
+    """    <div class="ft-bottom">""",
+    """    <div class="ft-creds">
+      <span class="ft-creds-label">Reconhecimentos</span>
+      <div class="ft-creds-row">
+        <img class="ft-cred" src="img/google-partner.webp" alt="Google Partner" width="110" height="110" loading="lazy" decoding="async">
+        <img class="ft-cred" src="img/meta-partner.webp" alt="Meta Business Partner" width="110" height="110" loading="lazy" decoding="async">
+        <img class="ft-cred" src="img/selo-top5.png" alt="Scoring Top 5% — Melhores PME de Portugal 2025, 2.º ano consecutivo" width="420" height="382" loading="lazy" decoding="async">
       </div>
     </div>
-  </section>""",
-    )
+
+    <div class="ft-bottom">""",
+    "credenciais no rodapé",
+)
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -462,107 +680,16 @@ html = troca(html, '\n<!-- QUEM É -->', VSL_HTML + '\n<!-- QUEM É -->', "marca
 html = troca(html, "\n/* Submissão do formulário de lead", VSL_JS + "\n/* Submissão do formulário de lead", "JS da VSL")
 
 # ══════════════════════════════════════════════════════════════════
-# SECCAO "O CUSTO SILENCIOSO"
+# SEGUNDA DOBRA — o problema, com a ampulheta em destaque
+# A seccao inteira e substituida: sai o cartao com a foto, as estatisticas
+# e as credenciais; entra o texto novo e o funil em ampulheta.
 # ══════════════════════════════════════════════════════════════════
 
-html = troca(
-    html,
-    '<img class="quem-visual-img" src="bluebolt-ai-brand.png" alt="O seu funcionário de IA: um agente Blue Bolt AI a trabalhar lado a lado com a sua equipa">',
-    '<img class="quem-visual-img" src="img/equipa.webp" alt="A equipa da Blue Bolt a trabalhar no sistema de aquisição de clientes de um cliente">',
-    "imagem da seccao do custo",
-)
-html = troca(
-    html,
-    """          <div class="quem-visual-tag">O seu funcionário de IA</div>
-          <div class="quem-visual-fine">Trabalha lado a lado com a sua equipa. Nunca falta, nunca se cansa.</div>""",
-    """          <div class="quem-visual-tag">A sua equipa de aquisição</div>
-          <div class="quem-visual-fine">Estratégia, tráfego, conteúdo e comercial, alinhados no mesmo sistema.</div>""",
-    "legenda da imagem",
-)
-html = troca(
-    html,
-    """            <div class="quem-stat-num">24/7</div>
-            <div class="quem-stat-label">Sempre a trabalhar</div>""",
-    """            <div class="quem-stat-num">+400</div>
-            <div class="quem-stat-label">Negócios acompanhados</div>""",
-    "estatistica 1",
-)
-html = troca(
-    html,
-    """            <div class="quem-stat-num">20h+</div>
-            <div class="quem-stat-label">Poupadas/semana</div>""",
-    """            <div class="quem-stat-num">30min</div>
-            <div class="quem-stat-label">Diagnóstico gratuito</div>""",
-    "estatistica 2",
-)
-html = troca(
-    html,
-    """            <div class="quem-stat-num">+400</div>
-            <div class="quem-stat-label">Negócios transformados</div>""",
-    """            <div class="quem-stat-num">Top 5%</div>
-            <div class="quem-stat-label">PME de Portugal</div>""",
-    "estatistica 3",
-)
-html = troca(
-    html,
-    '<div class="quem-eyebrow" data-reveal data-delay="1">O custo silencioso</div>',
-    '<div class="quem-eyebrow" data-reveal data-delay="1">O custo silencioso</div>',
-    "sobrancelha do custo",
-)
-html = troca(
-    html,
-    '<span class="tg">O custo escondido que está a travar </span><span class="ta">o crescimento da sua empresa.</span>',
-    '<span class="tg">O dinheiro que perde todos os meses </span><span class="ta">em leads que nunca fecham.</span>',
-    "h2 do custo",
-)
-html = troca(
-    html,
-    """        <p><strong>Quanto custa um colaborador que perde duas horas por dia em tarefas repetitivas? Multiplique pela equipa toda, e depois por doze meses.</strong> Isto não é ineficiência pontual — é dinheiro que sai da empresa todos os meses, de forma silenciosa, porque ninguém para para o calcular.</p>
-        <p>Responder aos mesmos emails. Fazer o follow-up de leads à mão. Copiar dados de um lado para o outro. Compilar relatórios. Horas todas as semanas em tarefas que não precisam de uma pessoa.</p>
-        <p>Enquanto isso, a sua concorrência já começou a automatizar. Cada dia que adia esta decisão está a financiar a vantagem competitiva de quem já o fez.</p>
-        <p>Nós construímos esse sistema para si, à medida do seu negócio. Fica com a sua equipa livre para o que realmente traz dinheiro.</p>""",
-    """        <p><strong>Quanto vale um mês em que investiu em anúncios e não sabe dizer quantos clientes vieram daí?</strong> Multiplique pelos meses em que isso aconteceu. Não é um mau mês pontual — é dinheiro que sai da empresa sem deixar rasto, porque ninguém está a medir o que acontece depois do clique.</p>
-        <p>Leads que entram e ninguém responde a tempo. Contactos que pedem informação e desaparecem a meio da conversa. Campanhas que geram volume, mas não geram vendas. Meses bons seguidos de meses maus, sem se perceber porquê.</p>
-        <p>A maior parte das agências pára no lead. Entregam contactos e o problema passa a ser seu. Só que um anúncio não resolve um negócio sem processo comercial, e uma rede social bonita não traz clientes novos todos os meses por si só.</p>
-        <p>Nós construímos o sistema completo, à medida do seu negócio: da atração ao cliente fechado, com visibilidade mensal sobre o que está a funcionar.</p>""",
-    "texto do custo",
-)
-html = troca(
-    html,
-    """        <div>
-          <div class="quem-cred-label">Atendimento</div>
-          <div class="quem-cred-value">Respostas 24/7, sem espera</div>
-        </div>
-        <div>
-          <div class="quem-cred-label">Vendas</div>
-          <div class="quem-cred-value">Follow-up automático de leads</div>
-        </div>
-        <div>
-          <div class="quem-cred-label">Processos</div>
-          <div class="quem-cred-value">Tarefas internas no piloto automático</div>
-        </div>
-        <div>
-          <div class="quem-cred-label">Relatórios</div>
-          <div class="quem-cred-value">Dados prontos, sem trabalho manual</div>
-        </div>""",
-    """        <div>
-          <div class="quem-cred-label">Atração</div>
-          <div class="quem-cred-value">Campanhas que trazem o perfil certo</div>
-        </div>
-        <div>
-          <div class="quem-cred-label">Nutrição</div>
-          <div class="quem-cred-value">Email e WhatsApp que aquecem a lead</div>
-        </div>
-        <div>
-          <div class="quem-cred-label">Conversão</div>
-          <div class="quem-cred-value">Processo comercial com scripts e CRM</div>
-        </div>
-        <div>
-          <div class="quem-cred-label">Medição</div>
-          <div class="quem-cred-value">Custo por cliente, mês a mês</div>
-        </div>""",
-    "credenciais do custo",
-)
+seccao = re.search(r'<section id="quem">.*?\n</section>', html, re.S)
+if not seccao:
+    falhas.append("segunda dobra: nao encontrei a seccao #quem")
+else:
+    html = html.replace(seccao.group(0), SEGUNDA_DOBRA)
 
 # ══════════════════════════════════════════════════════════════════
 # COMO FUNCIONA — cinco passos
@@ -791,7 +918,7 @@ html = troca(
 html = troca(
     html,
     '<div class="ft-role">Uma empresa Blue Bolt · Google Partner</div>',
-    '<div class="ft-role">Google Partner · Meta Business Partner · Top 5% PME Portugal</div>',
+    '<div class="ft-role">Agência de marketing digital</div>',
     "papel no rodape",
 )
 html = troca(

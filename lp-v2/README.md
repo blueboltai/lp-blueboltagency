@@ -61,6 +61,22 @@ para 420×382 (`img/selo-top5.png`, 123 KB). É o selo da Blue Bolt, NIF
 fundo invertidos para tom escuro. É isso que faz a VSL ler como na referência:
 metade sobre o azul, metade sobre o claro.
 
+O conteúdo dessa secção foi todo refeito à volta do **funil em ampulheta**: em
+cima o texto centrado (o problema de sistema), e por baixo o funil, ladeado por
+duas notas — uma para a metade que estreita até à venda, outra para a que alarga
+depois dela. O funil tradicional saiu; só fica a ampulheta.
+
+O funil não é imagem. Cada banda é um trapézio recortado com `clip-path`, por
+isso fica nítido em qualquer ecrã, adapta-se à largura e o texto continua a ser
+texto — um leitor de ecrã lê as sete etapas pela ordem certa. A largura conta a
+ideia sozinha: estreita de `Atração` a `Conversão`, marca a venda numa linha
+fina, e volta a alargar de `Retenção` a `Indicação`. O azul acompanha a
+aquisição, o verde o pós-venda.
+
+O botão secundário "Ver como funciona" saiu das duas posições onde aparecia
+(hero e CTA final) e os três selos deixaram o hero: passaram a uma faixa
+discreta no rodapé, a 72% de opacidade, que ganha cor ao passar o rato.
+
 ## A VSL
 
 Vídeo do YouTube `v4o2YB1vPjI` — o VSL da Blue Bolt, o mesmo da LP do Elementor.
