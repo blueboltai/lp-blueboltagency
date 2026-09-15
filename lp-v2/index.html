@@ -2113,8 +2113,15 @@ a{text-decoration:none;color:inherit}
 /* Tipografia: a da propria pagina — Archia nos titulos, Manrope no corpo.
    So se mexe na medida e na cor, que o hero centrado e o video por tras
    obrigam a ajustar; os tipos de letra e os pesos ficam como estavam. */
+/* O limite e 52 e nao 58 por causa da medida. A 58px este titulo ja nao
+   cabe nos 1020px que todos os titulos partilham e quebra para tres
+   linhas — o que dava o absurdo de o titulo ficar mais alto num ecra
+   maior: duas linhas a 1280 e tres a 1440. Medido no browser, a linha
+   mais longa a 52px tem 999px dos 1020 disponiveis — 2% de folga, que
+   e pouco para aguentar a diferenca de metricas entre browsers. A 51px
+   sobram 40px, e a olho nao se distingue. */
 .hero-h1{
-  font-size:clamp(30px,4.2vw,58px);
+  font-size:clamp(30px,4vw,51px);
   line-height:1.12;
   margin-bottom:1.25rem;
 }
