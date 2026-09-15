@@ -45,8 +45,9 @@ são as únicas três menções a "Blue Bolt AI" que sobraram na página.
 
 **Hero** com o tratamento dos heros de SaaS modernos: uma pílula com a oferta
 por cima do título, o título a desvanecer para baixo até 58% de branco, o
-subtítulo em cinzento, um botão claro em degradê e quatro faíscas discretas à
-volta. O botão só é claro aqui — no CTA final, que está sobre fundo claro, o
+subtítulo em cinzento e um botão claro em degradê. O véu por cima do vídeo
+deixou de ser preto-azulado e passou a azul, com o clarão a meia altura — por
+baixo do texto, para acender o fundo sem tirar contraste ao título. O botão só é claro aqui — no CTA final, que está sobre fundo claro, o
 azul continua a ser o que salta. Por trás da VSL há um halo azul, que é o que
 faz o vídeo ler-se como um ecrã aceso em vez de um retângulo colado ao fundo.
 
@@ -95,6 +96,16 @@ nítido em ecrã retina. Em webp com alfa passa de 721KB a 75KB.
 
 Ao lado do funil ficam as seis etapas numeradas, cada uma com o número na cor
 da fatia correspondente. Abaixo dos 860px passam para baixo do desenho.
+
+## O ritmo vertical
+
+As secções vinham da página de IA cada uma com o seu número — 120, 128 e 140px
+em cima e em baixo — o que dava até 290px de intervalo entre duas e deixava a
+dobra meia vazia. Passaram a partilhar `--ritmo`, uma medida só que encolhe com
+o ecrã (`clamp(64px, 6.6vw, 98px)`). O topo de `#quem` fica de fora: é ele que
+compensa a VSL a cavalo. O diagnóstico e a secção do Ricardo levam um intervalo
+mais curto entre si, por serem duas metades da mesma conversa. Medido no
+browser, a página passa de ~8700px para 8098px sem perder nada.
 
 ## A VSL
 
