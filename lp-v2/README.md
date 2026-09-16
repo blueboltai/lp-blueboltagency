@@ -530,6 +530,54 @@ entrasse ficava no histórico do Git para sempre, mesmo depois de apagado.
 desta página tem de ser desligado — senão cada lead é contada duas vezes, uma
 por cada lado. As duas coisas não convivem.
 
+## Consentimento de cookies
+
+O Pixel do Meta em Portugal precisa de consentimento prévio, e o rodapé já
+apontava para uma Política de Cookies que a página não cumpria.
+
+| | Antes da escolha | "Rejeitar" | "Aceitar" |
+| --- | --- | --- | --- |
+| Meta Pixel | não carrega | não carrega | carrega |
+| GTM | carrega, tudo `denied` | tudo `denied` | tudo `granted` |
+| Formulário do CRM | carrega | carrega | carrega |
+
+**O Pixel não carrega de todo antes do "sim."** Não há meio-termo: ou o
+`fbevents.js` entra, ou não entra. O `<noscript>` que a página trazia saiu de
+vez — disparava um pedido ao Meta para quem tem o JavaScript desligado, e a esses
+não há como perguntar nada.
+
+**O GTM carrega, mas com o Consent Mode v2 tudo em `denied` antes de o fazer.** É
+o modelo da própria Google: o contentor corre, não põe cookies nem envia
+identificadores enquanto não houver consentimento. Sem isto, o Google Ads deixa
+de medir seja o que for no EEE.
+
+**O formulário do CRM continua a carregar.** É o serviço que a pessoa veio
+buscar, não rastreio, e bloqueá-lo era deixar a página sem o único caminho de
+conversão que tem. Fica dito no texto do aviso.
+
+Rejeitar tem o mesmo tamanho, a mesma altura e o mesmo peso visual que aceitar, e
+custa um clique tanto como ele. Um "Aceitar" grande e colorido ao lado de um
+"Rejeitar" a cinzento é o que a CNPD e o EDPB chamam padrão enganoso, e invalida
+o consentimento que se julga ter obtido.
+
+A escolha fica em `localStorage` por seis meses, com número de versão — se a
+política mudar, sobe-se a versão e volta a perguntar-se. O rodapé tem
+**Definições de cookies**, que reabre o painel com as opções como ficaram.
+
+Verificado no browser, os quatro caminhos: sem escolha e com "Rejeitar" não sai
+um único pedido ao Meta e o Consent Mode fica todo negado; com "Aceitar" o
+`fbevents.js` carrega e tudo passa a `granted`; com só "Análise" ligada, o
+`analytics_storage` passa a `granted` e o resto fica negado, sem Pixel.
+
+### O bug que isto destapou
+
+O ouvinte do formulário e a lógica do aviso estavam a ser injetados antes do
+último `</script>` da página — mas o último passou a ser o
+`<script src="…form_embed.js">` do CRM, **e um `<script>` com `src` ignora o que
+tenha lá dentro**. O código ficava no ficheiro, visível no código-fonte, e nunca
+corria. O evento de `Lead` nunca teria disparado. Agora tudo o que acrescentamos
+vai numa tag própria, no fim, que tira a dúvida de vez.
+
 ## Por ligar antes de publicar
 
 - **O formulário não envia nada.** O `handleLeadSubmit` mostra a mensagem de

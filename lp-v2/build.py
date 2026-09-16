@@ -1660,7 +1660,128 @@ VSL_JS = """
 })();
 """
 
-html = troca(html, "</style>", VSL_CSS + NAV_CSS + SECOES_CSS + "</style>", "CSS da VSL, do hero e das secções")
+AVISO_CSS = """
+/* ══ Aviso de cookies ══
+   Preso ao fundo e nao a meio do ecra: um painel a tapar a pagina toda
+   antes de se ver o que ela e faz mais gente carregar em "Aceitar" so
+   para se ver livre dele — e um "sim" desses nao vale nada. */
+.ck{
+  position:fixed;
+  left:0;right:0;bottom:0;
+  z-index:9999;
+  padding:clamp(.75rem,2vw,1.25rem);
+  animation:ck-sobe .45s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes ck-sobe{ from{ opacity:0;transform:translateY(16px); } to{ opacity:1;transform:none; } }
+@media(prefers-reduced-motion:reduce){ .ck{ animation:none; } }
+.ck[hidden]{ display:none; }
+.ck-caixa{
+  max-width:var(--medida-titulo);
+  margin-inline:auto;
+  background:rgba(10,13,24,.97);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:16px;
+  padding:clamp(1.1rem,2.4vw,1.6rem);
+  box-shadow:0 24px 60px rgba(0,0,0,.55);
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+}
+.ck-titulo{
+  font-family:'Archia',sans-serif;
+  font-size:17px;font-weight:600;letter-spacing:-.02em;
+  color:#fff;margin:0 0 .45rem;
+}
+.ck-texto{
+  font-family:'Manrope',sans-serif;
+  font-size:14px;line-height:1.6;font-weight:300;
+  color:rgba(255,255,255,.72);margin:0;
+}
+
+/* ══ Painel de escolhas ══ */
+.ck-opcoes{ margin-top:1.1rem;border-top:1px solid rgba(255,255,255,.1); }
+.ck-opcoes[hidden]{ display:none; }
+.ck-linha{
+  display:flex;align-items:flex-start;gap:1rem;
+  padding:.9rem 0;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  cursor:pointer;
+}
+.ck-linha-fixa{ cursor:default; }
+.ck-info{ display:flex;flex-direction:column;gap:.2rem;flex:1; }
+.ck-nome{ font-family:'Manrope',sans-serif;font-size:13.5px;font-weight:600;color:#fff; }
+.ck-desc{ font-family:'Manrope',sans-serif;font-size:12.5px;line-height:1.5;font-weight:300;color:rgba(255,255,255,.55); }
+.ck-sempre{ font-family:'Manrope',sans-serif;font-size:11.5px;color:rgba(255,255,255,.4);white-space:nowrap;padding-top:.15rem; }
+
+/* O interruptor e uma checkbox a serio por baixo: le-se com leitor de
+   ecra e apanha o teclado sem ter de se lhe ensinar nada. */
+.ck-switch{
+  appearance:none;-webkit-appearance:none;
+  flex:0 0 auto;
+  width:42px;height:24px;margin:0;
+  border-radius:100px;
+  background:rgba(255,255,255,.16);
+  border:1px solid rgba(255,255,255,.2);
+  position:relative;cursor:pointer;
+  transition:background .2s ease,border-color .2s ease;
+  /* Sem efeito nenhum — a caixa tem medidas fixas e nao leva texto. Esta
+     aqui so para a auditoria de movel nao a apanhar como campo que faz o
+     iOS aproximar a pagina, que e coisa de campos de texto, nao de
+     caixas de seleccao. */
+  font-size:16px;
+}
+.ck-switch::after{
+  content:'';position:absolute;top:2px;left:2px;
+  width:18px;height:18px;border-radius:50%;
+  background:#fff;
+  transition:transform .2s cubic-bezier(.16,1,.3,1);
+}
+.ck-switch:checked{ background:#2fa1ff;border-color:#2fa1ff; }
+.ck-switch:checked::after{ transform:translateX(18px); }
+.ck-switch:focus-visible{ outline:2px solid #2fa1ff;outline-offset:3px; }
+
+/* ══ Botoes ══
+   Os tres do mesmo tamanho e com o mesmo peso. Um "Aceitar" grande ao
+   lado de um "Rejeitar" a cinzento e o que invalida o consentimento. */
+.ck-botoes{
+  display:flex;gap:.6rem;
+  margin-top:1.1rem;
+}
+.ck-btn{
+  flex:1;
+  min-height:46px;
+  padding:.7rem 1rem;
+  border-radius:100px;
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(255,255,255,.07);
+  color:#fff;
+  font-family:'Manrope',sans-serif;
+  font-size:13.5px;font-weight:600;
+  cursor:pointer;
+  transition:background .2s ease,border-color .2s ease;
+}
+.ck-btn:hover{ background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.34); }
+.ck-btn:focus-visible{ outline:2px solid #2fa1ff;outline-offset:2px; }
+.ck-btn-sim{ background:#2fa1ff;border-color:#2fa1ff;color:#04060f; }
+.ck-btn-sim:hover{ background:#4fb0ff;border-color:#4fb0ff; }
+
+.ck-rodape{
+  margin:.85rem 0 0;
+  font-family:'Manrope',sans-serif;font-size:11.5px;
+  color:rgba(255,255,255,.4);text-align:center;
+}
+/* Sao texto corrido dentro de um paragrafo pequeno: sem folga ficavam com
+   12px de altura tocavel. */
+.ck-rodape a{ color:rgba(255,255,255,.62);text-decoration:underline;
+  display:inline-block;padding:.9rem .4rem; }
+.ck-rodape a:hover{ color:#fff; }
+
+@media(max-width:600px){
+  .ck-botoes{ flex-direction:column; }
+  .ck-texto{ font-size:13.5px; }
+}
+"""
+
+html = troca(html, "</style>", VSL_CSS + NAV_CSS + SECOES_CSS + AVISO_CSS + "</style>", "CSS da VSL, do hero, das secções e do aviso de cookies")
 html = troca(html, '\n<!-- QUEM É -->', VSL_HTML + '\n<!-- QUEM É -->', "marcacao da VSL")
 html = troca(html, "\n/* Submissão do formulário de lead", VSL_JS + "\n/* Submissão do formulário de lead", "JS da VSL")
 
@@ -2354,6 +2475,230 @@ html = troca(
 )
 
 # ══════════════════════════════════════════════════════════════════
+# CONSENTIMENTO DE COOKIES
+# O pixel do Meta em Portugal precisa de consentimento previo, e o rodape
+# ja apontava para uma Politica de Cookies que a pagina nao cumpria.
+#
+# Como esta montado:
+#
+#   Meta Pixel — nao carrega de todo antes do "sim". Nao ha meio-termo: ou
+#   o fbevents.js entra, ou nao entra. O <noscript> que a pagina trazia sai
+#   de vez — disparava um pedido ao Meta para quem tem o JavaScript
+#   desligado, e a esses nao ha como perguntar nada.
+#
+#   GTM — carrega, mas com o Consent Mode v2 tudo em "denied" antes de o
+#   fazer. E o modelo da propria Google: o contentor corre, nao poe cookies
+#   nem envia identificadores enquanto nao houver consentimento. Sem isto,
+#   o Google Ads deixa de medir seja o que for no EEE.
+#
+#   Formulario do CRM — continua a carregar. E o servico que a pessoa veio
+#   buscar, nao rastreio, e bloquea-lo era deixar a pagina sem o unico
+#   caminho de conversao que tem. Fica dito no texto do aviso.
+#
+# Rejeitar tem o mesmo tamanho e o mesmo peso visual que aceitar. Um
+# "Aceitar" grande e colorido ao lado de um "Rejeitar" a cinzento e o que a
+# CNPD e o EDPB chamam padrao enganoso, e invalida o consentimento.
+# ══════════════════════════════════════════════════════════════════
+
+PIXEL_CONDICIONAL = """  <!-- Meta Pixel: so carrega com consentimento de marketing -->
+  <script>
+  window.carregarPixel = function(){
+    if(window.fbq) return;
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'PIXEL_AQUI');
+    fbq('track', 'PageView');
+  };
+  </script>
+""".replace("PIXEL_AQUI", META_PIXEL)
+
+antigo = re.search(r'  <!-- Meta Pixel -->\n  <script>\n.*?</script>\n', html, re.S)
+if not antigo:
+    falhas.append("pixel: nao encontrei o bloco para condicionar ao consentimento")
+else:
+    html = html.replace(antigo.group(0), PIXEL_CONDICIONAL)
+
+# O <noscript> do pixel sai: dispara sem hipotese de perguntar.
+ns = re.search(r'  <noscript><img height="1" width="1".*?</noscript>\n', html, re.S)
+if not ns:
+    falhas.append("pixel sem javascript: nao encontrei o <noscript> para remover")
+else:
+    html = html.replace(ns.group(0), "")
+
+CONSENT_MODE = """  <!-- Consent Mode v2: tudo negado ate haver escolha -->
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  (function(){
+    var guardado = null;
+    try{ guardado = JSON.parse(localStorage.getItem('bb-cookies') || 'null'); }catch(e){}
+    var valido = guardado && guardado.v === 1 &&
+                 (Date.now() - guardado.quando) < 15552000000;   /* 6 meses */
+    var analise   = valido && guardado.analise   ? 'granted' : 'denied';
+    var marketing = valido && guardado.marketing ? 'granted' : 'denied';
+    gtag('consent', 'default', {
+      ad_storage: marketing,
+      ad_user_data: marketing,
+      ad_personalization: marketing,
+      analytics_storage: analise,
+      functionality_storage: 'granted',
+      security_storage: 'granted',
+      wait_for_update: 500
+    });
+  })();
+  </script>
+"""
+html = troca(html, "  <!-- Google Tag Manager -->",
+             CONSENT_MODE + "  <!-- Google Tag Manager -->", "consent mode antes do GTM")
+
+
+# ══════════════════════════════════════════════════════════════════
+# O AVISO DE COOKIES — marcacao, estilo e logica
+# ══════════════════════════════════════════════════════════════════
+
+AVISO_HTML = """<div class="ck" id="ck" role="dialog" aria-labelledby="ck-titulo" aria-describedby="ck-texto" hidden>
+  <div class="ck-caixa">
+    <div class="ck-corpo">
+      <h2 class="ck-titulo" id="ck-titulo">Este site usa cookies</h2>
+      <p class="ck-texto" id="ck-texto">Usamos cookies para perceber como a página é usada e para medir os nossos anúncios. Nada disto arranca sem a sua autorização. O formulário de contacto funciona de qualquer maneira.</p>
+    </div>
+
+    <div class="ck-opcoes" id="ck-opcoes" hidden>
+      <label class="ck-linha ck-linha-fixa">
+        <span class="ck-info"><span class="ck-nome">Necessários</span>
+          <span class="ck-desc">Fazem a página funcionar e guardam esta escolha. Não podem ser desligados.</span></span>
+        <span class="ck-sempre">Sempre ativos</span>
+      </label>
+      <label class="ck-linha">
+        <span class="ck-info"><span class="ck-nome">Análise</span>
+          <span class="ck-desc">Contam visitas e mostram que partes da página são lidas, para a sabermos melhorar.</span></span>
+        <input type="checkbox" id="ck-analise" class="ck-switch">
+      </label>
+      <label class="ck-linha">
+        <span class="ck-info"><span class="ck-nome">Marketing</span>
+          <span class="ck-desc">Pixel do Meta. Mede os resultados dos anúncios e permite mostrar-lhe os nossos noutros sítios.</span></span>
+        <input type="checkbox" id="ck-marketing" class="ck-switch">
+      </label>
+    </div>
+
+    <div class="ck-botoes">
+      <button type="button" class="ck-btn" data-ck="rejeitar">Rejeitar</button>
+      <button type="button" class="ck-btn" data-ck="personalizar" id="ck-personalizar">Personalizar</button>
+      <button type="button" class="ck-btn ck-btn-sim" data-ck="aceitar">Aceitar</button>
+    </div>
+    <p class="ck-rodape"><a href="https://bluebolt.pt/politica-de-cookies/" target="_blank" rel="noopener">Política de Cookies</a> &middot; <a href="https://bluebolt.pt/politica-de-privacidade/" target="_blank" rel="noopener">Política de Privacidade</a></p>
+  </div>
+</div>
+"""
+
+AVISO_JS = """
+/* Consentimento de cookies. O que decide o que carrega está aqui; o
+   Consent Mode, no <head>, trata do lado da Google. */
+function iniciarCookies(){
+  /* A marcação do aviso é inserida depois deste script, por isso à primeira
+     passagem ainda não está no DOM. Espera-se que esteja. Função com nome e
+     não `arguments.callee`, que é proibido em modo estrito. */
+  var CHAVE = 'bb-cookies', VERSAO = 1, SEIS_MESES = 15552000000;
+  var caixa = document.getElementById('ck');
+  if(!caixa) return;
+  var opcoes    = document.getElementById('ck-opcoes');
+  var swAnalise = document.getElementById('ck-analise');
+  var swMktg    = document.getElementById('ck-marketing');
+
+  function lido(){
+    try{
+      var g = JSON.parse(localStorage.getItem(CHAVE) || 'null');
+      if(g && g.v === VERSAO && (Date.now() - g.quando) < SEIS_MESES) return g;
+    }catch(e){}
+    return null;
+  }
+
+  function aplicar(escolha){
+    /* O Consent Mode primeiro: é o que diz à Google o que pode fazer. */
+    if(window.gtag){
+      gtag('consent', 'update', {
+        ad_storage:          escolha.marketing ? 'granted' : 'denied',
+        ad_user_data:        escolha.marketing ? 'granted' : 'denied',
+        ad_personalization:  escolha.marketing ? 'granted' : 'denied',
+        analytics_storage:   escolha.analise   ? 'granted' : 'denied'
+      });
+    }
+    /* O pixel do Meta não tem meio-termo: ou entra, ou não entra. E uma
+       vez carregado não se descarrega — quem disser que não depois de ter
+       dito que sim só fica sem ele na próxima visita. */
+    if(escolha.marketing && window.carregarPixel) window.carregarPixel();
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({
+      event: 'consentimento',
+      consent_analise: !!escolha.analise,
+      consent_marketing: !!escolha.marketing
+    });
+  }
+
+  function guardar(analise, marketing){
+    var escolha = { v: VERSAO, quando: Date.now(), analise: !!analise, marketing: !!marketing };
+    try{ localStorage.setItem(CHAVE, JSON.stringify(escolha)); }catch(e){}
+    aplicar(escolha);
+    esconder();
+  }
+
+  function mostrar(){
+    var g = lido();
+    if(g){ swAnalise.checked = !!g.analise; swMktg.checked = !!g.marketing; }
+    caixa.hidden = false;
+  }
+  function esconder(){ caixa.hidden = true; opcoes.hidden = true; }
+
+  caixa.addEventListener('click', function(e){
+    var b = e.target.closest('[data-ck]');
+    if(!b) return;
+    var q = b.getAttribute('data-ck');
+    if(q === 'aceitar')  return guardar(true, true);
+    if(q === 'rejeitar') return guardar(false, false);
+    if(q === 'personalizar'){
+      if(opcoes.hidden){
+        opcoes.hidden = false;
+        b.textContent = 'Guardar escolhas';
+      } else {
+        guardar(swAnalise.checked, swMktg.checked);
+      }
+    }
+  });
+
+  /* Para se poder mudar de ideias: o link no rodapé reabre isto. */
+  window.abrirCookies = function(e){ if(e) e.preventDefault(); mostrar(); };
+
+  var guardado = lido();
+  if(guardado) aplicar(guardado); else mostrar();
+}
+
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', iniciarCookies);
+} else {
+  iniciarCookies();
+}
+"""
+
+# A logica do aviso e injectada no fim, com o resto do JS que acrescentamos.
+
+# O link no rodape, para se poder mudar de ideias depois.
+html = troca(
+    html,
+    'politica-de-cookies/" target="_blank" rel="noopener">Política de Cookies</a></li>',
+    'politica-de-cookies/" target="_blank" rel="noopener">Política de Cookies</a></li>'
+    '<li><a href="#" onclick="return abrirCookies(event)">Definições de cookies</a></li>',
+    "link para reabrir as definicoes",
+)
+
+
+# ══════════════════════════════════════════════════════════════════
 # O EVENTO DE LEAD
 # O formulario e agora um iframe de outro dominio: nao se lhe pode pendurar
 # um `onsubmit`. O que da e ouvir o que ele grita para a pagina ao submeter.
@@ -2403,7 +2748,7 @@ OUVINTE_LEAD = """
 })();
 """
 
-html = troca(html, "</script>\n</body>", OUVINTE_LEAD + "</script>\n</body>", "ouvinte do formulario do CRM")
+# O ouvinte e injectado no fim, com o resto do JS que acrescentamos.
 
 # O nosso tratador de formulario deixa de ter formulario para tratar.
 antigo = re.search(
@@ -2413,6 +2758,22 @@ if not antigo:
     falhas.append("tratador do formulario antigo: nao encontrei para remover")
 else:
     html = html.replace(antigo.group(0), "")
+
+# ══════════════════════════════════════════════════════════════════
+# O JS QUE ACRESCENTAMOS VAI NUM <script> SO DELE
+# Estava a ser enfiado antes do ultimo `</script>` da pagina — mas o
+# ultimo passou a ser o `<script src=...form_embed.js>` do CRM, e um
+# `<script>` com `src` ignora o que tenha la dentro. O ouvinte do
+# formulario e o aviso de cookies ficaram no ficheiro, visiveis no codigo
+# fonte, e nunca correram. A tag propria tira a duvida de vez.
+# ══════════════════════════════════════════════════════════════════
+
+html = troca(
+    html,
+    "</body>",
+    AVISO_HTML + "<script>\n" + OUVINTE_LEAD + "\n" + AVISO_JS + "</script>\n</body>",
+    "marcacao e logica do aviso de cookies, e ouvinte do formulario",
+)
 
 # ══════════════════════════════════════════════════════════════════
 
