@@ -128,8 +128,26 @@ depois. Já vinha com fundo transparente: só foi recortada a margem vazia e
 reduzido para 760px de largura, o dobro dos ~380 a que aparece, para ficar
 nítido em ecrã retina. Em webp com alfa passa de 721KB a 75KB.
 
-Ao lado do funil ficam as seis etapas numeradas, cada uma com o número na cor
-da fatia correspondente. Abaixo dos 860px passam para baixo do desenho.
+Ao lado do funil ficam as seis etapas, partidas nas duas metades que a ampulheta
+desenha: três que estreitam **até à venda** e três que alargam **depois dela**,
+com a venda marcada entre elas. Uma lista corrida de 1 a 6 não dizia nada disso
+— o desenho explicava a ampulheta e o texto ao lado não. Abaixo dos 860px as
+etapas passam para baixo do desenho.
+
+## O vão entre secções
+
+Padding igual não dá intervalos iguais. Cada secção tem folga própria por dentro
+— a moldura dos cartões, a barra de rolagem dos testemunhos, a sombra do funil,
+a pílula que abre cada secção. Medido de tinta a tinta (o primeiro e o último
+pixel com texto ou imagem, não a caixa), os vãos iam de **148 a 297px**.
+
+As correcções tiram a folga onde ela existe, e estão separadas por breakpoint
+porque a folga interna também é outra: em grelha os cartões trazem moldura e
+sombra ao lado, em coluna única empilham-se. Tentei uma fórmula só, proporcional
+a `--ritmo`, e o que arrumava o desktop desarrumava o telemóvel.
+
+Medido: **1440px** vai de 211 a 219 (amplitude 8), **390px** de 170 a 186 (16),
+**768px** de 144 a 186 (42).
 
 ## O ritmo vertical
 

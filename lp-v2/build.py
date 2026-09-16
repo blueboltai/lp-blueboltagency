@@ -371,7 +371,41 @@ SECOES_CSS = """
 }
 
 /* ══ As seis etapas, ao lado do funil ══ */
-.funil-passos{ list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1.4rem; }
+.funil-passos{ display:flex;flex-direction:column;gap:.9rem; }
+.passos-lista{ list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1.15rem; }
+.passos-meia{
+  font-family:'Manrope',sans-serif;
+  font-size:10px;
+  font-weight:600;
+  letter-spacing:.24em;
+  text-transform:uppercase;
+  color:var(--lt-inc-3);
+  margin:0;
+}
+/* A venda, entre as duas metades: e o ponto que a ampulheta estreita. */
+.passos-venda{
+  display:flex;
+  align-items:center;
+  gap:.7rem;
+  margin:.35rem 0;
+  padding:.55rem 0;
+  border-top:1px solid rgba(10,15,35,.09);
+  border-bottom:1px solid rgba(10,15,35,.09);
+  font-family:'Manrope',sans-serif;
+  font-size:13.5px;
+  font-weight:500;
+  color:var(--lt-inc-2);
+}
+.passos-venda-marca{
+  flex:none;
+  width:24px;height:24px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  background:linear-gradient(135deg,#2fa1ff 0%,#005da9 100%);
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+}
 .passo{ display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:start; }
 .passo-n{
   font-family:'Manrope',sans-serif;
@@ -973,16 +1007,34 @@ def funil_img():
 
 
 def funil_passos():
-    """As seis etapas em texto, ao lado do funil."""
-    itens = []
-    for i, (nome, desc, cor) in enumerate(FATIAS):
-        itens.append(
-            f'<li class="passo" style="--i:{i};--cor:{cor}">'
-            f'<span class="passo-n">{i + 1:02d}</span>'
-            f'<span class="passo-txt"><strong>{nome}</strong>{desc}</span>'
-            f"</li>"
-        )
-    return '<ol class="funil-passos">' + "".join(itens) + "</ol>"
+    """As seis etapas ao lado do funil, partidas nas duas metades.
+
+    A ampulheta diz que tres etapas estreitam ate a venda e tres alargam
+    depois dela; a lista corrida de 1 a 6 nao dizia nada disso. Com as duas
+    metades e a venda marcada ao meio, o texto passa a explicar o desenho.
+    """
+    def bloco(inicio, fim):
+        itens = []
+        for i in range(inicio, fim):
+            nome, desc, cor = FATIAS[i]
+            itens.append(
+                f'<li class="passo" style="--i:{i};--cor:{cor}">'
+                f'<span class="passo-n">{i + 1:02d}</span>'
+                f'<span class="passo-txt"><strong>{nome}</strong>{desc}</span>'
+                f"</li>"
+            )
+        return "".join(itens)
+
+    return (
+        '<div class="funil-passos">'
+        '<p class="passos-meia">Até à venda</p>'
+        f'<ol class="passos-lista">{bloco(0, 3)}</ol>'
+        '<p class="passos-venda"><span class="passos-venda-marca">€</span>'
+        '<span>A venda. É aqui que a maioria das agências pára.</span></p>'
+        '<p class="passos-meia">Depois da venda</p>'
+        f'<ol class="passos-lista" start="4">{bloco(3, 6)}</ol>'
+        "</div>"
+    )
 
 # A segunda dobra inteira. O funil e feito de bandas com clip-path, nao de
 # imagem: fica nitido em qualquer ecra, adapta-se e le-se por um leitor de ecra.
