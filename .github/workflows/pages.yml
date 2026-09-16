@@ -1,27 +1,21 @@
-# Publica a lp-v2/ no GitHub Pages.
+# Publica a lp-v2/ no GitHub Pages a cada push neste ramo.
 #
-# FALTA UM PASSO, E TEM DE SER FEITO A MAO, UMA VEZ SO:
-#   Settings -> Pages -> Build and deployment -> Source: "GitHub Actions"
+# https://blueboltai.github.io/lp-blueboltagency/
 #
-# Tentei liga-lo daqui e dos dois lados nao da: a API das Pages nao e
-# alcancavel do ambiente onde a pagina e construida, e o token com que
-# esta Action corre e de uma GitHub App sem direitos de administracao das
-# Pages ("Resource not accessible by integration"). Ligar a fonte e coisa
-# de um clique; a partir dai isto corre sozinho.
+# Ligar as Pages exigiu um passo a mao, uma vez so (Settings -> Pages ->
+# Source: "GitHub Actions"), e fica registado porque nao e obvio: nem a
+# API das Pages e alcancavel do ambiente onde a pagina e construida, nem o
+# token com que esta Action corre tem direito a criar o site
+# ("Resource not accessible by integration"). Nao era o plano nem a
+# visibilidade do repositorio — tentei com ele ja publico e deu o mesmo.
 #
-# Nota: num repositorio privado as Pages exigem plano pago. Se a conta for
-# gratuita, a pagina das definicoes di-lo — e entao ou o repositorio passa
-# a publico ou se usa outro alojamento.
-#
-# So por `workflow_dispatch` ate as Pages estarem ligadas: a correr a cada
-# push, falhava sempre e enchia o historico de vermelho. Depois de ligadas,
-# basta descomentar o `push:` para voltar a publicar a cada alteracao.
+# O `enablement: true` fica: uma vez o site criado, so faz um GET e segue.
 name: Publicar a landing page
 
 on:
+  push:
+    branches: [claude/elementor-to-html-conversion-orrfzj]
   workflow_dispatch:
-  # push:
-  #   branches: [claude/elementor-to-html-conversion-orrfzj]
 
 permissions:
   contents: read
@@ -52,11 +46,6 @@ jobs:
           echo "— o que vai ser publicado —"
           find site -maxdepth 2 -not -path '*/img/testemunhos/*' | sort
 
-      # `enablement: true` tenta ligar as Pages a partir daqui. Falhou
-      # enquanto o repositorio era privado ("Resource not accessible by
-      # integration"); com ele publico pode passar. Se passar, nao e
-      # preciso mexer nas definicoes. Se voltar a falhar, e ai que entra o
-      # Settings -> Pages -> Source: GitHub Actions.
       - uses: actions/configure-pages@v5
         with:
           enablement: true

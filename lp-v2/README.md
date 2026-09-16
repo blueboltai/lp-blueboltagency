@@ -5,6 +5,30 @@ fontes, cores, efeitos e animações — mas a vender a **Blue Bolt Agency**
 (Sistema Previsível de Aquisição de Clientes). Leva a VSL a cavalo entre a
 primeira e a segunda dobra.
 
+## No ar
+
+**https://blueboltai.github.io/lp-blueboltagency/**
+
+Publicada pelo GitHub Pages a partir do workflow `.github/workflows/pages.yml`:
+cada push neste ramo volta a pôr a `lp-v2/` no ar. Vai só o que a página precisa
+— o `build.py`, este README e o export original do Elementor ficam no
+repositório e devolvem 404 no site.
+
+Ligar as Pages exigiu um passo à mão, uma vez só (*Settings → Pages → Source:
+GitHub Actions*), e vale a pena registar porquê, porque não é óbvio: nem a API
+das Pages é alcançável do ambiente onde a página é construída, nem o token com
+que a Action corre tem direito a criar o site (`Resource not accessible by
+integration`). Não era o plano nem a visibilidade — o mesmo erro apareceu com o
+repositório já público.
+
+O repositório passou a público para as Pages funcionarem no plano gratuito.
+Antes disso foi varrido todo o histórico à procura de chaves, tokens,
+credenciais, caminhos internos e endereços reais: nada. O único email em todo o
+export do Elementor é `exemplo@email.com`.
+
+Verificado no site vivo: o HTML servido é byte a byte igual ao construído aqui,
+e os 16 recursos que a página pede respondem todos 200.
+
 ## Ver a página
 
 ```bash
