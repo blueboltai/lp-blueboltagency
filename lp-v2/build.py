@@ -1152,6 +1152,10 @@ SECOES_CSS = """
      preencher e desistir. */
   .lead-input{ font-size:16px; }
 
+  /* A saida alternativa do formulario e texto corrido: sem folga ficava
+     com 14px de altura tocavel. */
+  .lead-fine a{ display:inline-block;padding:.85rem 0; }
+
   .auth-case-label{ font-size:10px;letter-spacing:.12em; }
   .expert-role{ font-size:11px; }
   .cta-badge{ font-size:10.5px; }
@@ -2229,6 +2233,66 @@ html = troca(
 )
 
 # ══════════════════════════════════════════════════════════════════
+# O FORMULARIO PASSA A SER O DO CRM
+# O nosso era bonito e nao servia para nada: mostrava "Obrigado!" e
+# deitava a lead fora. Este e o formulario do Go High Level, e as
+# submissoes caem no CRM.
+#
+# Ja vem estilizado para fundo escuro — campos a #FFFFFF0D, texto branco,
+# marcador a #D5D5D5 — que e quase o que a nossa caixa tinha, por isso
+# encaixa na seccao sem parecer colado. E tem campo de telefone, que o
+# nosso nao tinha.
+#
+# O titulo e o subtitulo ficam fora do iframe: sao texto nosso, e dentro
+# do iframe nao os podiamos compor nem traduzir.
+# ══════════════════════════════════════════════════════════════════
+
+FORMULARIO_CRM = "ZBEyR6JAk4CBl4jVfnSD"
+
+IFRAME_CRM = (
+    '<div class="lead-form" id="lead-form">'
+    '<div class="lead-form-title">Agendar a minha sessão estratégica</div>'
+    '<p class="lead-form-sub">Deixe os seus dados e marcamos o diagnóstico de 30 minutos. '
+    "Sem custo, sem compromisso.</p>"
+    f'<iframe src="https://api.leadconnectorhq.com/widget/form/{FORMULARIO_CRM}" '
+    'class="lead-crm" '
+    f'id="inline-{FORMULARIO_CRM}" '
+    'title="Formulário de contacto" '
+    'style="width:100%;height:640px;border:none;background:transparent" '
+    "data-layout=\"{'id':'INLINE'}\" "
+    'data-trigger-type="alwaysShow" '
+    'data-activation-type="alwaysActivated" '
+    'data-deactivation-type="neverDeactivate" '
+    'data-form-name="Diagnóstico gratuito" '
+    'data-height="640" '
+    f'data-layout-iframe-id="inline-{FORMULARIO_CRM}" '
+    f'data-form-id="{FORMULARIO_CRM}"></iframe>'
+    '<p class="lead-fine">Sem spam e sem compromisso. '
+    "A nossa equipa entra em contacto em menos de 24 horas.<br>"
+    # O formulario passou a ser o unico caminho de conversao da pagina, e
+    # vive num iframe de outro dominio. Se o CRM estiver em baixo ou for
+    # bloqueado, fica uma caixa vazia e o visitante nao tem por onde ir.
+    'Se o formulário não carregar, escreva para '
+    '<a href="mailto:geral@bluebolt.pt">geral@bluebolt.pt</a>.</p>'
+    "</div>"
+)
+
+alvo = re.search(r'<form class="lead-form".*?</form>', html, re.S)
+if not alvo:
+    falhas.append("formulario: nao encontrei o bloco a substituir")
+else:
+    html = html.replace(alvo.group(0), IFRAME_CRM)
+
+# O script do embed trata de ajustar a altura do iframe ao conteudo — sem
+# ele fica com a altura fixa e corta o botao em ecras pequenos.
+html = troca(
+    html,
+    "</body>",
+    '<script src="https://link.msgsndr.com/js/form_embed.js" defer></script>\n</body>',
+    "script do embed do CRM",
+)
+
+# ══════════════════════════════════════════════════════════════════
 # GOOGLE TAG MANAGER
 # O contentor entra em dois sitios: o script o mais cedo possivel no
 # <head>, e o <iframe> de recurso logo a abrir o <body>, para quem tem o
@@ -2291,102 +2355,64 @@ html = troca(
 
 # ══════════════════════════════════════════════════════════════════
 # O EVENTO DE LEAD
-# O `eventID` nao serve para nada hoje — serve para quando a Conversions
-# API entrar. O mesmo evento chega ao Meta por dois caminhos, o browser e
-# o servidor, e e por este identificador que ele percebe que sao o mesmo
-# em vez de contar a lead duas vezes. Gera-se agora e guarda-se no campo
-# escondido para o servidor o poder reenviar tal e qual.
+# O formulario e agora um iframe de outro dominio: nao se lhe pode pendurar
+# um `onsubmit`. O que da e ouvir o que ele grita para a pagina ao submeter.
+#
+# ATENCAO, ISTO PRECISA DE UMA SUBMISSAO DE TESTE. O formato da mensagem
+# que o Go High Level envia nao esta documentado e o script deles vem
+# minificado — nao o adivinhei. O ouvinte aceita varias formas conhecidas e
+# escreve na consola tudo o que chega do dominio deles, para se ver o que e
+# que aparece de facto. Confirmar no Test Events do Events Manager.
+#
+# E SE LIGAREM O PIXEL DENTRO DO CRM, DESLIGUEM ISTO. O Go High Level tem
+# integracao propria com o Meta; com as duas ligadas, cada lead e contada
+# duas vezes.
 # ══════════════════════════════════════════════════════════════════
 
-ANCORA_SUBMIT = """function handleLeadSubmit(e){
-  e.preventDefault();
-  var form = document.getElementById('lead-form');
-  if(!form) return false;
-"""
+OUVINTE_LEAD = """
+/* Evento de Lead vindo do formulário do CRM. Ver a nota no build.py. */
+(function(){
+  var ORIGEM = 'https://api.leadconnectorhq.com';
+  var jaDisparou = false;
 
-# So o cabecalho da funcao e substituido — o corpo, que escreve o
-# "Obrigado!", fica como esta. A copy dessa mensagem e reescrita noutro
-# sitio deste ficheiro, e casar com ela aqui era prende-las uma a outra.
-NOVO_SUBMIT = """/* Submissão do formulário de lead.
-
-   ATENÇÃO: continua sem destino. O evento vai para o Meta e para o
-   dataLayer, mas os dados da pessoa não vão para lado nenhum — quem
-   preencher, desaparece. Falta ligar o `ENDERECO_LEADS` a algo que corra
-   código; o GitHub Pages só serve ficheiros. Enquanto estiver vazio, o
-   formulário comporta-se como antes e só dispara a marcação. */
-var ENDERECO_LEADS = '';
-
-function cookie(nome){
-  var m = document.cookie.match('(^|; )' + nome + '=([^;]*)');
-  return m ? decodeURIComponent(m[2]) : '';
-}
-
-function fbcDoLink(){
-  /* Se o pixel não chegou a correr, o cookie `_fbc` não existe — mas o
-     `fbclid` vem no endereço à mesma. Este é o formato que o Meta espera. */
-  var m = location.search.match(/[?&]fbclid=([^&]+)/);
-  return m ? 'fb.1.' + Date.now() + '.' + decodeURIComponent(m[1]) : '';
-}
-
-function idEvento(){
-  /* Um identificador por submissão, para o Meta juntar o evento do
-     browser ao do servidor em vez de contar a lead duas vezes. */
-  try{ if(window.crypto && crypto.randomUUID) return crypto.randomUUID(); }catch(err){}
-  return 'lead-' + Date.now() + '-' + Math.random().toString(16).slice(2);
-}
-
-function handleLeadSubmit(e){
-  e.preventDefault();
-  var form = document.getElementById('lead-form');
-  if(!form) return false;
-
-  var eid = idEvento();
-  var campo = form.querySelector('[name="event_id"]');
-  if(campo) campo.value = eid;
-
-  if(window.fbq){
-    fbq('track', 'Lead', {
-      content_name: 'Diagnóstico gratuito de 30 minutos',
-      content_category: 'formulario'
-    }, { eventID: eid });
+  function pareceSubmissao(d){
+    if(!d) return false;
+    var t = (typeof d === 'string') ? d : (d.type || d.event || d.action || '');
+    return /submit|submission|form-?sent|thank/i.test(String(t));
   }
 
-  /* Para o GTM poder disparar o que lá estiver configurado sem precisar
-     de adivinhar o clique. */
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event: 'lead_enviada', event_id: eid });
+  window.addEventListener('message', function(e){
+    if(e.origin !== ORIGEM) return;
+    /* Deixado de propósito: é isto que diz qual é a forma verdadeira da
+       mensagem, na primeira submissão a sério. */
+    try{ console.debug('[crm]', JSON.stringify(e.data).slice(0,300)); }catch(err){}
 
-  if(ENDERECO_LEADS){
-    var dados = {};
-    new FormData(form).forEach(function(v,k){ dados[k] = v; });
-    dados.pagina = location.href;
-    /* Os cookies do pixel. A seguir ao email, é o que mais melhora a
-       correspondência do lado do Meta — e é precisamente o que se
-       recupera quando o pixel é bloqueado, que é a razão de existir da
-       Conversions API. */
-    dados.fbp = cookie('_fbp');
-    dados.fbc = cookie('_fbc') || fbcDoLink();
-    /* `keepalive` para o pedido sobreviver se a pessoa sair da página
-       logo a seguir a submeter. */
-    fetch(ENDERECO_LEADS, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(dados),
-      keepalive: true
-    }).catch(function(){});
-  }
+    if(jaDisparou || !pareceSubmissao(e.data)) return;
+    jaDisparou = true;
+
+    var eid = 'lead-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+    if(window.fbq){
+      fbq('track', 'Lead', {
+        content_name: 'Diagnóstico gratuito de 30 minutos',
+        content_category: 'formulario'
+      }, { eventID: eid });
+    }
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: 'lead_enviada', event_id: eid });
+  });
+})();
 """
 
-html = troca(html, ANCORA_SUBMIT, NOVO_SUBMIT, "submissao do formulario")
+html = troca(html, "</script>\n</body>", OUVINTE_LEAD + "</script>\n</body>", "ouvinte do formulario do CRM")
 
-# O campo escondido que leva o eventID ao servidor.
-html = troca(
-    html,
-    '<form class="lead-form" id="lead-form" onsubmit="return handleLeadSubmit(event)">',
-    '<form class="lead-form" id="lead-form" onsubmit="return handleLeadSubmit(event)">'
-    '<input type="hidden" name="event_id" value="">',
-    "campo do event_id",
-)
+# O nosso tratador de formulario deixa de ter formulario para tratar.
+antigo = re.search(
+    r'/\* Submissão do formulário de lead.*?\nfunction handleLeadSubmit\(e\)\{.*?\n\}\n',
+    html, re.S)
+if not antigo:
+    falhas.append("tratador do formulario antigo: nao encontrei para remover")
+else:
+    html = html.replace(antigo.group(0), "")
 
 # ══════════════════════════════════════════════════════════════════
 

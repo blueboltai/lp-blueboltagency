@@ -485,31 +485,50 @@ mais melhora a correspondência do lado do Meta. Se o pixel tiver sido bloqueado
 `_fbc` não existe, mas o `fbclid` vem no endereço à mesma e é reconstruído a
 partir dele — que é precisamente o caso para o qual a CAPI existe.
 
-### O token da Conversions API não está aqui
+### O formulário é o do CRM
 
-E não pode estar. É uma credencial de servidor: quem a tiver pode escrever
-conversões na conta de anúncios da Blue Bolt e estragar a otimização das
-campanhas. Este repositório é público, e o que lá entrasse ficaria no histórico
-do Git para sempre, mesmo depois de apagado.
+Era nosso, era bonito e não servia para nada: mostrava "Obrigado!" e deitava a
+lead fora. Passou a ser o formulário do **Go High Level**
+(`api.leadconnectorhq.com/widget/form/ZBEyR6JAk4CBl4jVfnSD`), e as submissões
+caem no CRM.
 
-O `servidor/lead.js` está escrito e testado, e lê o token de `META_CAPI_TOKEN` —
-uma variável de ambiente, definida no painel de quem alojar o código. O
-`servidor/.env.exemplo` diz quais são as variáveis, sem nenhum valor.
+Já vem estilizado para fundo escuro — campos a `#FFFFFF0D`, texto branco,
+marcador a `#D5D5D5`, botão a `#188bf6` — que é quase o que a nossa caixa tinha,
+por isso encaixa na secção sem parecer colado. E traz **campo de telefone**, que
+o nosso não tinha; para a correspondência do Meta é o segundo melhor sinal
+depois do email.
 
-O que ele faz: normaliza e passa a SHA-256 o email, o telefone e o nome (o Meta
-exige-o, e um email com maiúsculas tem de dar o mesmo hash que um sem elas),
-passa o `fbp`/`fbc` e o IP como estão, e reenvia o `event_id` do browser.
-Verificado: nada de pessoal sai em claro.
+O título e o subtítulo ficam fora do iframe: são texto nosso, e lá dentro não os
+podíamos compor nem traduzir. O `form_embed.js` ajusta a altura ao conteúdo —
+sem ele o iframe fica com os 640px fixos e corta o botão em ecrãs pequenos.
 
-É um handler de `fetch` padrão — serve tal e qual em Cloudflare Workers e em
-Netlify Functions v2; na Vercel muda-se a última linha.
+Como o formulário passou a ser o único caminho de conversão da página, e vive
+num domínio que não é nosso, há uma saída alternativa por baixo: se o iframe não
+carregar, fica o `geral@bluebolt.pt` em vez de uma caixa vazia.
 
-### O que falta para isto valer alguma coisa
+### O evento de Lead precisa de uma submissão de teste
 
-O `ENDERECO_LEADS`, no JavaScript da página, está vazio. **O formulário continua
-a não enviar as leads para lado nenhum** — dispara a marcação e mostra o
-"Obrigado!", e os dados da pessoa desaparecem. O GitHub Pages só serve ficheiros;
-para o `servidor/lead.js` correr é preciso um alojamento que execute código.
+O formulário é um iframe de outro domínio: não se lhe pode pendurar um
+`onsubmit`. O que dá é ouvir o que ele grita para a página ao submeter — e **o
+formato dessa mensagem não está documentado e o script do GHL vem minificado**.
+Não o adivinhei em silêncio: o ouvinte aceita várias formas conhecidas e escreve
+na consola tudo o que chega do domínio deles, para se ver o que aparece de facto.
+Confirmar no *Test Events* do Events Manager, com uma submissão a sério.
+
+### O token da Conversions API: vai para o CRM, não para aqui
+
+O Go High Level tem integração própria com a Conversions API do Meta. É lá que o
+token deve ser colado — não num servidor à parte, que deixou de fazer sentido
+assim que o formulário passou a ser deles.
+
+E não podia estar neste repositório de qualquer maneira. É uma credencial de
+servidor: quem a tiver pode escrever conversões na conta de anúncios da Blue Bolt
+e estragar a otimização das campanhas. O repositório é público, e o que lá
+entrasse ficava no histórico do Git para sempre, mesmo depois de apagado.
+
+**Atenção à contagem a dobrar.** Se ligarem o pixel *dentro* do CRM, o ouvinte
+desta página tem de ser desligado — senão cada lead é contada duas vezes, uma
+por cada lado. As duas coisas não convivem.
 
 ## Por ligar antes de publicar
 

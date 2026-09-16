@@ -3127,6 +3127,10 @@ a{text-decoration:none;color:inherit}
      preencher e desistir. */
   .lead-input{ font-size:16px; }
 
+  /* A saida alternativa do formulario e texto corrido: sem folga ficava
+     com 14px de altura tocavel. */
+  .lead-fine a{ display:inline-block;padding:.85rem 0; }
+
   .auth-case-label{ font-size:10px;letter-spacing:.12em; }
   .expert-role{ font-size:11px; }
   .cta-badge{ font-size:10.5px; }
@@ -3423,24 +3427,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       </div>
     </div>
     <div data-reveal="right">
-      <form class="lead-form" id="lead-form" onsubmit="return handleLeadSubmit(event)"><input type="hidden" name="event_id" value="">
-        <div class="lead-form-title">Agendar a minha sessão estratégica</div>
-        <p class="lead-form-sub">Deixe os seus dados e marcamos o diagnóstico de 30 minutos. Sem custo, sem compromisso.</p>
-        <div class="lead-field">
-          <label for="lead-nome">Nome</label>
-          <input class="lead-input" id="lead-nome" name="nome" type="text" placeholder="O seu nome" required>
-        </div>
-        <div class="lead-field">
-          <label for="lead-email">Email profissional</label>
-          <input class="lead-input" id="lead-email" name="email" type="email" placeholder="nome@empresa.pt" required>
-        </div>
-        <div class="lead-field">
-          <label for="lead-empresa">Empresa</label>
-          <input class="lead-input" id="lead-empresa" name="empresa" type="text" placeholder="Nome da sua empresa" required>
-        </div>
-        <button type="submit" class="lm-btn lm-btn-bloco" data-lm><span class="lm-aro" aria-hidden="true"></span><span class="lm-face" aria-hidden="true"></span><span class="lm-conteudo"><span class="lm-label">Quero o meu diagnóstico gratuito</span></span></button>
-        <p class="lead-fine">Sem spam e sem compromisso. A nossa equipa entra em contacto em menos de 24 horas.</p>
-      </form>
+      <div class="lead-form" id="lead-form"><div class="lead-form-title">Agendar a minha sessão estratégica</div><p class="lead-form-sub">Deixe os seus dados e marcamos o diagnóstico de 30 minutos. Sem custo, sem compromisso.</p><iframe src="https://api.leadconnectorhq.com/widget/form/ZBEyR6JAk4CBl4jVfnSD" class="lead-crm" id="inline-ZBEyR6JAk4CBl4jVfnSD" title="Formulário de contacto" style="width:100%;height:640px;border:none;background:transparent" data-layout="{'id':'INLINE'}" data-trigger-type="alwaysShow" data-activation-type="alwaysActivated" data-deactivation-type="neverDeactivate" data-form-name="Diagnóstico gratuito" data-height="640" data-layout-iframe-id="inline-ZBEyR6JAk4CBl4jVfnSD" data-form-id="ZBEyR6JAk4CBl4jVfnSD"></iframe><p class="lead-fine">Sem spam e sem compromisso. A nossa equipa entra em contacto em menos de 24 horas.<br>Se o formulário não carregar, escreva para <a href="mailto:geral@bluebolt.pt">geral@bluebolt.pt</a>.</p></div>
     </div>
   </div>
 </section>
@@ -3801,80 +3788,39 @@ if(typeof gsap!=='undefined'){
   });
 })();
 
-/* Submissão do formulário de lead (placeholder — sem backend ligado) */
-/* Submissão do formulário de lead.
+</script>
+<script src="https://link.msgsndr.com/js/form_embed.js" defer>
+/* Evento de Lead vindo do formulário do CRM. Ver a nota no build.py. */
+(function(){
+  var ORIGEM = 'https://api.leadconnectorhq.com';
+  var jaDisparou = false;
 
-   ATENÇÃO: continua sem destino. O evento vai para o Meta e para o
-   dataLayer, mas os dados da pessoa não vão para lado nenhum — quem
-   preencher, desaparece. Falta ligar o `ENDERECO_LEADS` a algo que corra
-   código; o GitHub Pages só serve ficheiros. Enquanto estiver vazio, o
-   formulário comporta-se como antes e só dispara a marcação. */
-var ENDERECO_LEADS = '';
-
-function cookie(nome){
-  var m = document.cookie.match('(^|; )' + nome + '=([^;]*)');
-  return m ? decodeURIComponent(m[2]) : '';
-}
-
-function fbcDoLink(){
-  /* Se o pixel não chegou a correr, o cookie `_fbc` não existe — mas o
-     `fbclid` vem no endereço à mesma. Este é o formato que o Meta espera. */
-  var m = location.search.match(/[?&]fbclid=([^&]+)/);
-  return m ? 'fb.1.' + Date.now() + '.' + decodeURIComponent(m[1]) : '';
-}
-
-function idEvento(){
-  /* Um identificador por submissão, para o Meta juntar o evento do
-     browser ao do servidor em vez de contar a lead duas vezes. */
-  try{ if(window.crypto && crypto.randomUUID) return crypto.randomUUID(); }catch(err){}
-  return 'lead-' + Date.now() + '-' + Math.random().toString(16).slice(2);
-}
-
-function handleLeadSubmit(e){
-  e.preventDefault();
-  var form = document.getElementById('lead-form');
-  if(!form) return false;
-
-  var eid = idEvento();
-  var campo = form.querySelector('[name="event_id"]');
-  if(campo) campo.value = eid;
-
-  if(window.fbq){
-    fbq('track', 'Lead', {
-      content_name: 'Diagnóstico gratuito de 30 minutos',
-      content_category: 'formulario'
-    }, { eventID: eid });
+  function pareceSubmissao(d){
+    if(!d) return false;
+    var t = (typeof d === 'string') ? d : (d.type || d.event || d.action || '');
+    return /submit|submission|form-?sent|thank/i.test(String(t));
   }
 
-  /* Para o GTM poder disparar o que lá estiver configurado sem precisar
-     de adivinhar o clique. */
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event: 'lead_enviada', event_id: eid });
+  window.addEventListener('message', function(e){
+    if(e.origin !== ORIGEM) return;
+    /* Deixado de propósito: é isto que diz qual é a forma verdadeira da
+       mensagem, na primeira submissão a sério. */
+    try{ console.debug('[crm]', JSON.stringify(e.data).slice(0,300)); }catch(err){}
 
-  if(ENDERECO_LEADS){
-    var dados = {};
-    new FormData(form).forEach(function(v,k){ dados[k] = v; });
-    dados.pagina = location.href;
-    /* Os cookies do pixel. A seguir ao email, é o que mais melhora a
-       correspondência do lado do Meta — e é precisamente o que se
-       recupera quando o pixel é bloqueado, que é a razão de existir da
-       Conversions API. */
-    dados.fbp = cookie('_fbp');
-    dados.fbc = cookie('_fbc') || fbcDoLink();
-    /* `keepalive` para o pedido sobreviver se a pessoa sair da página
-       logo a seguir a submeter. */
-    fetch(ENDERECO_LEADS, {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify(dados),
-      keepalive: true
-    }).catch(function(){});
-  }
-  form.innerHTML = '<div class="lead-form-title" style="margin:0">Obrigado!</div>' +
-    '<p class="lead-fine" style="margin-top:1rem;font-size:14px;color:rgba(255,255,255,.7)">' +
-    'O seu pedido foi registado. A nossa equipa vai analisar o seu caso e entra em contacto em menos de 24 horas para agendar o diagnóstico.</p>';
-  return false;
-}
+    if(jaDisparou || !pareceSubmissao(e.data)) return;
+    jaDisparou = true;
+
+    var eid = 'lead-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+    if(window.fbq){
+      fbq('track', 'Lead', {
+        content_name: 'Diagnóstico gratuito de 30 minutos',
+        content_category: 'formulario'
+      }, { eventID: eid });
+    }
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push({ event: 'lead_enviada', event_id: eid });
+  });
+})();
 </script>
 </body>
 </html>
