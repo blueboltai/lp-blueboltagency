@@ -1,0 +1,53 @@
+# Publica a lp-v2/ no GitHub Pages a cada push no ramo de trabalho.
+#
+# O `enablement: true` liga as Pages a partir de dentro da Action — a API
+# das Pages nao e alcancavel do ambiente onde a pagina foi construida.
+#
+# Num repositorio privado as Pages exigem plano pago. Se este for gratuito,
+# e o passo `configure-pages` que o diz, com essa mensagem.
+name: Publicar a landing page
+
+on:
+  push:
+    branches: [claude/elementor-to-html-conversion-orrfzj]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.publicar.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Vai para o ar so o que a pagina precisa. O build.py, o README e o
+      # export original do Elementor ficam no repositorio, nao no site.
+      - name: Preparar o que vai para o ar
+        run: |
+          mkdir -p site
+          cp -r lp-v2/. site/
+          rm -rf site/source site/build.py site/README.md
+          touch site/.nojekyll
+          echo "— o que vai ser publicado —"
+          find site -maxdepth 2 -not -path '*/img/testemunhos/*' | sort
+
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - id: publicar
+        uses: actions/deploy-pages@v4

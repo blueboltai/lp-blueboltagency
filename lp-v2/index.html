@@ -2362,17 +2362,32 @@ a{text-decoration:none;color:inherit}
 .prob-bio strong{ color:var(--lt-inc);font-weight:600; }
 /* A frase de fecho fecha o texto, nao e uma caixa: ganha corpo e cor, e
    a unica marca que leva e um filete da cor da marca do lado esquerdo. */
+/* Ao centro, como o resto do bloco. O filete a esquerda saiu com a
+   mudanca: uma barra so de um lado com o texto ao centro lia-se como
+   engano. Fica um filete curto por cima, centrado — marca a mudanca de
+   voz da mesma maneira e nao puxa para um dos lados. */
 .prob-callout{
-  margin:2rem auto 0;
-  padding:.1rem 0 .1rem 1.5rem;
-  border-left:2px solid var(--accent-light);
+  margin:2.75rem auto 0;
+  padding:1.5rem 0 .1rem;
   font-family:'Manrope',sans-serif;
   font-size:19px;
   font-weight:500;
   line-height:1.6;
   letter-spacing:-.01em;
   color:var(--lt-inc);
-  text-align:left;
+  text-align:center;
+  position:relative;
+}
+.prob-callout::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:56px;
+  height:2px;
+  background:var(--accent-light);
+  border-radius:2px;
 }
 .prob-callout em{
   font-style:normal;
@@ -3199,7 +3214,6 @@ a{text-decoration:none;color:inherit}
         <span class="tg">Se já tem anúncios e está à procura de uma agência, é porque </span><span class="ta">algo não está a funcionar como devia.</span>
       </h2>
       <div class="prob-bio" data-reveal data-delay="2">
-        <p>O digital não é barato nem fácil, e qualquer agência que diga o contrário está a vender o que quer ouvir, não o que precisa de saber.</p>
         <p>A maior parte das empresas de serviços que nos procura tem <strong>problema de sistema.</strong> Anúncios sem funil não convertem. Funil sem nutrição não aquece. Leads sem processo comercial não fecham.</p>
         <p>Cada etapa que falha é faturação que fica pelo caminho.</p>
       </div>
