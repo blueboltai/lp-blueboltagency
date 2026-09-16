@@ -2133,7 +2133,23 @@ a{text-decoration:none;color:inherit}
    estreito sem precisar de saber a largura do pai. Ficam de fora os titulos
    das duas seccoes em duas colunas (#guia e #autoridade): ali o titulo e a
    largura da coluna, e forcar a mesma medida partia a grelha. */
-:root{ --medida-titulo: min(1020px, 100vw - 48px); }
+:root{
+  --medida-max: 1020px;
+  --medida-titulo: min(var(--medida-max), 100vw - 48px);
+  /* ══ Medida dos subtitulos ══
+     Cada subtitulo tinha a largura do bloco onde calhou ficar: 500, 560,
+     570, 600, 601 e 634px. Lado a lado nao havia dois iguais, e por baixo
+     de titulos todos com a mesma medida isso lia-se como desalinho.
+
+     Passam a partilhar uma medida so, presa a do titulo: 62% dela, que
+     da 632px. Nao pode ser a medida inteira — 1020px de texto corrido a
+     17px sao 126 caracteres por linha, o dobro do que o olho segue sem
+     perder o sitio onde ia. A 62% sao 78, dentro da banda que se le bem, e
+     a relacao com o titulo por cima passa a ler-se como escolha em vez de
+     acaso. Abaixo do ponto em que o titulo deixa de caber, os dois
+     encolhem juntos e o subtitulo fica da largura do titulo. */
+  --medida-sub: min(calc(var(--medida-max) * .62), var(--medida-titulo));
+}
 .hero-h1,
 #quem .prob-head .quem-h2,
 .traj-h2,
@@ -2153,9 +2169,18 @@ a{text-decoration:none;color:inherit}
   font-size:clamp(15px,1.25vw,18px);
   line-height:1.6;
   color:rgba(255,255,255,.82);
-  max-width:60ch;
-  margin-inline:auto;
   margin-bottom:2.25rem;
+}
+/* `max-width` e nao `width`: nas duas seccoes em duas colunas (#guia e
+   #autoridade) o subtitulo vive numa coluna mais estreita do que a
+   medida, e ali tem de ser a coluna a mandar. */
+.hero-sub,
+.prob-bio,
+.prob-callout,
+.band-sub,
+.cta-sub{
+  max-width:var(--medida-sub);
+  margin-inline:auto;
 }
 
 /* ══ Rodape ══
@@ -2295,19 +2320,16 @@ a{text-decoration:none;color:inherit}
   flex-direction:column;
   gap:1.25rem;
   font-family:'Manrope',sans-serif;
-  font-size:16px;
+  font-size:17px;
   font-weight:300;
   line-height:1.75;
   color:var(--lt-inc-2);
-  max-width:64ch;
-  margin-inline:auto;
 }
 .prob-bio strong{ color:var(--lt-inc);font-weight:600; }
 /* A frase de fecho fecha o texto, nao e uma caixa: ganha corpo e cor, e
    a unica marca que leva e um filete da cor da marca do lado esquerdo. */
 .prob-callout{
   margin:2rem auto 0;
-  max-width:60ch;
   padding:.1rem 0 .1rem 1.5rem;
   border-left:2px solid var(--accent-light);
   font-family:'Manrope',sans-serif;
@@ -2670,71 +2692,79 @@ a{text-decoration:none;color:inherit}
   .auth-section{ padding-top:calc(var(--ritmo) + 6px); } }
 
 /* ══════════════════════════════════════════════════════════════════
-   O QUE IMPLEMENTAMOS — a mesma superficie do diagnostico
-   Ficou com o lugar que era da linha do tempo, e partilha o fundo da
-   seccao do diagnostico (--bg, com os mesmos halos azuis nos topos) para
-   as duas se lerem como uma so superficie. O filete que o .ig-cta-wrap
-   tinha em cima desaparece entre elas, que era o que cortava a emenda.
-   Os cartoes ficam claros: e o contraste com o fundo escuro que os poe
-   a frente, como na referencia.
+   O QUE IMPLEMENTAMOS — continuacao de "O problema"
+   Herda o mesmo #f6f7f9 da seccao de cima, sem filete, sem halo e sem
+   mudanca de cor entre elas: o problema e o que fazemos por ele leem-se
+   como uma superficie so. E a transicao para escuro passa a acontecer
+   uma vez so, a entrada do bloco da oferta, em vez de duas.
    ══════════════════════════════════════════════════════════════════ */
 
 .band-section{
   position:relative;
-  background:var(--bg);
+  background:#f6f7f9;
+  color:#12141a;
   overflow:hidden;
 }
-.band-section::before{
-  content:'';
-  position:absolute;
-  left:50%;
-  transform:translateX(-50%);
-  pointer-events:none;
-}
-.band-section::before{
-  top:0;
-  width:900px;height:600px;
-  background:radial-gradient(ellipse at 50% 20%, rgba(47,161,255,.13) 0%, transparent 65%);
-}
-/* Sem halo no fundo desta nem no topo da seguinte: era o encontro dos
-   dois, cada um cortado pelo `overflow:hidden` da sua seccao, que
-   desenhava a linha horizontal na emenda. O halo de baixo fica para o
-   .ig-cta-wrap, que o tem atras do CTA. */
-.ig-cta-wrap::before{ display:none; }
+/* O halo azul do topo era para o fundo escuro; sobre claro so sujava. */
+.band-section::before{ display:none; }
 .band-inner{ position:relative;z-index:1; }
-/* Sem o filete, a emenda com o diagnostico desaparece. */
+/* O halo do .ig-cta-wrap volta: agora que vem de claro, e ele que da ao
+   bloco escuro uma entrada acesa, como a do hero. O filete continua
+   fora — com a mudanca de fundo, a emenda ja se le sozinha. */
 .ig-cta-wrap{ border-top:0; }
 
-/* ══ Cabecalho, agora sobre escuro ══ */
+/* ══ Cabecalho, sobre claro, igual ao de "O problema" ══ */
 .band-eyebrow{
-  color:#6cc0ff;
-  border-color:rgba(47,161,255,.28);
-  background:rgba(47,161,255,.08);
+  color:#0b74d4;
+  border-color:rgba(11,116,212,.22);
+  background:rgba(11,116,212,.06);
 }
 .band-tg{
-  background:linear-gradient(to bottom,#fff 0%,rgba(255,255,255,.62) 100%);
+  background:linear-gradient(to bottom,#12141a 0%,#3a3f4a 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.band-sub{ color:rgba(190,200,220,.62); }
+/* 15,8px era o unico subtitulo abaixo dos 17 da pagina; a medida comum
+   so se le como comum se o corpo de letra tambem for. */
+.band-sub{ color:#4b505c;font-size:17px;line-height:1.75; }
 
-/* ══ Cartoes claros sobre o escuro ══ */
-/* As duas bordas da referencia: um aro exterior, uma folga de 8px onde
-   se ve o fundo, e a borda do proprio cartao. A .1 o aro exterior nao se
-   distinguia do fundo e a nuance perdia-se. */
+/* ══ Cartoes, com as medidas da referencia ══ */
+/* As duas bordas: um aro exterior (slate-200), uma folga de 6px onde se
+   ve o fundo da seccao, e a borda do cartao (slate-100). E a folga que
+   se le como segunda borda — e tambem onde o brilho corre. */
 .band-card{
-  border-color:rgba(255,255,255,.17);
-  background:rgba(255,255,255,.022);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+  padding:6px;
+  /* A referencia usa slate-200 sobre pagina branca. Aqui a seccao e
+     #f6f7f9: a slate-200 o aro exterior desaparecia no fundo e a nuance
+     das duas bordas perdia-se. Um tom acima chega. */
+  border-color:#cfd8e3;
+  background:transparent;
 }
-.band-card:hover{ border-color:rgba(47,161,255,.3); }
+.band-card:hover{ border-color:rgba(47,161,255,.32); }
 .band-card-inner{
-  border-color:rgba(255,255,255,.75);
-  background:linear-gradient(160deg,#fbfcfe 0%,#eef2f8 100%);
-  box-shadow:0 20px 48px rgba(0,0,0,.4), 0 2px 6px rgba(0,0,0,.2);
-  transition:background .5s ease, transform .4s cubic-bezier(.16,1,.3,1);
+  min-height:260px;
+  padding:32px;
+  /* Com uma altura minima, o conteudo tem de se centrar na vertical: os
+     cartoes de uma linha de titulo ficavam com a folga toda em baixo, ao
+     lado de um de duas linhas que a nao tinha. Na referencia o
+     `justify-center` nao tem excecao por tamanho de ecra — vale sempre.
+     Ja o alinhamento horizontal muda: ao centro no telemovel, onde o
+     cartao ocupa a largura toda, e a esquerda a partir dos 768. */
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  border-color:#f1f5f9;
+  background:#fff;
+  /* shadow-xl da referencia. Sobre claro a sombra tem de ser curta e
+     baixa: a que servia sobre escuro (48px de desfoque a 40%) aqui
+     lia-se como uma mancha cinzenta a volta do cartao. */
+  box-shadow:0 20px 25px -5px rgba(15,23,42,.08), 0 8px 10px -6px rgba(15,23,42,.06);
+  transition:background .5s ease, box-shadow .5s ease, transform .4s cubic-bezier(.16,1,.3,1);
 }
 .band-card:hover .band-card-inner{
-  background:linear-gradient(160deg,#fff 0%,#eaf2fd 100%);
+  background:#f8fafc;
+  box-shadow:0 24px 34px -8px rgba(15,23,42,.12), 0 10px 14px -8px rgba(15,23,42,.08);
   transform:translateY(-3px);
 }
 /* Grelha tecnica de fundo, a 24px. Leva z-index:0 e o conteudo z-index:1:
@@ -2772,16 +2802,81 @@ a{text-decoration:none;color:inherit}
 .band-card-title,
 .band-card-desc{ position:relative;z-index:1; }
 
+/* ══ Pastilha do icone ══
+   A referencia da-lhe 48px, cantos de 12px, fundo slate-100 e borda
+   slate-200, e ao passar o rato no cartao troca a cor do icone e a da
+   borda pelo acento. Fica a pastilha clara em vez do degrade azul que
+   a pagina original punha: com o cartao ja branco, o quadrado azul
+   puxava o olho para o canto em vez de para o titulo. */
 .band-icon-wrap{
-  background:#fff;
-  border-color:rgba(15,23,42,.1);
-  color:#5b6577;
-  box-shadow:0 1px 3px rgba(10,15,35,.08);
+  border-radius:12px;
+  background:#f1f5f9;
+  border-color:#e2e8f0;
+  color:#64748b;
+  box-shadow:0 1px 2px rgba(15,23,42,.05);
+  transition:color .5s ease, border-color .5s ease, background .5s ease;
 }
-/* Ao passar o rato a pastilha fica azul (regra da pagina original). O
-   icone tem de acompanhar: a azul sobre azul desaparecia. */
-.band-card:hover .band-icon-wrap{ color:#fff; }
-.band-card-desc{ color:#64748b; }
+.band-card:hover .band-icon-wrap{
+  background:#f1f7ff;
+  border-color:rgba(47,161,255,.3);
+  color:#2fa1ff;
+}
+.band-icon-wrap svg{ width:24px;height:24px;stroke-width:1.5; }
+
+/* ══ A flutuacao dos icones ══
+   O motion do original anima y de 0 a -12 e a escala de 1 a 1.1 em 3s,
+   com um desfasamento de .4s por cartao. O --delay que a pagina ja
+   trazia serve a entrada, nao isto: repete-se de seis em seis e punha
+   dois icones da mesma coluna a subir ao mesmo tempo. A fase vem do
+   nth-child, um por cartao. */
+@keyframes bandFloat{
+  0%,100%{ transform:translateY(0) scale(1); }
+  50%    { transform:translateY(-12px) scale(1.1); }
+}
+.band-icon-wrap{
+  animation:bandFloat 3s ease-in-out infinite;
+  animation-delay:calc(var(--fase,0) * .4s);
+}
+.band-card:nth-child(1) .band-icon-wrap{ --fase:0; }
+.band-card:nth-child(2) .band-icon-wrap{ --fase:1; }
+.band-card:nth-child(3) .band-icon-wrap{ --fase:2; }
+.band-card:nth-child(4) .band-icon-wrap{ --fase:3; }
+.band-card:nth-child(5) .band-icon-wrap{ --fase:4; }
+.band-card:nth-child(6) .band-icon-wrap{ --fase:5; }
+.band-card:nth-child(7) .band-icon-wrap{ --fase:6; }
+.band-card:nth-child(8) .band-icon-wrap{ --fase:7; }
+.band-card:nth-child(9) .band-icon-wrap{ --fase:8; }
+/* Nove icones a subir e descer sem parar sao movimento a mais para quem
+   o pediu de menos. */
+@media(prefers-reduced-motion:reduce){
+  .band-icon-wrap{ animation:none; }
+}
+
+/* ══ Textos ══
+   A referencia poe o titulo a slate-800 e so o acende ao passar o rato.
+   Estava sempre em degrade azul: com nove cartoes, nove titulos azuis
+   de uma vez tiravam o destaque a todos. */
+.band-card-title{
+  font-size:20px;
+  font-weight:700;
+  margin-bottom:12px;
+  background:none;
+  -webkit-text-fill-color:currentColor;
+  color:#1e293b;
+  transition:color .3s ease;
+}
+.band-card:hover .band-card-title{ color:#2fa1ff; }
+.band-card-desc{
+  font-size:15px;
+  font-weight:300;
+  line-height:1.625;
+  color:#475569;
+  transition:color .3s ease;
+}
+.band-card:hover .band-card-desc{ color:#334155; }
+@media(min-width:768px){
+  .band-card-inner{ align-items:flex-start;text-align:left; }
+}
 
 /* ══ Botao liquid metal ══
    O componente pedido monta um fragment shader; aqui o aro e um

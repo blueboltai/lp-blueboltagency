@@ -66,29 +66,65 @@ tirava-lhe nitidez. Extraí o bitmap, recortei a margem transparente e reduzi-o
 para 420×382 (`img/selo-top5.png`, 123 KB). É o selo da Blue Bolt, NIF
 516 751 808, com a menção "2.º ano consecutivo".
 
-## O que implementamos, na mesma superfície do diagnóstico
+## O que implementamos, em continuidade com "O problema"
 
 A linha do tempo ("Como funciona") saiu — marcação, JS e a copy que lhe
-pertencia. O bloco do "o que implementamos" ficou com o lugar dela e partilha o
-fundo da secção do diagnóstico (`--bg`, com os mesmos halos azuis nos topos),
-para as duas se lerem como uma só superfície. O filete que o `.ig-cta-wrap`
-tinha em cima desapareceu — era o que cortava a emenda.
+pertencia. O bloco do "o que implementamos" ficou com o lugar dela.
 
-Os cartões já usavam o sistema pedido, herdado da página de IA: invólucro
-exterior, cartão interior, e um aro que acende com a aproximação do cursor — um
+Chegou a ficar sobre o fundo escuro do diagnóstico. Passou para o `#f6f7f9` da
+secção de cima: **sem filete, sem halo e sem mudança de cor entre as duas**, o
+problema e o que fazemos por ele leem-se como uma superfície só. Medida a
+emenda no browser, não há nada que a marque. E a passagem para escuro passa a
+acontecer uma vez, à entrada do bloco da oferta, em vez de duas — a página
+alterna menos e o bloco claro ganha peso.
+
+O halo azul do topo da secção saiu com a mudança: era para fundo escuro, e sobre
+claro só sujava. O do `.ig-cta-wrap` voltou — agora que se chega ali vindo de
+claro, é ele que dá ao bloco escuro uma entrada acesa, como a do hero.
+
+### Os cartões, com as medidas da referência
+
+O sistema já era o pedido, herdado da página de IA: invólucro exterior, cartão
+interior, e um aro que acende com a aproximação do cursor — um
 `repeating-conic-gradient` fixo, revelado por uma máscara cónica que segue o
-ângulo do rato, em CSS e um punhado de JS, sem React nem `motion`. Só mudaram de
-tom — ficam claros, e é o contraste com o fundo escuro que os põe à frente,
-como na referência — e ganharam a grelha técnica de 24px que faltava.
+ângulo do rato, em CSS e um punhado de JS, sem React nem `motion`. O que faltava
+eram as medidas e o movimento:
 
-As duas bordas são a nuance que faz o desenho: um aro exterior, uma folga de 8px
-onde se vê o fundo, e a borda do próprio cartão. A `rgba(255,255,255,.1)` o aro
-exterior não se distinguia do fundo e a nuance perdia-se; está a `.17`.
+| | Antes | Agora (referência) |
+| --- | --- | --- |
+| Folga do invólucro | 8px | **6px** (`p-1.5`) |
+| Aro exterior | `rgba(255,255,255,.17)` | **`#cfd8e3`** |
+| Borda do cartão | `rgba(255,255,255,.75)` | **`#f1f5f9`** (`slate-100`) |
+| Fundo do cartão | degradê `#fbfcfe→#eef2f8` | **`#fff`**, `#f8fafc` no hover |
+| Altura mínima | — | **260px**, conteúdo centrado |
+| Pastilha do ícone | branca, azul no hover | **`slate-100`**, acento no hover |
+| Flutuação do ícone | −6px, 3,5s | **−12px + escala 1,1, 3s** |
+| Título | degradê azul, 17px | **`slate-800` 20px**, acento no hover |
+| Corpo | 13,5px | **15px**, `slate-600` |
 
-O halo do fundo desta secção e o do topo da seguinte encontravam-se na emenda,
-cada um cortado pelo `overflow:hidden` da sua secção, e isso desenhava uma linha
-horizontal entre as duas. O de baixo saiu — o `.ig-cta-wrap` já tem o seu, atrás
-do CTA.
+O aro exterior é o único valor que não é o da referência: ela usa `slate-200`
+sobre página branca, e aqui a secção é `#f6f7f9` — a `slate-200` o aro
+desaparecia no fundo e a nuance das duas bordas, que foi pedida, perdia-se. Um
+tom acima chega.
+
+O título deixou de estar sempre em degradê azul. Com nove cartões, nove títulos
+azuis ao mesmo tempo tiravam o destaque a todos; agora o azul é o que distingue
+o cartão sob o cursor. A pastilha do ícone fez o caminho inverso, de azul para
+clara, pela mesma razão: com o cartão já branco, o quadrado azul puxava o olho
+para o canto em vez de para o título.
+
+A flutuação desfasa-se `.4s` por cartão, como no `motion` do original. O
+`--delay` que a página já trazia serve a entrada e repete-se de seis em seis —
+punha dois ícones da mesma coluna a subir ao mesmo tempo. A fase vem do
+`nth-child`, um valor por cartão, e desliga-se inteira com
+`prefers-reduced-motion`: nove ícones a subir e a descer sem parar são movimento
+a mais para quem o pediu de menos.
+
+Com uma altura mínima, o conteúdo tem de se centrar na vertical, senão os
+cartões de uma linha de título ficam com a folga toda em baixo ao lado de um de
+duas linhas que a não tem. Na referência o `justify-center` não tem exceção por
+tamanho de ecrã; o alinhamento horizontal é que muda — ao centro no telemóvel,
+onde o cartão ocupa a largura toda, e à esquerda a partir dos 768px.
 
 A grelha leva `z-index:0` e o conteúdo `z-index:1`: um `::before` absoluto pinta
 por cima do conteúdo em fluxo, e sem isso ficava sobre o texto.
@@ -111,6 +147,30 @@ exatamente a mesma faixa, 210→1230px.
 
 Ficam de fora os títulos de `#guia` e `#autoridade`: ali o título é uma das duas
 colunas da secção, e forçar-lhe a mesma medida partia a grelha.
+
+## A medida dos subtítulos
+
+O mesmo problema, um andar abaixo. Cada subtítulo tinha a largura do bloco onde
+calhou ficar — **500, 560, 570, 600, 601 e 634px** — e por baixo de títulos todos
+com a mesma medida isso lia-se como desalinho.
+
+Passaram a partilhar uma medida só, presa à do título: `--medida-sub` é 62% de
+`--medida-max`, ou seja **632px**. Não pode ser a medida inteira: 1020px de texto
+corrido a 17px são 126 caracteres por linha, o dobro do que o olho segue sem
+perder o sítio onde ia. A 62% são 78, dentro da banda que se lê bem, e a relação
+com o título por cima passa a ler-se como escolha em vez de acaso.
+
+É `max-width`, não `width`. Nas duas secções em duas colunas (`#guia` e
+`#autoridade`) o subtítulo vive numa coluna mais estreita do que a medida, e ali
+tem de ser a coluna a mandar. E abaixo do ponto em que o título deixa de caber,
+os dois encolhem juntos: o subtítulo fica exatamente da largura do título.
+
+Dois corpos de letra subiram para os 17px dos restantes — o do bloco do problema
+(estava a 16) e o do "o que implementamos" (a 15,8, o único abaixo dos 17 da
+página). Uma medida comum só se lê como comum se o corpo de letra também for.
+
+Medido no browser a 1440px: hero, problema, o que implementamos e CTA final, os
+quatro a 632px.
 
 **Segunda dobra** passou a branco/cinza (`#f6f7f9`), com o texto e a grelha de
 fundo invertidos para tom escuro. É isso que faz a VSL ler como na referência:
