@@ -798,12 +798,15 @@ SECOES_CSS = """
     transparent 120deg);
 }
 
+/* O original e preto. Sobre o azul do hero o preto lia-se como um buraco,
+   por isso a pastilha passa a azul-marinho da marca — continua escura que
+   baste para o aro metalico saltar, mas pertence a pagina. */
 .lm-face{
   position:absolute;
   inset:2px;
   border-radius:100px;
   z-index:1;
-  background:linear-gradient(180deg,#202020 0%,#000 100%);
+  background:linear-gradient(180deg,#16203d 0%,#050c1f 100%);
   transition:box-shadow .15s cubic-bezier(.4,0,.2,1);
 }
 .lm-btn:active .lm-face{
@@ -831,7 +834,6 @@ SECOES_CSS = """
   letter-spacing:-.005em;
   white-space:nowrap;
 }
-.lm-seta{ width:15px;height:15px;flex:none; }
 
 /* Ondas do clique, como no original. */
 .lm-onda{
@@ -1298,9 +1300,6 @@ BOTAO_LM = """<a href="#guia" class="lm-btn" data-lm aria-label="Agendar sessão
             <span class="lm-face" aria-hidden="true"></span>
             <span class="lm-conteudo">
               <span class="lm-label">Agendar sessão estratégica</span>
-              <svg class="lm-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-              </svg>
             </span>
           </a>"""
 
@@ -1321,7 +1320,7 @@ BOTAO_LM_JS = """
 
   var parado = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var estados = botoes.map(function(el){
-    return { el:el, angulo: 24, vel: 0.6, meta: 0.6 };
+    return { el:el, angulo: 24, vel: 1.9, meta: 1.9 };
   });
 
   if(parado){
@@ -1340,11 +1339,11 @@ BOTAO_LM_JS = """
   }
 
   estados.forEach(function(s){
-    s.el.addEventListener('mouseenter', function(){ s.meta = 1.4; });
-    s.el.addEventListener('mouseleave', function(){ s.meta = 0.6; });
+    s.el.addEventListener('mouseenter', function(){ s.meta = 3.4; });
+    s.el.addEventListener('mouseleave', function(){ s.meta = 1.9; });
     s.el.addEventListener('click', function(e){
-      s.meta = 3.2;
-      setTimeout(function(){ s.meta = s.el.matches(':hover') ? 1.4 : 0.6; }, 320);
+      s.meta = 7;
+      setTimeout(function(){ s.meta = s.el.matches(':hover') ? 3.4 : 1.9; }, 320);
       var r = s.el.getBoundingClientRect();
       var onda = document.createElement('span');
       onda.className = 'lm-onda';

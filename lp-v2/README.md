@@ -156,6 +156,10 @@ aproxima-se da meta em vez de saltar, e o metal acelera ao passar o rato e leva 
 impulso no clique — o equivalente ao `setSpeed` do original. Com
 `prefers-reduced-motion` fica parado num ângulo fixo.
 
+A pastilha é azul-marinho e não preta: sobre o azul do hero o preto lia-se como
+um buraco. Continua escura que baste para o aro metálico saltar, mas pertence à
+página.
+
 O original usa `#666666` no texto. Num CTA isso dá 2,4:1 contra o preto da
 pastilha, abaixo do mínimo legível; aqui o cinzento é mais claro e passa os
 4,5:1, mantendo o ar discreto. É um valor só, se preferir o original.
