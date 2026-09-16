@@ -1317,6 +1317,7 @@ html = troca(
     "pilula do CTA final",
 )
 
+
 # ══════════════════════════════════════════════════════════════════
 # TESTEMUNHOS EM VIDEO
 # Os videos sao os da propria Blue Bolt, recuperados da LP do Elementor.
@@ -2225,6 +2226,166 @@ html = troca(
     '    },\n',
     "",
     "JSON-LD: parentOrganization",
+)
+
+# ══════════════════════════════════════════════════════════════════
+# GOOGLE TAG MANAGER
+# O contentor entra em dois sitios: o script o mais cedo possivel no
+# <head>, e o <iframe> de recurso logo a abrir o <body>, para quem tem o
+# JavaScript desligado. O `dataLayer` e declarado pelo proprio snippet.
+#
+# O snippet do Google Analytics que a pagina trazia ficou para tras com um
+# GA_MEASUREMENT_ID por preencher: sai. Se for preciso GA, e o GTM que o
+# deve carregar — dois carregadores a fazer o mesmo trabalho e a receita
+# para eventos contados a dobrar.
+# ══════════════════════════════════════════════════════════════════
+
+GTM_ID = "GTM-WG4ZH4LF"
+
+GTM_HEAD = (
+    "  <!-- Google Tag Manager -->\n"
+    "  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\n"
+    "  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\n"
+    "  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=\n"
+    "  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\n"
+    f"  }})(window,document,'script','dataLayer','{GTM_ID}');</script>\n"
+    "  <!-- End Google Tag Manager -->\n"
+)
+
+GTM_BODY = (
+    "<!-- Google Tag Manager (noscript) -->\n"
+    f'<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={GTM_ID}"\n'
+    'height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>\n'
+    "<!-- End Google Tag Manager -->\n"
+)
+
+# Fora o GA meio ligado.
+ga = re.search(
+    r'  <script async src="https://www\.googletagmanager\.com/gtag/js\?id=GA_MEASUREMENT_ID"></script>.*?</script>\n',
+    html, re.S)
+if not ga:
+    falhas.append("snippet do Google Analytics por preencher")
+else:
+    html = html.replace(ga.group(0), GTM_HEAD)
+
+html = troca(html, "<body>", "<body>\n" + GTM_BODY, "iframe de recurso do GTM")
+
+# ══════════════════════════════════════════════════════════════════
+# META PIXEL
+# O ID do pixel e publico por definicao — vive no codigo da pagina e
+# qualquer visitante o le. O token da Conversions API e que nao: e uma
+# credencial de servidor, e nao entra aqui nem em ficheiro nenhum deste
+# repositorio, que e publico. Vive numa variavel de ambiente, no sitio
+# onde correr o codigo que recebe o formulario.
+# ══════════════════════════════════════════════════════════════════
+
+META_PIXEL = "260575891666892"
+
+html = troca(html, "fbq('init', 'META_PIXEL_ID');", f"fbq('init', '{META_PIXEL}');", "init do pixel")
+html = troca(
+    html,
+    'src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"',
+    f'src="https://www.facebook.com/tr?id={META_PIXEL}&ev=PageView&noscript=1"',
+    "pixel sem javascript",
+)
+
+# ══════════════════════════════════════════════════════════════════
+# O EVENTO DE LEAD
+# O `eventID` nao serve para nada hoje — serve para quando a Conversions
+# API entrar. O mesmo evento chega ao Meta por dois caminhos, o browser e
+# o servidor, e e por este identificador que ele percebe que sao o mesmo
+# em vez de contar a lead duas vezes. Gera-se agora e guarda-se no campo
+# escondido para o servidor o poder reenviar tal e qual.
+# ══════════════════════════════════════════════════════════════════
+
+ANCORA_SUBMIT = """function handleLeadSubmit(e){
+  e.preventDefault();
+  var form = document.getElementById('lead-form');
+  if(!form) return false;
+"""
+
+# So o cabecalho da funcao e substituido — o corpo, que escreve o
+# "Obrigado!", fica como esta. A copy dessa mensagem e reescrita noutro
+# sitio deste ficheiro, e casar com ela aqui era prende-las uma a outra.
+NOVO_SUBMIT = """/* Submissão do formulário de lead.
+
+   ATENÇÃO: continua sem destino. O evento vai para o Meta e para o
+   dataLayer, mas os dados da pessoa não vão para lado nenhum — quem
+   preencher, desaparece. Falta ligar o `ENDERECO_LEADS` a algo que corra
+   código; o GitHub Pages só serve ficheiros. Enquanto estiver vazio, o
+   formulário comporta-se como antes e só dispara a marcação. */
+var ENDERECO_LEADS = '';
+
+function cookie(nome){
+  var m = document.cookie.match('(^|; )' + nome + '=([^;]*)');
+  return m ? decodeURIComponent(m[2]) : '';
+}
+
+function fbcDoLink(){
+  /* Se o pixel não chegou a correr, o cookie `_fbc` não existe — mas o
+     `fbclid` vem no endereço à mesma. Este é o formato que o Meta espera. */
+  var m = location.search.match(/[?&]fbclid=([^&]+)/);
+  return m ? 'fb.1.' + Date.now() + '.' + decodeURIComponent(m[1]) : '';
+}
+
+function idEvento(){
+  /* Um identificador por submissão, para o Meta juntar o evento do
+     browser ao do servidor em vez de contar a lead duas vezes. */
+  try{ if(window.crypto && crypto.randomUUID) return crypto.randomUUID(); }catch(err){}
+  return 'lead-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+}
+
+function handleLeadSubmit(e){
+  e.preventDefault();
+  var form = document.getElementById('lead-form');
+  if(!form) return false;
+
+  var eid = idEvento();
+  var campo = form.querySelector('[name="event_id"]');
+  if(campo) campo.value = eid;
+
+  if(window.fbq){
+    fbq('track', 'Lead', {
+      content_name: 'Diagnóstico gratuito de 30 minutos',
+      content_category: 'formulario'
+    }, { eventID: eid });
+  }
+
+  /* Para o GTM poder disparar o que lá estiver configurado sem precisar
+     de adivinhar o clique. */
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event: 'lead_enviada', event_id: eid });
+
+  if(ENDERECO_LEADS){
+    var dados = {};
+    new FormData(form).forEach(function(v,k){ dados[k] = v; });
+    dados.pagina = location.href;
+    /* Os cookies do pixel. A seguir ao email, é o que mais melhora a
+       correspondência do lado do Meta — e é precisamente o que se
+       recupera quando o pixel é bloqueado, que é a razão de existir da
+       Conversions API. */
+    dados.fbp = cookie('_fbp');
+    dados.fbc = cookie('_fbc') || fbcDoLink();
+    /* `keepalive` para o pedido sobreviver se a pessoa sair da página
+       logo a seguir a submeter. */
+    fetch(ENDERECO_LEADS, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(dados),
+      keepalive: true
+    }).catch(function(){});
+  }
+"""
+
+html = troca(html, ANCORA_SUBMIT, NOVO_SUBMIT, "submissao do formulario")
+
+# O campo escondido que leva o eventID ao servidor.
+html = troca(
+    html,
+    '<form class="lead-form" id="lead-form" onsubmit="return handleLeadSubmit(event)">',
+    '<form class="lead-form" id="lead-form" onsubmit="return handleLeadSubmit(event)">'
+    '<input type="hidden" name="event_id" value="">',
+    "campo do event_id",
 )
 
 # ══════════════════════════════════════════════════════════════════

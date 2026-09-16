@@ -10,13 +10,13 @@
        Esta página não envia dados a lado nenhum enquanto os IDs não forem trocados. ===== -->
 
   <!-- Google Analytics (GA4) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'GA_MEASUREMENT_ID');
-  </script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WG4ZH4LF');</script>
+  <!-- End Google Tag Manager -->
 
   <!-- Meta Pixel -->
   <script>
@@ -28,11 +28,11 @@
   t.src=v;s=b.getElementsByTagName(e)[0];
   s.parentNode.insertBefore(t,s)}(window, document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', 'META_PIXEL_ID');
+  fbq('init', '260575891666892');
   fbq('track', 'PageView');
   </script>
   <noscript><img height="1" width="1" style="display:none"
-    src="https://www.facebook.com/tr?id=META_PIXEL_ID&ev=PageView&noscript=1"
+    src="https://www.facebook.com/tr?id=260575891666892&ev=PageView&noscript=1"
   ></noscript>
 
   <!-- Google Search Console — verificação por meta tag -->
@@ -3174,6 +3174,11 @@ a{text-decoration:none;color:inherit}
 </style>
 </head>
 <body>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WG4ZH4LF"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager -->
+
 
 <!-- HERO WRAP -->
 <div class="hero-wrap">
@@ -3418,7 +3423,7 @@ a{text-decoration:none;color:inherit}
       </div>
     </div>
     <div data-reveal="right">
-      <form class="lead-form" id="lead-form" onsubmit="return handleLeadSubmit(event)">
+      <form class="lead-form" id="lead-form" onsubmit="return handleLeadSubmit(event)"><input type="hidden" name="event_id" value="">
         <div class="lead-form-title">Agendar a minha sessão estratégica</div>
         <p class="lead-form-sub">Deixe os seus dados e marcamos o diagnóstico de 30 minutos. Sem custo, sem compromisso.</p>
         <div class="lead-field">
@@ -3797,10 +3802,74 @@ if(typeof gsap!=='undefined'){
 })();
 
 /* Submissão do formulário de lead (placeholder — sem backend ligado) */
+/* Submissão do formulário de lead.
+
+   ATENÇÃO: continua sem destino. O evento vai para o Meta e para o
+   dataLayer, mas os dados da pessoa não vão para lado nenhum — quem
+   preencher, desaparece. Falta ligar o `ENDERECO_LEADS` a algo que corra
+   código; o GitHub Pages só serve ficheiros. Enquanto estiver vazio, o
+   formulário comporta-se como antes e só dispara a marcação. */
+var ENDERECO_LEADS = '';
+
+function cookie(nome){
+  var m = document.cookie.match('(^|; )' + nome + '=([^;]*)');
+  return m ? decodeURIComponent(m[2]) : '';
+}
+
+function fbcDoLink(){
+  /* Se o pixel não chegou a correr, o cookie `_fbc` não existe — mas o
+     `fbclid` vem no endereço à mesma. Este é o formato que o Meta espera. */
+  var m = location.search.match(/[?&]fbclid=([^&]+)/);
+  return m ? 'fb.1.' + Date.now() + '.' + decodeURIComponent(m[1]) : '';
+}
+
+function idEvento(){
+  /* Um identificador por submissão, para o Meta juntar o evento do
+     browser ao do servidor em vez de contar a lead duas vezes. */
+  try{ if(window.crypto && crypto.randomUUID) return crypto.randomUUID(); }catch(err){}
+  return 'lead-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+}
+
 function handleLeadSubmit(e){
   e.preventDefault();
   var form = document.getElementById('lead-form');
   if(!form) return false;
+
+  var eid = idEvento();
+  var campo = form.querySelector('[name="event_id"]');
+  if(campo) campo.value = eid;
+
+  if(window.fbq){
+    fbq('track', 'Lead', {
+      content_name: 'Diagnóstico gratuito de 30 minutos',
+      content_category: 'formulario'
+    }, { eventID: eid });
+  }
+
+  /* Para o GTM poder disparar o que lá estiver configurado sem precisar
+     de adivinhar o clique. */
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event: 'lead_enviada', event_id: eid });
+
+  if(ENDERECO_LEADS){
+    var dados = {};
+    new FormData(form).forEach(function(v,k){ dados[k] = v; });
+    dados.pagina = location.href;
+    /* Os cookies do pixel. A seguir ao email, é o que mais melhora a
+       correspondência do lado do Meta — e é precisamente o que se
+       recupera quando o pixel é bloqueado, que é a razão de existir da
+       Conversions API. */
+    dados.fbp = cookie('_fbp');
+    dados.fbc = cookie('_fbc') || fbcDoLink();
+    /* `keepalive` para o pedido sobreviver se a pessoa sair da página
+       logo a seguir a submeter. */
+    fetch(ENDERECO_LEADS, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(dados),
+      keepalive: true
+    }).catch(function(){});
+  }
   form.innerHTML = '<div class="lead-form-title" style="margin:0">Obrigado!</div>' +
     '<p class="lead-fine" style="margin-top:1rem;font-size:14px;color:rgba(255,255,255,.7)">' +
     'O seu pedido foi registado. A nossa equipa vai analisar o seu caso e entra em contacto em menos de 24 horas para agendar o diagnóstico.</p>';

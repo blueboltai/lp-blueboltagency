@@ -457,6 +457,60 @@ os três selos em `img/google-partner.webp`, `img/meta-partner.webp` e
 Se enviar os ficheiros originais, é só substituí-los em `img/` com os mesmos
 nomes.
 
+## Marcação
+
+**Google Tag Manager** `GTM-WG4ZH4LF` — o script no topo do `<head>`, o `<iframe>`
+de recurso a abrir o `<body>`. O snippet do Google Analytics que a página trazia
+tinha ficado com um `GA_MEASUREMENT_ID` por preencher e saiu: se for preciso GA,
+é o GTM que o deve carregar. Dois carregadores a fazer o mesmo trabalho é a
+receita para eventos contados a dobrar.
+
+**Meta Pixel** `260575891666892` — `PageView` ao carregar, e `Lead` ao submeter o
+formulário, com `content_name` e `content_category`. O mesmo momento empurra
+`lead_enviada` para o `dataLayer`, para o GTM poder disparar o que lá estiver
+configurado sem ter de adivinhar o clique.
+
+### O `eventID`, e porque é que já existe
+
+Cada submissão gera um identificador próprio, que vai ao mesmo tempo para o
+evento do pixel, para o `dataLayer` e para um campo escondido do formulário.
+
+Hoje não serve para nada. Serve para quando a Conversions API entrar: o mesmo
+evento vai chegar ao Meta por dois caminhos — o browser e o servidor — e é por
+este identificador que ele percebe que são o mesmo em vez de contar a lead duas
+vezes. Sem isto, ligar a CAPI duplica tudo o que o pixel já mandou.
+
+O cliente recolhe também os cookies `_fbp` e `_fbc`. A seguir ao email, são o que
+mais melhora a correspondência do lado do Meta. Se o pixel tiver sido bloqueado o
+`_fbc` não existe, mas o `fbclid` vem no endereço à mesma e é reconstruído a
+partir dele — que é precisamente o caso para o qual a CAPI existe.
+
+### O token da Conversions API não está aqui
+
+E não pode estar. É uma credencial de servidor: quem a tiver pode escrever
+conversões na conta de anúncios da Blue Bolt e estragar a otimização das
+campanhas. Este repositório é público, e o que lá entrasse ficaria no histórico
+do Git para sempre, mesmo depois de apagado.
+
+O `servidor/lead.js` está escrito e testado, e lê o token de `META_CAPI_TOKEN` —
+uma variável de ambiente, definida no painel de quem alojar o código. O
+`servidor/.env.exemplo` diz quais são as variáveis, sem nenhum valor.
+
+O que ele faz: normaliza e passa a SHA-256 o email, o telefone e o nome (o Meta
+exige-o, e um email com maiúsculas tem de dar o mesmo hash que um sem elas),
+passa o `fbp`/`fbc` e o IP como estão, e reenvia o `event_id` do browser.
+Verificado: nada de pessoal sai em claro.
+
+É um handler de `fetch` padrão — serve tal e qual em Cloudflare Workers e em
+Netlify Functions v2; na Vercel muda-se a última linha.
+
+### O que falta para isto valer alguma coisa
+
+O `ENDERECO_LEADS`, no JavaScript da página, está vazio. **O formulário continua
+a não enviar as leads para lado nenhum** — dispara a marcação e mostra o
+"Obrigado!", e os dados da pessoa desaparecem. O GitHub Pages só serve ficheiros;
+para o `servidor/lead.js` correr é preciso um alojamento que execute código.
+
 ## Por ligar antes de publicar
 
 - **O formulário não envia nada.** O `handleLeadSubmit` mostra a mensagem de
