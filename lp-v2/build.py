@@ -608,6 +608,58 @@ SECOES_CSS = """
 .guia-section{ padding-bottom:calc(var(--ritmo) * .55); }
 .auth-section{ padding-top:calc(var(--ritmo) * .75); }
 
+/* ══ Correccao do vao visivel ══
+   O padding igual nao da intervalos iguais: cada seccao tem folga propria
+   por dentro — a moldura dos cartoes, a barra de rolagem dos testemunhos,
+   a sombra do funil, a pilula que abre cada seccao. Medido de tinta a
+   tinta, os vaos iam de 148 a 297px no desktop.
+
+   As correccoes estao separadas por breakpoint porque a folga interna
+   tambem e outra: em grelha, os cartoes trazem moldura e sombra ao lado e
+   por baixo; em coluna unica, empilham-se e a folga muda. Uma formula so
+   nao servia as duas — tentei, e o que arrumava uma desarrumava a outra.
+   Os numeros sairam da medicao. */
+
+/* A pista dos testemunhos reserva espaco para a barra de rolagem; em
+   grelha, acima dos 900px, essa barra nao existe. */
+@media(min-width:900px){
+  .tst-row{ padding-bottom:0; }
+
+  /* Fundo: seccoes que acabam numa grelha de cartoes ou no funil. */
+  #quem{ padding-bottom:calc(var(--ritmo) - 34px); }
+  #bandeiras{ padding-bottom:calc(var(--ritmo) - 26px); }
+  #testemunhos{ padding-bottom:calc(var(--ritmo) - 22px); }
+  /* Topo: seccoes que comecam com uma pilula ou um selo. */
+  #bandeiras{ padding-top:calc(var(--ritmo) - 18px); }
+  .guia-section{ padding-top:calc(var(--ritmo) - 45px); }
+  #testemunhos{ padding-top:calc(var(--ritmo) - 46px); }
+  .cta-section{ padding-top:calc(var(--ritmo) - 40px); }
+  /* O CTA fecha contra o rodape, que tem pouco espaco proprio em cima. */
+  .cta-section{ padding-bottom:calc(var(--ritmo) + 38px); }
+  .ft{ padding-top:calc(var(--ritmo) - 2px); }
+}
+
+@media(max-width:899px){
+  /* Em coluna unica a folga interna e outra: os cartoes ja nao trazem
+     vizinhos ao lado, a pista dos testemunhos volta a rolar, e a legenda
+     do ultimo cartao deixa muito espaco por baixo. */
+  #quem{ padding-bottom:calc(var(--ritmo) - 20px); }
+  #bandeiras{ padding-top:calc(var(--ritmo) - 20px);padding-bottom:calc(var(--ritmo) - 6px); }
+  .guia-section{ padding-top:calc(var(--ritmo) - 5px); }
+  .auth-section{ padding-bottom:calc(var(--ritmo) - 15px); }
+  #testemunhos{ padding-top:calc(var(--ritmo) - 14px);padding-bottom:calc(var(--ritmo) - 46px); }
+  .cta-section{ padding-top:calc(var(--ritmo) - 46px);padding-bottom:calc(var(--ritmo) + 35px); }
+  .ft{ padding-top:calc(var(--ritmo) + 34px); }
+}
+
+/* O diagnostico e a seccao do Ricardo continuam mais juntos que os outros
+   pares, por serem duas metades da mesma conversa — mas menos do que
+   estavam, que 169px contra 240 lia-se como um salto. */
+.guia-section{ padding-bottom:calc(var(--ritmo) * .75); }
+.auth-section{ padding-top:var(--ritmo); }
+@media(max-width:899px){ .guia-section{ padding-bottom:calc(var(--ritmo) * .75 + 7px); }
+  .auth-section{ padding-top:calc(var(--ritmo) + 6px); } }
+
 /* ══════════════════════════════════════════════════════════════════
    O QUE IMPLEMENTAMOS — a mesma superficie do diagnostico
    Ficou com o lugar que era da linha do tempo, e partilha o fundo da
@@ -851,12 +903,14 @@ SECOES_CSS = """
   to{ transform:translate(-50%,-50%) scale(4);opacity:0; }
 }
 
-/* No formulario o botao ocupa a linha toda, como ocupava o que substitui. */
-.lm-btn-bloco{ display:flex;width:100%;height:52px;margin-top:.25rem; }
+/* No formulario o botao nao vai a largura toda: a 518px a pastilha
+   estica-se e o aro metalico perde o desenho. Fica a medida do texto,
+   centrado, como nos outros dois sitios. */
+.lm-btn-bloco{ align-self:center;height:52px;margin:.5rem auto 0; }
 
 @media(max-width:640px){
   .lm-btn{ height:46px;padding:0 22px; }
-  .lm-btn-bloco{ height:50px; }
+  .lm-btn-bloco{ height:50px;width:100%; }
   .lm-label{ font-size:13px; }
 }
 
