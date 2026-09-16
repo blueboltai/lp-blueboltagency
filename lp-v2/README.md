@@ -66,6 +66,27 @@ tirava-lhe nitidez. Extraí o bitmap, recortei a margem transparente e reduzi-o
 para 420×382 (`img/selo-top5.png`, 123 KB). É o selo da Blue Bolt, NIF
 516 751 808, com a menção "2.º ano consecutivo".
 
+## O que implementamos, na dobra escura
+
+A linha do tempo ("Como funciona") saiu — marcação, JS e a copy que lhe
+pertencia. O bloco do "o que implementamos" ficou com o lugar dela e passou a
+escuro.
+
+Os cartões já usavam o sistema pedido, herdado da página de IA: invólucro
+exterior, cartão interior, e um aro que acende com a aproximação do cursor — um
+`repeating-conic-gradient` fixo, revelado por uma máscara cónica que segue o
+ângulo do rato, em CSS e um punhado de JS, sem React nem `motion`. Só mudaram de
+tom, e ganharam a grelha técnica de 24px que faltava.
+
+A grelha leva `z-index:0` e o conteúdo `z-index:1`: um `::before` absoluto pinta
+por cima do conteúdo em fluxo, e sem isso ficava sobre o texto.
+
+Ao retirar a folha de estilo da linha do tempo levei à frente a dos testemunhos
+e a do hero, que viviam no mesmo bloco — a secção dos testemunhos passou de 880
+para 5282px de altura antes de eu dar por isso. Ficam registadas aqui porque a
+folha (`SECOES_CSS`) é acrescentada num bloco só: quando se corta um pedaço, é
+preciso ver o que está entre as marcas, não só as marcas.
+
 ## A medida dos títulos
 
 Os títulos de secção vinham da página de IA cada um com a largura do bloco onde
