@@ -633,8 +633,7 @@ SECOES_CSS = """
   background:var(--bg);
   overflow:hidden;
 }
-.band-section::before,
-.band-section::after{
+.band-section::before{
   content:'';
   position:absolute;
   left:50%;
@@ -646,11 +645,11 @@ SECOES_CSS = """
   width:900px;height:600px;
   background:radial-gradient(ellipse at 50% 20%, rgba(47,161,255,.13) 0%, transparent 65%);
 }
-.band-section::after{
-  bottom:0;
-  width:700px;height:500px;
-  background:radial-gradient(ellipse at 50% 80%, rgba(0,93,169,.18) 0%, transparent 65%);
-}
+/* Sem halo no fundo desta nem no topo da seguinte: era o encontro dos
+   dois, cada um cortado pelo `overflow:hidden` da sua seccao, que
+   desenhava a linha horizontal na emenda. O halo de baixo fica para o
+   .ig-cta-wrap, que o tem atras do CTA. */
+.ig-cta-wrap::before{ display:none; }
 .band-inner{ position:relative;z-index:1; }
 /* Sem o filete, a emenda com o diagnostico desaparece. */
 .ig-cta-wrap{ border-top:0; }
@@ -668,7 +667,15 @@ SECOES_CSS = """
 .band-sub{ color:rgba(190,200,220,.62); }
 
 /* ══ Cartoes claros sobre o escuro ══ */
-.band-card{ border-color:rgba(255,255,255,.1); }
+/* As duas bordas da referencia: um aro exterior, uma folga de 8px onde
+   se ve o fundo, e a borda do proprio cartao. A .1 o aro exterior nao se
+   distinguia do fundo e a nuance perdia-se. */
+.band-card{
+  border-color:rgba(255,255,255,.17);
+  background:rgba(255,255,255,.022);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.05);
+}
+.band-card:hover{ border-color:rgba(47,161,255,.3); }
 .band-card-inner{
   border-color:rgba(255,255,255,.75);
   background:linear-gradient(160deg,#fbfcfe 0%,#eef2f8 100%);
@@ -708,6 +715,140 @@ SECOES_CSS = """
   border-color:rgba(47,161,255,.32);
 }
 .band-card-desc{ color:#64748b; }
+
+/* ══ Botao liquid metal ══
+   O componente pedido monta um fragment shader; aqui o aro e um
+   conic-gradient de quatro repeticoes a rodar por tras de uma pastilha
+   preta com 2px de folga — e a folga que se ve como metal. As paragens
+   quentes e frias ao lado do branco fazem a franja cromatica que no
+   shader vinha do shiftRed/shiftBlue. A rotacao e conduzida por JS, para
+   a velocidade poder subir ao passar o rato e dar um impulso no clique,
+   como o setSpeed do original. */
+.lm-btn{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  height:48px;
+  padding:0 28px;
+  border-radius:100px;
+  isolation:isolate;
+  text-decoration:none;
+  cursor:pointer;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.3),
+    0 36px 14px rgba(0,0,0,.02),
+    0 20px 12px rgba(0,0,0,.08),
+    0 9px 9px rgba(0,0,0,.12),
+    0 2px 5px rgba(0,0,0,.15);
+  transition:box-shadow .15s cubic-bezier(.4,0,.2,1), transform .15s cubic-bezier(.4,0,.2,1);
+}
+.lm-btn:hover{
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.4),
+    0 12px 6px rgba(0,0,0,.05),
+    0 8px 5px rgba(0,0,0,.1),
+    0 4px 4px rgba(0,0,0,.15),
+    0 1px 2px rgba(0,0,0,.2);
+}
+.lm-btn:active{ transform:translateY(1px) scale(.985); }
+
+.lm-aro{
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  overflow:hidden;
+  z-index:0;
+}
+.lm-aro::before,
+.lm-aro::after{
+  content:'';
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:260%;
+  aspect-ratio:1;
+  transform:translate(-50%,-50%) rotate(calc(var(--lm-a,0) * 1deg));
+}
+.lm-aro::before{
+  background:repeating-conic-gradient(from 45deg,
+    #0d0d0d 0deg,
+    #3d3d3d 9deg,
+    #ffd4c2 16deg,
+    #ffffff 21deg,
+    #c9ddff 26deg,
+    #6e6e6e 34deg,
+    #141414 56deg,
+    #0d0d0d 90deg);
+}
+/* A segunda camada roda ao contrario e mais devagar: e a sobreposicao
+   das duas que tira o ar de disco a girar e da o aspeto liquido. */
+.lm-aro::after{
+  opacity:.45;
+  mix-blend-mode:screen;
+  transform:translate(-50%,-50%) rotate(calc(var(--lm-a,0) * -.55deg));
+  background:repeating-conic-gradient(from 200deg,
+    transparent 0deg,
+    rgba(255,255,255,.5) 24deg,
+    rgba(180,205,255,.35) 32deg,
+    transparent 60deg,
+    transparent 120deg);
+}
+
+.lm-face{
+  position:absolute;
+  inset:2px;
+  border-radius:100px;
+  z-index:1;
+  background:linear-gradient(180deg,#202020 0%,#000 100%);
+  transition:box-shadow .15s cubic-bezier(.4,0,.2,1);
+}
+.lm-btn:active .lm-face{
+  box-shadow:inset 0 2px 4px rgba(0,0,0,.4), inset 0 1px 2px rgba(0,0,0,.3);
+}
+
+.lm-conteudo{
+  position:relative;
+  z-index:2;
+  display:inline-flex;
+  align-items:center;
+  gap:9px;
+  /* O original usa #666. Num CTA de pagina de anuncios isso fica em 2,4:1
+     contra o preto da pastilha — abaixo do minimo legivel. Este cinzento
+     mantem o ar discreto e passa os 4,5:1. */
+  color:#cdd5e2;
+  text-shadow:0 1px 2px rgba(0,0,0,.6);
+  transition:color .35s ease;
+}
+.lm-btn:hover .lm-conteudo{ color:#fff; }
+.lm-label{
+  font-family:'Manrope',sans-serif;
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:-.005em;
+  white-space:nowrap;
+}
+.lm-seta{ width:15px;height:15px;flex:none; }
+
+/* Ondas do clique, como no original. */
+.lm-onda{
+  position:absolute;
+  z-index:3;
+  width:20px;height:20px;
+  border-radius:50%;
+  pointer-events:none;
+  background:radial-gradient(circle, rgba(255,255,255,.4) 0%, rgba(255,255,255,0) 70%);
+  animation:lm-onda .6s ease-out forwards;
+}
+@keyframes lm-onda{
+  from{ transform:translate(-50%,-50%) scale(0);opacity:.6; }
+  to{ transform:translate(-50%,-50%) scale(4);opacity:0; }
+}
+
+@media(max-width:640px){
+  .lm-btn{ height:46px;padding:0 22px; }
+  .lm-label{ font-size:13px; }
+}
 
 @media(max-width:640px){
   .hero-h1{ font-size:clamp(26px,7.6vw,36px); }
@@ -1138,6 +1279,86 @@ VSL_JS = """
 html = troca(html, "</style>", VSL_CSS + NAV_CSS + SECOES_CSS + "</style>", "CSS da VSL, do hero e das secções")
 html = troca(html, '\n<!-- QUEM É -->', VSL_HTML + '\n<!-- QUEM É -->', "marcacao da VSL")
 html = troca(html, "\n/* Submissão do formulário de lead", VSL_JS + "\n/* Submissão do formulário de lead", "JS da VSL")
+
+# ══════════════════════════════════════════════════════════════════
+# BOTAO LIQUID METAL — o CTA do hero
+# Replica do componente pedido sem WebGL: onde o original monta um
+# fragment shader do @paper-design/shaders, aqui ha um conic-gradient
+# de quatro repeticoes a rodar por tras de uma pastilha preta, com 2px
+# de folga — e essa folga que faz o aro metalico. O shader tinha
+# shiftRed/shiftBlue; as paragens quentes e frias ao lado do branco
+# fazem a mesma franja cromatica.
+# ══════════════════════════════════════════════════════════════════
+
+BOTAO_LM = """<a href="#guia" class="lm-btn" data-lm aria-label="Agendar sessão estratégica">
+            <span class="lm-aro" aria-hidden="true"></span>
+            <span class="lm-face" aria-hidden="true"></span>
+            <span class="lm-conteudo">
+              <span class="lm-label">Agendar sessão estratégica</span>
+              <svg class="lm-seta" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
+              </svg>
+            </span>
+          </a>"""
+
+ctas = re.search(r'<div class="hero-ctas">\s*<a href="#guia" class="cta-btn-main">.*?</a>\s*</div>', html, re.S)
+if not ctas:
+    falhas.append("botao do hero: nao encontrei o bloco")
+else:
+    html = html.replace(ctas.group(0), '<div class="hero-ctas">\n          ' + BOTAO_LM + '\n        </div>')
+
+# O motor da rotacao do botao. E o equivalente ao setSpeed do componente
+# original: a velocidade aproxima-se da meta em vez de saltar, por isso o
+# metal acelera ao passar o rato e leva um impulso no clique sem trancos.
+BOTAO_LM_JS = """
+/* Botao liquid metal — roda o aro e responde ao rato */
+(function(){
+  var botoes = Array.prototype.slice.call(document.querySelectorAll('[data-lm]'));
+  if(!botoes.length) return;
+
+  var parado = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var estados = botoes.map(function(el){
+    return { el:el, angulo: 24, vel: 0.6, meta: 0.6 };
+  });
+
+  if(parado){
+    estados.forEach(function(s){ s.el.style.setProperty('--lm-a', s.angulo); });
+  } else {
+    var anterior = performance.now();
+    (function passo(agora){
+      var dt = Math.min(64, agora - anterior); anterior = agora;
+      estados.forEach(function(s){
+        s.vel += (s.meta - s.vel) * Math.min(1, dt / 220);
+        s.angulo = (s.angulo + s.vel * dt * 0.022) % 360;
+        s.el.style.setProperty('--lm-a', s.angulo.toFixed(2));
+      });
+      requestAnimationFrame(passo);
+    })(anterior);
+  }
+
+  estados.forEach(function(s){
+    s.el.addEventListener('mouseenter', function(){ s.meta = 1.4; });
+    s.el.addEventListener('mouseleave', function(){ s.meta = 0.6; });
+    s.el.addEventListener('click', function(e){
+      s.meta = 3.2;
+      setTimeout(function(){ s.meta = s.el.matches(':hover') ? 1.4 : 0.6; }, 320);
+      var r = s.el.getBoundingClientRect();
+      var onda = document.createElement('span');
+      onda.className = 'lm-onda';
+      onda.style.left = (e.clientX - r.left) + 'px';
+      onda.style.top  = (e.clientY - r.top)  + 'px';
+      s.el.appendChild(onda);
+      setTimeout(function(){ onda.remove(); }, 600);
+    });
+  });
+})();
+"""
+html = troca(
+    html,
+    "\n/* Submissão do formulário de lead",
+    BOTAO_LM_JS + "\n/* Submissão do formulário de lead",
+    "JS do botão liquid metal",
+)
 
 # ══════════════════════════════════════════════════════════════════
 # SEGUNDA DOBRA — o problema, com a ampulheta em destaque

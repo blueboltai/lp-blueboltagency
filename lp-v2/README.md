@@ -81,6 +81,15 @@ exterior, cartão interior, e um aro que acende com a aproximação do cursor �
 tom — ficam claros, e é o contraste com o fundo escuro que os põe à frente,
 como na referência — e ganharam a grelha técnica de 24px que faltava.
 
+As duas bordas são a nuance que faz o desenho: um aro exterior, uma folga de 8px
+onde se vê o fundo, e a borda do próprio cartão. A `rgba(255,255,255,.1)` o aro
+exterior não se distinguia do fundo e a nuance perdia-se; está a `.17`.
+
+O halo do fundo desta secção e o do topo da seguinte encontravam-se na emenda,
+cada um cortado pelo `overflow:hidden` da sua secção, e isso desenhava uma linha
+horizontal entre as duas. O de baixo saiu — o `.ig-cta-wrap` já tem o seu, atrás
+do CTA.
+
 A grelha leva `z-index:0` e o conteúdo `z-index:1`: um `::before` absoluto pinta
 por cima do conteúdo em fluxo, e sem isso ficava sobre o texto.
 
@@ -131,6 +140,25 @@ o ecrã (`clamp(64px, 6.6vw, 98px)`). O topo de `#quem` fica de fora: é ele que
 compensa a VSL a cavalo. O diagnóstico e a secção do Ricardo levam um intervalo
 mais curto entre si, por serem duas metades da mesma conversa. Medido no
 browser, a página passa de ~8700px para 8098px sem perder nada.
+
+## O botão do hero
+
+Réplica do componente *liquid metal* pedido, sem WebGL. Onde o original monta um
+fragment shader do `@paper-design/shaders`, aqui há um `repeating-conic-gradient`
+de quatro repetições a rodar por trás de uma pastilha preta com 2px de folga — e
+é essa folga que se vê como o aro metálico. As paragens quentes e frias ao lado
+do branco fazem a franja cromática que no shader vinha do `shiftRed`/`shiftBlue`,
+e uma segunda camada a rodar ao contrário e mais devagar tira-lhe o ar de disco a
+girar.
+
+A rotação é conduzida por JS, não por `animation-duration`: assim a velocidade
+aproxima-se da meta em vez de saltar, e o metal acelera ao passar o rato e leva um
+impulso no clique — o equivalente ao `setSpeed` do original. Com
+`prefers-reduced-motion` fica parado num ângulo fixo.
+
+O original usa `#666666` no texto. Num CTA isso dá 2,4:1 contra o preto da
+pastilha, abaixo do mínimo legível; aqui o cinzento é mais claro e passa os
+4,5:1, mantendo o ar discreto. É um valor só, se preferir o original.
 
 ## O rodapé
 
