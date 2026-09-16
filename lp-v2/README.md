@@ -164,6 +164,29 @@ O original usa `#666666` no texto. Num CTA isso dá 2,4:1 contra o preto da
 pastilha, abaixo do mínimo legível; aqui o cinzento é mais claro e passa os
 4,5:1, mantendo o ar discreto. É um valor só, se preferir o original.
 
+## Telemóvel
+
+O vídeo de fundo do herói tem 7,7MB e estava a ser descarregado no telemóvel,
+onde nem se vê — era **94% do peso da página** para um fundo que o véu quase
+tapa. O `<source>` saiu da marcação e a origem passa a ser posta por JS, só em
+ecrãs a partir de 861px, depois do `load`, e nunca com `prefers-reduced-motion`.
+No telemóvel fica o fotograma. Medido no browser, a 390px:
+
+| | Antes | Depois |
+| --- | --- | --- |
+| No arranque | 8,20 MB | **0,47 MB** |
+| Página toda percorrida | 8,34 MB | **0,81 MB** |
+
+O retrato do Ricardo (202KB) também vinha no arranque, apesar de estar muito
+abaixo da dobra; passou a `loading="lazy"`.
+
+Os alvos de toque abaixo dos 44px foram corrigidos: os ícones das redes no
+rodapé (34px) e as ligações de contacto e políticas, que sendo texto corrido
+tinham 15px de altura tocável. E o miúdo que ninguém lê num ecrã pequeno subiu:
+os rótulos dos casos estavam a 8px, o selo do CTA e o copyright a 9px.
+
+Sem transbordo horizontal a 320, 360, 390, 414, 430 e 768px.
+
 ## O rodapé
 
 Quatro colunas, como no site: marca e redes, contactos, informações úteis e

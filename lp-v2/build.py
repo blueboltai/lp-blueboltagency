@@ -142,11 +142,11 @@ SECOES_CSS = """
    cabe nos 1020px que todos os titulos partilham e quebra para tres
    linhas — o que dava o absurdo de o titulo ficar mais alto num ecra
    maior: duas linhas a 1280 e tres a 1440. Medido no browser, a linha
-   mais longa a 52px tem 999px dos 1020 disponiveis — 2% de folga, que
-   e pouco para aguentar a diferenca de metricas entre browsers. A 51px
-   sobram 40px, e a olho nao se distingue. */
+   mais longa passava os 1020 disponiveis. Com o hook novo — 105
+   caracteres — a 48px assenta em tres linhas e mantem 1,2x sobre os
+   titulos de seccao, que e a hierarquia que a pagina tem. */
 .hero-h1{
-  font-size:clamp(30px,4vw,51px);
+  font-size:clamp(28px,3.8vw,48px);
   line-height:1.12;
   margin-bottom:1.25rem;
 }
@@ -544,6 +544,7 @@ SECOES_CSS = """
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
 .hero-sub{ color:rgba(198,208,226,.84); }
+.hero-sub strong{ color:#fff;font-weight:600; }
 
 /* O botao do hero passa a claro. Na dobra escura e o branco que salta;
    no CTA final, que esta sobre fundo claro, o azul continua a ser o certo. */
@@ -699,10 +700,19 @@ SECOES_CSS = """
     linear-gradient(to right, rgba(10,15,35,.05) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(10,15,35,.05) 1px, transparent 1px);
   background-size:24px 24px;
-  /* A grelha desvanece para as bordas em vez de bater na borda do cartao:
-     fica densa onde estao o icone e o titulo e some-se nas margens. */
-  -webkit-mask-image:radial-gradient(118% 96% at 50% 8%, #000 28%, rgba(0,0,0,.5) 62%, transparent 92%);
-  mask-image:radial-gradient(118% 96% at 50% 8%, #000 28%, rgba(0,0,0,.5) 62%, transparent 92%);
+  /* A grelha desvanece nos quatro lados em vez de bater na borda do
+     cartao. Sao duas mascaras — uma na horizontal, outra na vertical —
+     cruzadas: cada uma apaga um par de lados, e a interseccao apaga os
+     quatro. Uma radial so fecharia os cantos, deixando o meio dos lados
+     a chegar a borda. */
+  -webkit-mask-image:
+    linear-gradient(to right, transparent 0, #000 16%, #000 84%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
+  -webkit-mask-composite:source-in;
+  mask-image:
+    linear-gradient(to right, transparent 0, #000 16%, #000 84%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
+  mask-composite:intersect;
 }
 .band-icon-wrap,
 .band-card-title,
@@ -798,20 +808,22 @@ SECOES_CSS = """
     transparent 120deg);
 }
 
-/* O original e preto. Sobre o azul do hero o preto lia-se como um buraco,
-   por isso a pastilha passa a azul-marinho da marca — continua escura que
-   baste para o aro metalico saltar, mas pertence a pagina. */
+/* O original e preto, e sobre o azul do hero lia-se como um buraco. A
+   pastilha passa a cinzento claro: num CTA sobre fundo escuro e o claro
+   que salta, e o aro metalico continua a ler-se por cima dele. */
 .lm-face{
   position:absolute;
   inset:2px;
   border-radius:100px;
   z-index:1;
-  background:linear-gradient(180deg,#16203d 0%,#050c1f 100%);
+  background:linear-gradient(180deg,#f4f6fa 0%,#dfe4ec 52%,#eef1f6 100%);
   transition:box-shadow .15s cubic-bezier(.4,0,.2,1);
 }
 .lm-btn:active .lm-face{
-  box-shadow:inset 0 2px 4px rgba(0,0,0,.4), inset 0 1px 2px rgba(0,0,0,.3);
+  box-shadow:inset 0 2px 4px rgba(10,20,45,.28), inset 0 1px 2px rgba(10,20,45,.2);
 }
+/* Sobre o claro a onda do clique tem de ser escura para se ver. */
+.lm-onda{ background:radial-gradient(circle, rgba(10,20,45,.3) 0%, rgba(10,20,45,0) 70%); }
 
 .lm-conteudo{
   position:relative;
@@ -819,14 +831,11 @@ SECOES_CSS = """
   display:inline-flex;
   align-items:center;
   gap:9px;
-  /* O original usa #666. Num CTA de pagina de anuncios isso fica em 2,4:1
-     contra o preto da pastilha — abaixo do minimo legivel. Este cinzento
-     mantem o ar discreto e passa os 4,5:1. */
-  color:#cdd5e2;
-  text-shadow:0 1px 2px rgba(0,0,0,.6);
+  /* Texto escuro sobre a pastilha clara: 13:1, bem acima do minimo. */
+  color:#0d1730;
   transition:color .35s ease;
 }
-.lm-btn:hover .lm-conteudo{ color:#fff; }
+.lm-btn:hover .lm-conteudo{ color:#000; }
 .lm-label{
   font-family:'Manrope',sans-serif;
   font-size:14px;
@@ -842,7 +851,6 @@ SECOES_CSS = """
   width:20px;height:20px;
   border-radius:50%;
   pointer-events:none;
-  background:radial-gradient(circle, rgba(255,255,255,.4) 0%, rgba(255,255,255,0) 70%);
   animation:lm-onda .6s ease-out forwards;
 }
 @keyframes lm-onda{
@@ -853,6 +861,25 @@ SECOES_CSS = """
 @media(max-width:640px){
   .lm-btn{ height:46px;padding:0 22px; }
   .lm-label{ font-size:13px; }
+}
+
+/* ══ Telemovel ══
+   O que a auditoria apanhou: alvos de toque abaixo dos 44px e miudo a 8 e
+   9px, que ninguem le num ecra pequeno. */
+@media(max-width:768px){
+  .ft-rede{ width:44px;height:44px; }
+  .ft-redes{ gap:12px; }
+  /* As ligacoes do rodape sao texto corrido: sem folga vertical ficam com
+     15px de altura tocavel. */
+  .ft-lista a{ display:inline-block;padding:.85rem 0;line-height:1.3; }
+  .ft-lista{ gap:.2rem; }
+
+  .auth-case-label{ font-size:10px;letter-spacing:.12em; }
+  .expert-role{ font-size:11px; }
+  .cta-badge{ font-size:10.5px; }
+  .ft-copy{ font-size:11px; }
+  .lead-fine{ font-size:12.5px; }
+  .tst-area{ font-size:11.5px; }
 }
 
 @media(max-width:640px){
@@ -1051,7 +1078,8 @@ html = troca(
 # O retrato original da pagina de IA, apanhado em blueboltai.online.
 # Vinha a 1440x1800; reduzido para 1000px de largura (o dobro dos ~500 a
 # que aparece), passa de 432KB a 202KB.
-html = troca(html, 'src="ricardo.webp"', 'src="img/ricardo.webp"', "foto do Ricardo")
+html = troca(html, 'src="ricardo.webp"', 'src="img/ricardo.webp" loading="lazy" decoding="async"',
+             "foto do Ricardo")
 
 # ══════════════════════════════════════════════════════════════════
 # HERO
@@ -1061,14 +1089,14 @@ html = troca(html, 'src="ricardo.webp"', 'src="img/ricardo.webp"', "foto do Rica
 html = troca(
     html,
     '<span class="t1">A sua equipa perde horas todos os dias em trabalho que </span><span class="t2">a IA já poderia fazer sozinha.</span>',
-    '<span class="t1">Transforme o que investe em anúncios em </span>'
-    '<span class="t2">faturação que consegue ver e explicar</span>',
+    '<span class="t1">Se depende de sorte com anúncios ou de alguém o recomendar, </span>'
+    '<span class="t2">está a jogar à sorte, não a gerir um negócio.</span>',
     "h1",
 )
 html = troca(
     html,
     "Automatize processos, aumente produtividade e reduza custos com agentes de IA implementados à medida da sua operação, para que a tecnologia se adapte ao seu negócio e não o contrário.",
-    "Com um Sistema Previsível de Aquisição de Clientes, sabe todos os meses onde o dinheiro se perdeu, onde gerou oportunidades e onde se transformou em clientes.",
+    "<strong>As empresas que escalam têm um sistema.</strong> Com o Sistema Previsível de Aquisição de Clientes, sabe todos os meses onde o dinheiro se perdeu, onde gerou oportunidades e onde se transformou em clientes.",
     "subtitulo do hero",
 )
 html = troca(
@@ -1087,11 +1115,14 @@ html = troca(
   <!-- Glow orbs animados -->""",
     """<div class="hero-wrap">
 
-  <!-- Vídeo de fundo (o mesmo do modelo do Elementor) -->
-  <video class="hero-bg-video" autoplay muted loop playsinline preload="none"
-         poster="img/hero-poster.jpg" aria-hidden="true">
-    <source src="img/hero-video.webm" type="video/webm">
-  </video>
+  <!-- Vídeo de fundo (o mesmo do modelo do Elementor).
+       Sem <source>: a origem é posta por JS, e só em ecrãs largos. Com o
+       <source> na marcação o browser descarregava os 7,7MB também no
+       telemóvel, onde o vídeo nem se vê — ficava 94% do peso da página
+       para um fundo. No telemóvel fica o fotograma. -->
+  <video class="hero-bg-video" muted loop playsinline preload="none"
+         poster="img/hero-poster.jpg" aria-hidden="true"
+         data-src="img/hero-video.webm"></video>
   <div class="hero-bg-veil" aria-hidden="true"></div>
 
   <!-- Glow orbs animados -->""",
@@ -1360,6 +1391,31 @@ html = troca(
     "\n/* Submissão do formulário de lead",
     BOTAO_LM_JS + "\n/* Submissão do formulário de lead",
     "JS do botão liquid metal",
+)
+
+# O video de fundo so e descarregado onde e visto: em ecras largos, depois
+# do primeiro pintar, e nunca com movimento reduzido. Sao 7,7MB — no
+# telemovel eram 94% do peso da pagina para um fundo que o veu quase tapa.
+VIDEO_JS = """
+/* Vídeo de fundo do herói — só em ecrãs largos, e só depois de pintar */
+(function(){
+  var v = document.querySelector('.hero-bg-video');
+  if(!v || !v.dataset.src) return;
+  if(!window.matchMedia('(min-width: 861px)').matches) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  window.addEventListener('load', function(){
+    v.src = v.dataset.src;
+    v.preload = 'auto';
+    var t = v.play();
+    if(t && t.catch) t.catch(function(){});
+  });
+})();
+"""
+html = troca(
+    html,
+    "\n/* Submissão do formulário de lead",
+    VIDEO_JS + "\n/* Submissão do formulário de lead",
+    "JS do vídeo de fundo",
 )
 
 # ══════════════════════════════════════════════════════════════════
