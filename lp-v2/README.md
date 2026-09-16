@@ -93,15 +93,38 @@ da luminância em 0,075; o subtítulo, a 17px, precisa de 4,5:1 e tolera até 0,
 | Contraste do azul, pior caso | 5,2:1 | **3,3:1** |
 | Contraste do branco, pior caso | 14,3:1 | **9,1:1** |
 
-A 3,3:1 o azul passa o mínimo, mas sem folga. O título ganhou por isso um halo
-escuro com a forma das letras — `filter:drop-shadow`, e não `text-shadow`,
-porque o título se pinta com `background-clip:text` e um `text-shadow` ficaria
-por cima do degradê em vez de por trás dele. Nas zonas escuras do fotograma não
-se vê; onde as palavras a azul passam por cima da zona clara, é ele que segura
-a leitura.
+Numa segunda passagem, para o vídeo ler mais, corrigiu-se um erro de desenho:
+**o ponto mais claro do véu estava exatamente onde está o título**. O sítio que
+precisava de mais proteção era o que tinha menos, e por isso qualquer tentativa
+de acender o fotograma batia logo no limite do contraste.
 
-A rampa vertical fecha na mesma até ao `#000122` sólido em baixo: é essa base
-escura que faz o halo azul da VSL ler-se como um ecrã aceso. A tipografia é a da própria página — Archia no título,
+O véu passou a ter três camadas com papéis separados:
+
+1. **Uma faixa que protege o texto** — escurece só a altura em que há letras,
+   esbatida nas duas pontas para não deixar aresta.
+2. **A base**, que fecha no `#000122` sólido em baixo. É ela que faz o halo azul
+   da VSL ler-se como um ecrã aceso.
+3. **O halo radial**, agora largo e quase limpo ao centro: com a faixa a tratar
+   do texto, só lhe resta fechar os cantos.
+
+A faixa tem de mudar com o ecrã. Medido no browser: no computador as letras vão
+dos 8% aos 57% da altura do véu; no telemóvel, dos 6% aos 72% — o herói é mais
+estreito, o texto quebra em mais linhas e desce. Com um valor só, o subtítulo do
+telemóvel caía fora da faixa e ia parar a uma zona clara do fotograma.
+
+Resultado medido, com as zonas tiradas da posição real do texto em cada largura:
+
+| Pior pixel por trás de… | 1440px | 390px | Mínimo exigido |
+| --- | --- | --- | --- |
+| Título (azul, texto grande) | **3,13:1** | **3,26:1** | 3:1 |
+| Subtítulo (cinzento, 17px) | **6,26:1** | **7,03:1** | 4,5:1 |
+
+Por cima disto há ainda dois halos, que a medição do fundo não conta: o do
+título é `filter:drop-shadow` e não `text-shadow`, porque o título se pinta com
+`background-clip:text` e um `text-shadow` ficaria por cima do degradê em vez de
+por trás dele; o do subtítulo é `text-shadow`, que ali não há degradê recortado
+para estragar. O subtítulo é o texto mais exposto do herói — cinzento, a 17px, e
+sem o corpo de letra do título para aguentar. A tipografia é a da própria página — Archia no título,
 Manrope no corpo — e só a medida e a cor foram ajustadas, que o hero centrado
 e o vídeo por trás obrigam. A faixa deslizante de provas que vinha
 da página de IA saiu; os três selos — Google Partner, Meta Business Partner e
@@ -379,6 +402,13 @@ ler-se; abaixo disto começavam a apertar.
 Sem transbordo horizontal a 320, 360, 390, 414, 430 e 768px. Sem `100vh`, sem
 alvos de toque abaixo dos 44px, sem imagens servidas acima do dobro do tamanho
 a que são mostradas, sem erros de consola e sem pedidos falhados.
+
+## A pílula do CTA final
+
+Saiu. "Vagas limitadas este mês" numa pastilha com aro e letra espaçada é a forma
+mais gasta que uma landing page tem — e, pior, dizia o que a frase logo abaixo já
+diz melhor: *"O diagnóstico é grátis, mas só aceitamos um número limitado de
+novos projetos por mês."* Uma era a versão de modelo da outra. Ficou a humana.
 
 ## O rodapé
 

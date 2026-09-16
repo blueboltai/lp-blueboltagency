@@ -137,10 +137,40 @@ SECOES_CSS = """
   inset:0;
   z-index:2;
   pointer-events:none;
+  /* Onde comeca e acaba a faixa que protege o texto. Medido no browser:
+     no computador as letras vao dos 8% aos 57% da altura do veu, no
+     telemovel dos 6% aos 72% — o hero e mais estreito, o texto quebra em
+     mais linhas e desce. Com um valor so, o subtitulo do telemovel caia
+     fora da faixa e ia parar a uma zona clara do fotograma. */
+  --faixa-ini:  4%;
+  --faixa-a:   12%;
+  --faixa-b:   52%;
+  --faixa-fim: 64%;
   background:
-    linear-gradient(180deg, rgba(0,1,34,.58) 0%, rgba(0,1,34,.74) 55%, #000122 96%),
-    radial-gradient(72% 56% at 50% 34%, rgba(0,1,34,.16), rgba(0,1,34,.70) 100%);
+    /* 1. A faixa por tras do texto. O erro anterior era ter o ponto mais
+          claro do veu exactamente onde esta o titulo: o sitio que precisa
+          de mais protecao era o que tinha menos. Esta faixa escurece so a
+          altura em que ha letras, esbatida nas duas pontas para nao
+          deixar aresta. */
+    linear-gradient(180deg,
+      rgba(0,1,34,0)   var(--faixa-ini),
+      rgba(0,1,34,.48) var(--faixa-a),
+      rgba(0,1,34,.48) var(--faixa-b),
+      rgba(0,1,34,0)   var(--faixa-fim)),
+    /* 2. A base, que fecha no #000122 solido em baixo — e ela que faz o
+          halo azul da VSL ler-se como um ecra aceso. */
+    linear-gradient(180deg, rgba(0,1,34,.38) 0%, rgba(0,1,34,.50) 55%, #000122 96%),
+    /* 3. O halo radial, agora largo e quase limpo ao centro: com a faixa
+          a tratar do texto, este so tem de fechar os cantos. */
+    radial-gradient(80% 64% at 50% 34%, rgba(0,1,34,.04), rgba(0,1,34,.52) 100%);
 }
+@media(max-width:860px){
+  .hero-bg-veil{ --faixa-ini:3%; --faixa-a:10%; --faixa-b:70%; --faixa-fim:82%; }
+}
+/* O subtitulo e o texto mais exposto do hero: cinzento, a 17px, e sem o
+   corpo de letra do titulo para aguentar. Leva halo proprio — aqui chega
+   `text-shadow`, que nao ha degrade recortado que se estrague. */
+.hero-sub{ text-shadow:0 1px 3px rgba(0,1,34,.75), 0 2px 14px rgba(0,1,34,.7); }
 .hero-orb{ z-index:3; }
 #hero{ z-index:5; }
 .hero-overlay-bottom{
@@ -167,7 +197,7 @@ SECOES_CSS = """
      nao se ve. E `drop-shadow` e nao `text-shadow`: o titulo pinta-se com
      `background-clip:text`, e um text-shadow ficava por cima do degrade
      em vez de por tras dele. */
-  filter:drop-shadow(0 2px 16px rgba(0,1,34,.72));
+  filter:drop-shadow(0 1px 3px rgba(0,1,34,.85)) drop-shadow(0 2px 20px rgba(0,1,34,.8));
   font-size:clamp(28px,3.8vw,48px);
   line-height:1.12;
   margin-bottom:1.25rem;
@@ -1270,6 +1300,22 @@ if not js:
     falhas.append("linha do tempo: nao encontrei o JS")
 else:
     html = html.replace(js.group(0), "")
+
+# ══════════════════════════════════════════════════════════════════
+# A PILULA DO CTA FINAL
+# "Vagas limitadas este mes" numa pastilha com aro e letra espacada e a
+# forma mais gasta que uma landing page tem. E, pior, diz o que a frase
+# de baixo ja diz melhor: "o diagnostico e gratis, mas so aceitamos um
+# numero limitado de novos projetos por mes". Uma e a versao humana da
+# outra. Fica a humana.
+# ══════════════════════════════════════════════════════════════════
+
+html = troca(
+    html,
+    '<div class="cta-badge" data-reveal="fade">Vagas limitadas este mês</div>\n',
+    "",
+    "pilula do CTA final",
+)
 
 # ══════════════════════════════════════════════════════════════════
 # TESTEMUNHOS EM VIDEO
