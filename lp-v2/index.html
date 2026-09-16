@@ -2409,12 +2409,16 @@ a{text-decoration:none;color:inherit}
 .tst-inner{ max-width:1120px;margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem); }
 .tst-head{ text-align:center;margin-bottom:clamp(2.5rem,5vw,4rem); }
 .tst-section .quem-eyebrow{ color:#005da9; }
+/* Escrevi este titulo de raiz quando acrescentei a seccao, e ficou fora
+   do padrao: peso 400 contra 600, -.035em de espacamento contra -.06em, e
+   3,1vw contra 2,8vw — o que o fazia maior do que os outros entre os 1024
+   e os 1366. Passa a ter a mesma receita dos restantes. */
 .tst-h2{
   font-family:'Archia',sans-serif;
-  font-size:clamp(26px,3.1vw,40px);
-  font-weight:400;
-  letter-spacing:-.035em;
-  line-height:1.14;
+  font-size:clamp(22px,2.8vw,40px);
+  font-weight:600;
+  letter-spacing:-.06em;
+  line-height:1.15;
   width:var(--medida-titulo);
   margin-inline:calc(50% - var(--medida-titulo) / 2);
   text-wrap:pretty;
@@ -2956,7 +2960,7 @@ a{text-decoration:none;color:inherit}
     </div>
 
     <div class="funil" data-reveal="fade">
-      <figure class="funil-fig"><img class="funil-img" src="img/funil-canva.webp" width="760" height="1121" alt="Funil em ampulheta da Blue Bolt: atração, oportunidade e conversão estreitam até à venda; retenção, fidelização e indicação alargam depois dela" loading="lazy" decoding="async"></figure>
+      <figure class="funil-fig"><img class="funil-img" src="img/funil-canva.webp" width="703" height="1137" alt="Funil em ampulheta da Blue Bolt: atração, oportunidade e conversão estreitam até à venda; retenção, fidelização e indicação alargam depois dela" loading="lazy" decoding="async"></figure>
       <ol class="funil-passos"><li class="passo" style="--i:0;--cor:#1B7BE8"><span class="passo-n">01</span><span class="passo-txt"><strong>Atração</strong>Campanhas em Meta e Google Ads que trazem o perfil certo, não só volume.</span></li><li class="passo" style="--i:1;--cor:#0E86F0"><span class="passo-n">02</span><span class="passo-txt"><strong>Oportunidade</strong>Fluxos de email e WhatsApp que aquecem a lead antes do contacto comercial.</span></li><li class="passo" style="--i:2;--cor:#12A3DE"><span class="passo-n">03</span><span class="passo-txt"><strong>Conversão</strong>Scripts, playbook e CRM para não se perder nenhuma oportunidade pelo caminho.</span></li><li class="passo" style="--i:3;--cor:#1AB9D6"><span class="passo-n">04</span><span class="passo-txt"><strong>Retenção</strong>Acompanhamento depois da venda, para o cliente voltar a comprar.</span></li><li class="passo" style="--i:4;--cor:#0E6FD6"><span class="passo-n">05</span><span class="passo-txt"><strong>Fidelização</strong>Deixa de comparar preços e passa a escolher-nos por hábito.</span></li><li class="passo" style="--i:5;--cor:#0E3E90"><span class="passo-n">06</span><span class="passo-txt"><strong>Indicação</strong>Cada cliente satisfeito traz o próximo, sem custo de aquisição.</span></li></ol>
     </div>
 

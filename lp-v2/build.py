@@ -434,12 +434,16 @@ SECOES_CSS = """
 .tst-inner{ max-width:1120px;margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2.5rem); }
 .tst-head{ text-align:center;margin-bottom:clamp(2.5rem,5vw,4rem); }
 .tst-section .quem-eyebrow{ color:#005da9; }
+/* Escrevi este titulo de raiz quando acrescentei a seccao, e ficou fora
+   do padrao: peso 400 contra 600, -.035em de espacamento contra -.06em, e
+   3,1vw contra 2,8vw — o que o fazia maior do que os outros entre os 1024
+   e os 1366. Passa a ter a mesma receita dos restantes. */
 .tst-h2{
   font-family:'Archia',sans-serif;
-  font-size:clamp(26px,3.1vw,40px);
-  font-weight:400;
-  letter-spacing:-.035em;
-  line-height:1.14;
+  font-size:clamp(22px,2.8vw,40px);
+  font-weight:600;
+  letter-spacing:-.06em;
+  line-height:1.15;
   width:var(--medida-titulo);
   margin-inline:calc(50% - var(--medida-titulo) / 2);
   text-wrap:pretty;
@@ -897,9 +901,9 @@ SECOES_CSS = """
 # E o desenho da propria Blue Bolt, feito na Canva. Chegou como imagem e
 # como imagem fica — cheguei a redesenha-lo em SVG, mas o pedido foi usar
 # o original. O PNG de 1080x1350 ja vinha com fundo transparente: so foi
-# recortada a margem vazia e reduzido para 760px de largura (o dobro dos
-# ~380 a que aparece, para ficar nitido em ecra retina). Em webp com alfa
-# passa de 721KB a 75KB.
+# recortada a margem vazia. Fica a 703px de largura — acima do dobro dos
+# ~340 a que aparece, o que chega para ecra retina. Em webp com alfa passa
+# de 770KB a 73KB.
 # ══════════════════════════════════════════════════════════════════
 
 # (nome, descricao, cor da fatia no desenho)
@@ -917,7 +921,7 @@ _ARIA = ("Funil em ampulheta da Blue Bolt: atração, oportunidade e conversão 
 
 
 def funil_img():
-    return (f'<img class="funil-img" src="img/funil-canva.webp" width="760" height="1121" '
+    return (f'<img class="funil-img" src="img/funil-canva.webp" width="703" height="1137" '
             f'alt="{_ARIA}" loading="lazy" decoding="async">')
 
 
