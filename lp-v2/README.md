@@ -66,17 +66,20 @@ tirava-lhe nitidez. Extraí o bitmap, recortei a margem transparente e reduzi-o
 para 420×382 (`img/selo-top5.png`, 123 KB). É o selo da Blue Bolt, NIF
 516 751 808, com a menção "2.º ano consecutivo".
 
-## O que implementamos, na dobra escura
+## O que implementamos, na mesma superfície do diagnóstico
 
 A linha do tempo ("Como funciona") saiu — marcação, JS e a copy que lhe
-pertencia. O bloco do "o que implementamos" ficou com o lugar dela e passou a
-escuro.
+pertencia. O bloco do "o que implementamos" ficou com o lugar dela e partilha o
+fundo da secção do diagnóstico (`--bg`, com os mesmos halos azuis nos topos),
+para as duas se lerem como uma só superfície. O filete que o `.ig-cta-wrap`
+tinha em cima desapareceu — era o que cortava a emenda.
 
 Os cartões já usavam o sistema pedido, herdado da página de IA: invólucro
 exterior, cartão interior, e um aro que acende com a aproximação do cursor — um
 `repeating-conic-gradient` fixo, revelado por uma máscara cónica que segue o
 ângulo do rato, em CSS e um punhado de JS, sem React nem `motion`. Só mudaram de
-tom, e ganharam a grelha técnica de 24px que faltava.
+tom — ficam claros, e é o contraste com o fundo escuro que os põe à frente,
+como na referência — e ganharam a grelha técnica de 24px que faltava.
 
 A grelha leva `z-index:0` e o conteúdo `z-index:1`: um `::before` absoluto pinta
 por cima do conteúdo em fluxo, e sem isso ficava sobre o texto.
@@ -128,6 +131,21 @@ o ecrã (`clamp(64px, 6.6vw, 98px)`). O topo de `#quem` fica de fora: é ele que
 compensa a VSL a cavalo. O diagnóstico e a secção do Ricardo levam um intervalo
 mais curto entre si, por serem duas metades da mesma conversa. Medido no
 browser, a página passa de ~8700px para 8098px sem perder nada.
+
+## O rodapé
+
+Quatro colunas, como no site: marca e redes, contactos, informações úteis e
+parcerias. As moradas são as reais — `geral@bluebolt.pt`, `+351 927 135 702` com
+a menção de chamada para rede móvel nacional, e as ligações para a política de
+privacidade, a de cookies e o Livro de Reclamações. O logótipo é o lockup
+completo (`img/bluebolt-lockup.webp`, recortado e reduzido do `LOGO-PRATA`): a
+40px o símbolo sozinho era ilegível.
+
+Falta a barra de financiamento (PRR · República Portuguesa · Financiado pela
+União Europeia). O `bluebolt.pt` recusa ligações deste ambiente, por isso o
+ficheiro não pôde ser descarregado. O `build.py` já a espera: basta pôr o
+ficheiro em `img/barra-logos.webp` e voltar a correr o build — se não existir, a
+barra simplesmente não é emitida, em vez de ficar uma imagem partida.
 
 ## A VSL
 

@@ -183,51 +183,103 @@ SECOES_CSS = """
   margin-bottom:2.25rem;
 }
 
-/* ══ Credenciais no rodape ══
-   Em repouso ficam quase apagadas — leem-se como uma nota de rodape, nao
-   como um bloco de logotipos. Ao passar o rato recuperam a cor toda. */
-.ft-creds{
-  display:flex;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:clamp(16px,3vw,36px);
-  padding:30px 0;
-  border-bottom:1px solid rgba(255,255,255,.06);
+/* ══ Rodape ══
+   Quatro colunas: marca e redes, contactos, informacoes uteis, parcerias.
+   Os selos ficam a 72% de opacidade — leem-se como nota de rodape, nao
+   como um bloco de logotipos — e ganham cor ao passar o rato. */
+.ft-grelha{
+  display:grid;
+  grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,1fr) minmax(0,1.2fr);
+  gap:clamp(2rem,4vw,3.5rem);
+  align-items:start;
+  padding-bottom:clamp(2.25rem,4vw,3rem);
 }
-.ft-creds-label{
+/* O logotipo completo, nao o simbolo: a 40px o simbolo era ilegivel. */
+.ft-logo{
+  width:auto;height:76px;
+  object-fit:contain;
+  display:block;
+  margin-bottom:16px;
+}
+.ft-redes{ display:flex;gap:10px;margin-top:18px; }
+.ft-rede{
+  width:34px;height:34px;
+  display:grid;place-items:center;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.62);
+  transition:color .3s ease, border-color .3s ease, background .3s ease;
+}
+.ft-rede svg{ width:16px;height:16px; }
+.ft-rede:hover{
+  color:#fff;
+  border-color:rgba(47,161,255,.45);
+  background:rgba(47,161,255,.12);
+}
+
+.ft-col-h{
+  font-family:'Archia',sans-serif;
+  font-size:15px;
+  font-weight:400;
+  letter-spacing:-.02em;
+  color:#fff;
+  margin:0 0 1.1rem;
+}
+.ft-lista{
+  list-style:none;
+  margin:0;padding:0;
+  display:flex;flex-direction:column;gap:.85rem;
   font-family:'Manrope',sans-serif;
-  font-size:9px;
-  font-weight:500;
-  letter-spacing:.24em;
-  text-transform:uppercase;
-  color:rgba(255,255,255,.26);
-  white-space:nowrap;
+  font-size:13.5px;
+  line-height:1.5;
 }
-.ft-creds-row{
-  display:flex;
-  align-items:center;
-  flex-wrap:wrap;
-  gap:clamp(14px,2.4vw,28px);
+.ft-lista li{ display:flex;gap:10px;align-items:flex-start; }
+.ft-lista-simples li{ display:block; }
+.ft-lista a{
+  color:rgba(200,208,224,.68);
+  text-decoration:none;
+  transition:color .25s ease;
 }
-.ft-cred{
-  height:60px;
-  width:auto;
+.ft-lista a:hover{ color:#fff; }
+.ft-ico{ width:15px;height:15px;flex:none;margin-top:.15em;color:rgba(255,255,255,.4); }
+.ft-nota{
+  display:block;
+  margin-top:.3rem;
+  font-size:11px;
+  color:rgba(200,208,224,.38);
+}
+
+.ft-selos{ display:flex;align-items:center;flex-wrap:wrap;gap:clamp(12px,2vw,20px); }
+.ft-selo{
+  height:52px;width:auto;
   object-fit:contain;
   opacity:.72;
   filter:grayscale(.3);
   transition:opacity .35s ease, filter .35s ease;
 }
-.ft-cred:hover,
-.ft-cred:focus-visible{
-  opacity:1;
-  filter:none;
-}
-.light-theme .ft-creds{ border-bottom-color:rgba(10,15,35,.09); }
-.light-theme .ft-creds-label{ color:rgba(10,15,35,.38); }
+.ft-selo-grande{ height:68px; }
+.ft-selo:hover{ opacity:1;filter:none; }
 
-@media(max-width:640px){
-  .ft-creds{ gap:14px;padding:24px 0; }
-  .ft-cred{ height:46px; }
+/* A barra de financiamento, quando o ficheiro existe. */
+.ft-fundos{
+  padding:clamp(1.75rem,3vw,2.5rem) 0;
+  border-top:1px solid rgba(255,255,255,.07);
+  text-align:center;
+}
+.ft-fundos img{
+  width:100%;
+  max-width:560px;
+  height:auto;
+  opacity:.8;
+}
+
+@media(max-width:900px){
+  .ft-grelha{ grid-template-columns:repeat(2,minmax(0,1fr));gap:2.25rem; }
+}
+@media(max-width:560px){
+  .ft-grelha{ grid-template-columns:1fr;gap:2rem; }
+  .ft-selo{ height:44px; }
+  .ft-selo-grande{ height:56px; }
 }
 
 /* ══════════════════════════════════════════════════════════════════
@@ -567,19 +619,43 @@ SECOES_CSS = """
 .auth-section{ padding-top:calc(var(--ritmo) * .75); }
 
 /* ══════════════════════════════════════════════════════════════════
-   O QUE IMPLEMENTAMOS — passa para a dobra escura
-   Ficou com o lugar que era da linha do tempo. Os cartoes ja usavam o
-   sistema da referencia — invólucro exterior, cartao interior e um aro
-   que acende com a aproximacao do cursor; so mudam de tom, e ganham a
-   grelha tecnica de fundo que faltava.
+   O QUE IMPLEMENTAMOS — a mesma superficie do diagnostico
+   Ficou com o lugar que era da linha do tempo, e partilha o fundo da
+   seccao do diagnostico (--bg, com os mesmos halos azuis nos topos) para
+   as duas se lerem como uma so superficie. O filete que o .ig-cta-wrap
+   tinha em cima desaparece entre elas, que era o que cortava a emenda.
+   Os cartoes ficam claros: e o contraste com o fundo escuro que os poe
+   a frente, como na referencia.
    ══════════════════════════════════════════════════════════════════ */
 
 .band-section{
   position:relative;
-  background:
-    radial-gradient(95% 55% at 50% 0%, rgba(47,161,255,.08) 0%, rgba(6,10,22,0) 68%),
-    #060a16;
+  background:var(--bg);
+  overflow:hidden;
 }
+.band-section::before,
+.band-section::after{
+  content:'';
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  pointer-events:none;
+}
+.band-section::before{
+  top:0;
+  width:900px;height:600px;
+  background:radial-gradient(ellipse at 50% 20%, rgba(47,161,255,.13) 0%, transparent 65%);
+}
+.band-section::after{
+  bottom:0;
+  width:700px;height:500px;
+  background:radial-gradient(ellipse at 50% 80%, rgba(0,93,169,.18) 0%, transparent 65%);
+}
+.band-inner{ position:relative;z-index:1; }
+/* Sem o filete, a emenda com o diagnostico desaparece. */
+.ig-cta-wrap{ border-top:0; }
+
+/* ══ Cabecalho, agora sobre escuro ══ */
 .band-eyebrow{
   color:#6cc0ff;
   border-color:rgba(47,161,255,.28);
@@ -591,16 +667,17 @@ SECOES_CSS = """
 }
 .band-sub{ color:rgba(190,200,220,.62); }
 
-.band-card{ border-color:rgba(255,255,255,.08); }
+/* ══ Cartoes claros sobre o escuro ══ */
+.band-card{ border-color:rgba(255,255,255,.1); }
 .band-card-inner{
-  border-color:rgba(255,255,255,.07);
-  background:linear-gradient(160deg, rgba(255,255,255,.05) 0%, rgba(255,255,255,.015) 100%);
-  box-shadow:0 18px 44px rgba(0,0,0,.34);
-  transition:background .5s ease, border-color .5s ease;
+  border-color:rgba(255,255,255,.75);
+  background:linear-gradient(160deg,#fbfcfe 0%,#eef2f8 100%);
+  box-shadow:0 20px 48px rgba(0,0,0,.4), 0 2px 6px rgba(0,0,0,.2);
+  transition:background .5s ease, transform .4s cubic-bezier(.16,1,.3,1);
 }
 .band-card:hover .band-card-inner{
-  background:linear-gradient(160deg, rgba(47,161,255,.08) 0%, rgba(255,255,255,.02) 100%);
-  border-color:rgba(47,161,255,.2);
+  background:linear-gradient(160deg,#fff 0%,#eaf2fd 100%);
+  transform:translateY(-3px);
 }
 /* Grelha tecnica de fundo, a 24px. Leva z-index:0 e o conteudo z-index:1:
    um ::before absoluto pinta por cima do conteudo em fluxo, e a grelha
@@ -612,8 +689,8 @@ SECOES_CSS = """
   z-index:0;
   pointer-events:none;
   background-image:
-    linear-gradient(to right, rgba(255,255,255,.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255,255,255,.035) 1px, transparent 1px);
+    linear-gradient(to right, rgba(10,15,35,.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(10,15,35,.045) 1px, transparent 1px);
   background-size:24px 24px;
 }
 .band-icon-wrap,
@@ -621,21 +698,16 @@ SECOES_CSS = """
 .band-card-desc{ position:relative;z-index:1; }
 
 .band-icon-wrap{
-  background:rgba(255,255,255,.05);
-  border-color:rgba(255,255,255,.1);
-  color:rgba(198,214,240,.78);
-  box-shadow:0 1px 3px rgba(0,0,0,.25);
+  background:#fff;
+  border-color:rgba(15,23,42,.1);
+  color:#5b6577;
+  box-shadow:0 1px 3px rgba(10,15,35,.08);
 }
 .band-card:hover .band-icon-wrap{
   color:#2fa1ff;
-  border-color:rgba(47,161,255,.35);
-  background:rgba(47,161,255,.1);
+  border-color:rgba(47,161,255,.32);
 }
-.band-card-title{
-  background:linear-gradient(135deg,#7cc8ff 0%,#2fa1ff 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.band-card-desc{ color:rgba(186,197,217,.6); }
+.band-card-desc{ color:#64748b; }
 
 @media(max-width:640px){
   .hero-h1{ font-size:clamp(26px,7.6vw,36px); }
@@ -1352,6 +1424,112 @@ html = troca(
     '<a href="https://bluebolt.pt/politica-de-privacidade/" target="_blank" rel="noopener">Política de privacidade</a>',
     "legais do rodape",
 )
+
+# ══════════════════════════════════════════════════════════════════
+# RODAPE — quatro colunas, como no site
+# Contactos, informacoes uteis, parcerias, e a barra de financiamento.
+# A barra (PRR / Republica Portuguesa / Uniao Europeia) so entra se o
+# ficheiro estiver em img/: assim quem o puser nao precisa de mexer aqui,
+# e sem ele o rodape nao fica com uma imagem partida.
+# ══════════════════════════════════════════════════════════════════
+
+REDES = [
+    ("Facebook", "https://www.facebook.com/blueboltagency",
+     '<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>'),
+    ("Instagram", "https://www.instagram.com/bluebolt.agency/",
+     '<rect x="2" y="2" width="20" height="20" rx="5"/>'
+     '<path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>'
+     '<line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>'),
+    ("LinkedIn", "https://pt.linkedin.com/company/blue-bolt-agency",
+     '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4v-7a6 6 0 0 1 6-6z"/>'
+     '<rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>'),
+    ("TikTok", "https://www.tiktok.com/@blueboltagency",
+     '<path d="M15 3a5.5 5.5 0 0 0 5.5 5.5v3A8.5 8.5 0 0 1 15 9.6V15a6 6 0 1 1-6-6 6 6 0 0 1 1 .09v3.2A2.8 2.8 0 1 0 12 15V3z"/>'),
+]
+
+UTEIS = [
+    ("Política de Privacidade", "https://bluebolt.pt/politica-de-privacidade/"),
+    ("Política de Cookies", "https://bluebolt.pt/politica-de-cookies/"),
+    ("Livro de Reclamações", "https://www.livroreclamacoes.pt/Inicio/"),
+]
+
+_redes = "".join(
+    f'<a class="ft-rede" href="{u}" target="_blank" rel="noopener" aria-label="{n}">'
+    f'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" '
+    f'stroke-linecap="round" stroke-linejoin="round">{d}</svg></a>'
+    for n, u, d in REDES
+)
+_uteis = "".join(
+    f'<li><a href="{u}" target="_blank" rel="noopener">{n}</a></li>' for n, u in UTEIS
+)
+
+# A barra de financiamento so aparece se o ficheiro existir.
+_barra = ""
+if os.path.exists(os.path.join(HERE, "img", "barra-logos.webp")):
+    _barra = (
+        '\n    <div class="ft-fundos">\n'
+        '      <img src="img/barra-logos.webp" alt="PRR — Plano de Recuperação e Resiliência · '
+        'República Portuguesa · Financiado pela União Europeia, NextGenerationEU" '
+        'width="1024" height="125" loading="lazy" decoding="async">\n'
+        '    </div>\n'
+    )
+
+RODAPE_HTML = """<footer class="ft">
+  <div class="ft-inner">
+
+    <div class="ft-grelha">
+
+      <div class="ft-marca">
+        <img class="ft-logo" src="img/bluebolt-lockup.webp" alt="Blue Bolt Agency" width="300" height="287">
+        <div class="ft-role">Agência de marketing digital</div>
+        <div class="ft-redes">""" + _redes + """</div>
+      </div>
+
+      <div class="ft-col">
+        <h3 class="ft-col-h">Contacte-nos</h3>
+        <ul class="ft-lista">
+          <li>
+            <svg class="ft-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
+            <a href="mailto:geral@bluebolt.pt">geral@bluebolt.pt</a>
+          </li>
+          <li>
+            <svg class="ft-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            <span>
+              <a href="tel:+351927135702">+351 927 135 702</a>
+              <small class="ft-nota">Chamada para rede móvel nacional</small>
+            </span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="ft-col">
+        <h3 class="ft-col-h">Informações úteis</h3>
+        <ul class="ft-lista ft-lista-simples">""" + _uteis + """</ul>
+      </div>
+
+      <div class="ft-col">
+        <h3 class="ft-col-h">Parcerias</h3>
+        <div class="ft-selos">
+          <img class="ft-selo" src="img/google-partner.webp" alt="Google Partner" width="110" height="110" loading="lazy" decoding="async">
+          <img class="ft-selo" src="img/meta-partner.webp" alt="Meta Business Partner" width="110" height="110" loading="lazy" decoding="async">
+          <img class="ft-selo ft-selo-grande" src="img/selo-top5.png" alt="Scoring Top 5% — Melhores PME de Portugal 2025, 2.º ano consecutivo" width="420" height="382" loading="lazy" decoding="async">
+        </div>
+      </div>
+
+    </div>
+""" + _barra + """
+    <div class="ft-bottom">
+      <span class="ft-copy">© 2026 Blue Bolt Agency · Todos os direitos reservados</span>
+    </div>
+
+  </div>
+</footer>"""
+
+rodape = re.search(r"<footer class=\"ft\">.*?</footer>", html, re.S)
+if not rodape:
+    falhas.append("rodape: nao encontrei o bloco")
+else:
+    html = html.replace(rodape.group(0), RODAPE_HTML)
 
 # ══════════════════════════════════════════════════════════════════
 # DADOS ESTRUTURADOS (JSON-LD) — tem de descrever a empresa certa
