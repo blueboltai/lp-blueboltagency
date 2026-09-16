@@ -696,9 +696,13 @@ SECOES_CSS = """
   z-index:0;
   pointer-events:none;
   background-image:
-    linear-gradient(to right, rgba(10,15,35,.045) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(10,15,35,.045) 1px, transparent 1px);
+    linear-gradient(to right, rgba(10,15,35,.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(10,15,35,.05) 1px, transparent 1px);
   background-size:24px 24px;
+  /* A grelha desvanece para as bordas em vez de bater na borda do cartao:
+     fica densa onde estao o icone e o titulo e some-se nas margens. */
+  -webkit-mask-image:radial-gradient(118% 96% at 50% 8%, #000 28%, rgba(0,0,0,.5) 62%, transparent 92%);
+  mask-image:radial-gradient(118% 96% at 50% 8%, #000 28%, rgba(0,0,0,.5) 62%, transparent 92%);
 }
 .band-icon-wrap,
 .band-card-title,
@@ -710,10 +714,9 @@ SECOES_CSS = """
   color:#5b6577;
   box-shadow:0 1px 3px rgba(10,15,35,.08);
 }
-.band-card:hover .band-icon-wrap{
-  color:#2fa1ff;
-  border-color:rgba(47,161,255,.32);
-}
+/* Ao passar o rato a pastilha fica azul (regra da pagina original). O
+   icone tem de acompanhar: a azul sobre azul desaparecia. */
+.band-card:hover .band-icon-wrap{ color:#fff; }
 .band-card-desc{ color:#64748b; }
 
 /* ══ Botao liquid metal ══
