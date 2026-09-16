@@ -116,16 +116,30 @@ SECOES_CSS = """
   z-index:1;
   pointer-events:none;
 }
-/* Veu por cima do video: o texto tem de ganhar sempre ao fotograma. */
-/* Veu por cima do video: o texto tem de ganhar sempre ao fotograma. */
+/* ══ Veu por cima do video ══
+   O texto tem de ganhar sempre ao fotograma, mas o veu estava a tapar o
+   video quase por completo: medido no browser, a luminancia media por
+   tras do titulo era 0,011 — praticamente preto — e dava 17:1 contra o
+   branco, muito acima do que e preciso.
+
+   Aberto ate onde o contraste deixa. O que manda nao e o branco, e o
+   azul do titulo: a #2fa1ff precisa de 3:1, que e o minimo para texto
+   grande, e isso poe o tecto da luminancia por tras dele em 0,075. O
+   subtitulo, a 17px, precisa de 4,5:1 e tolera ate 0,10.
+
+   O centro do halo radial e onde o video se ve — e tambem onde ele e
+   mais escuro no proprio fotograma, por isso e ai que se pode abrir
+   mais. A rampa vertical fecha na mesma ate ao #000122 solido em baixo:
+   e essa base escura que faz o halo azul da VSL ler-se como um ecra
+   aceso. */
 .hero-bg-veil{
   position:absolute;
   inset:0;
   z-index:2;
   pointer-events:none;
   background:
-    linear-gradient(180deg, rgba(0,1,34,.72) 0%, rgba(0,1,34,.84) 55%, #000122 96%),
-    radial-gradient(65% 50% at 50% 34%, rgba(0,1,34,.34), rgba(0,1,34,.8) 100%);
+    linear-gradient(180deg, rgba(0,1,34,.58) 0%, rgba(0,1,34,.74) 55%, #000122 96%),
+    radial-gradient(72% 56% at 50% 34%, rgba(0,1,34,.16), rgba(0,1,34,.70) 100%);
 }
 .hero-orb{ z-index:3; }
 #hero{ z-index:5; }
@@ -146,6 +160,14 @@ SECOES_CSS = """
    caracteres — a 48px assenta em tres linhas e mantem 1,2x sobre os
    titulos de seccao, que e a hierarquia que a pagina tem. */
 .hero-h1{
+  /* Um halo escuro com a forma das letras. Com o veu mais aberto, as
+     palavras a azul passam por cima da zona clara do fotograma, e ai o
+     pior pixel dava 3,31:1 — passa o minimo de texto grande, mas sem
+     folga. O halo compra essa folga onde ela falta, e nas zonas escuras
+     nao se ve. E `drop-shadow` e nao `text-shadow`: o titulo pinta-se com
+     `background-clip:text`, e um text-shadow ficava por cima do degrade
+     em vez de por tras dele. */
+  filter:drop-shadow(0 2px 16px rgba(0,1,34,.72));
   font-size:clamp(28px,3.8vw,48px);
   line-height:1.12;
   margin-bottom:1.25rem;

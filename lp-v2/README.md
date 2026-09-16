@@ -53,7 +53,31 @@ faz o vídeo ler-se como um ecrã aceso em vez de um retângulo colado ao fundo.
 
 Em azul Blue Bolt (`#000122`) com o vídeo do modelo do Elementor
 (`img/hero-video.webm`) a correr ao fundo, por baixo de um véu que garante o
-contraste do texto. A tipografia é a da própria página — Archia no título,
+contraste do texto.
+
+O véu estava a tapar o vídeo quase por completo — não se percebia o que lá se
+passava. Medido no browser, a luminância média por trás do título era **0,011**,
+praticamente preto, e dava 17:1 contra o branco, muito acima do que é preciso.
+Abriu-se até onde o contraste deixa, e quem manda não é o branco: é o azul do
+título. A `#2fa1ff` precisa de 3:1, o mínimo para texto grande, o que põe o teto
+da luminância em 0,075; o subtítulo, a 17px, precisa de 4,5:1 e tolera até 0,10.
+
+| Por trás do título | Antes | Agora |
+| --- | --- | --- |
+| Luminância média | 0,011 | **0,024** |
+| Pior pixel | 0,023 | **0,066** (teto: 0,075) |
+| Contraste do azul, pior caso | 5,2:1 | **3,3:1** |
+| Contraste do branco, pior caso | 14,3:1 | **9,1:1** |
+
+A 3,3:1 o azul passa o mínimo, mas sem folga. O título ganhou por isso um halo
+escuro com a forma das letras — `filter:drop-shadow`, e não `text-shadow`,
+porque o título se pinta com `background-clip:text` e um `text-shadow` ficaria
+por cima do degradê em vez de por trás dele. Nas zonas escuras do fotograma não
+se vê; onde as palavras a azul passam por cima da zona clara, é ele que segura
+a leitura.
+
+A rampa vertical fecha na mesma até ao `#000122` sólido em baixo: é essa base
+escura que faz o halo azul da VSL ler-se como um ecrã aceso. A tipografia é a da própria página — Archia no título,
 Manrope no corpo — e só a medida e a cor foram ajustadas, que o hero centrado
 e o vídeo por trás obrigam. A faixa deslizante de provas que vinha
 da página de IA saiu; os três selos — Google Partner, Meta Business Partner e
