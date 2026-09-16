@@ -125,8 +125,13 @@ O funil é o desenho da própria Blue Bolt, feito na Canva. Cheguei a
 redesenhá-lo em SVG — o link público da Canva só serve uma miniatura de
 400×500 — mas o pedido foi usar o original, e o PNG de 1080×1350 chegou
 depois. Já vinha com fundo transparente: só foi recortada a margem vazia e
-reduzido para 760px de largura, o dobro dos ~380 a que aparece, para ficar
-nítido em ecrã retina. Em webp com alfa passa de 721KB a 75KB.
+reduzido para 703px de largura, cerca do dobro dos ~380 a que aparece, para
+ficar nítido em ecrã retina. Em webp com alfa passa de 1,1MB a 83KB.
+
+Está na terceira versão do desenho — a segunda tinha perdido o rótulo
+**Indicação** na fatia de baixo, que é justamente a etapa que fecha o ciclo e dá
+sentido à metade que alarga. A troca é só o ficheiro: `img/funil-canva.webp`.
+Como o desenho é uma imagem e não SVG, trocá-lo não mexe em código nenhum.
 
 Ao lado do funil ficam as seis etapas, partidas nas duas metades que a ampulheta
 desenha: três que estreitam **até à venda** e três que alargam **depois dela**,
@@ -207,7 +212,23 @@ rodapé (34px) e as ligações de contacto e políticas, que sendo texto corrido
 tinham 15px de altura tocável. E o miúdo que ninguém lê num ecrã pequeno subiu:
 os rótulos dos casos estavam a 8px, o selo do CTA e o copyright a 9px.
 
-Sem transbordo horizontal a 320, 360, 390, 414, 430 e 768px.
+O formulário fazia o iOS aproximar a página. O Safari do iPhone amplia sempre
+que um campo recebe foco com corpo de letra abaixo de 16px — e não volta a
+afastar sozinho. Os três campos estavam a 15px; num formulário de recolha de
+contactos isso é a diferença entre preencher e desistir. Passaram a 16px abaixo
+dos 768px, e só aí: no computador continuam a 15px.
+
+As sete imagens que faltavam declarar (`width`/`height`) passaram a declará-lo.
+Os contentores já reservavam o espaço por `aspect-ratio`, mas sem os atributos o
+browser não o sabe antes do CSS aplicar.
+
+No rodapé, a folga que faz de cada contacto um alvo de toque de 44px empurrava o
+texto para baixo e deixava o ícone a flutuar acima da linha. O ícone passou a
+descer com ele: `margin-top: calc(.85rem + .15em)`.
+
+Sem transbordo horizontal a 320, 360, 390, 414, 430 e 768px. Sem `100vh`, sem
+alvos de toque abaixo dos 44px, sem imagens servidas acima do dobro do tamanho
+a que são mostradas, sem erros de consola e sem pedidos falhados.
 
 ## O rodapé
 

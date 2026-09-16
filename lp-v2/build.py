@@ -958,6 +958,14 @@ SECOES_CSS = """
      15px de altura tocavel. */
   .ft-lista a{ display:inline-block;padding:.85rem 0;line-height:1.3; }
   .ft-lista{ gap:.2rem; }
+  /* A folga que faz do link um alvo de toque empurra o texto para baixo;
+     o icone tem de descer com ele, senao fica a flutuar acima da linha. */
+  .ft-ico{ margin-top:calc(.85rem + .15em); }
+
+  /* O iOS faz zoom a pagina ao focar um campo com corpo abaixo de 16px, e
+     nao volta a sair. Num formulario de leads isso e a diferenca entre
+     preencher e desistir. */
+  .lead-input{ font-size:16px; }
 
   .auth-case-label{ font-size:10px;letter-spacing:.12em; }
   .expert-role{ font-size:11px; }
@@ -1090,12 +1098,12 @@ else:
 # O nome de cada pessoa vem gravado na propria capa: a legenda repete-o
 # para quem le a pagina de cima a baixo sem parar em cada fotograma.
 TESTEMUNHOS = [
-    ("8QXWiBi7Z8I", "capa-auto-avenida-scaled-1.webp", "Luís Novais", "Auto Avenida"),
-    ("qbhpgXOUC9I", "capa-infante-scaled-1.webp", "Dr. Marco Infante da Câmara", "Infante da Câmara"),
-    ("LbNL0YDUDdI", "capa-apametal-scaled-1.webp", "Rita Rodrigues", "Apametal"),
-    ("kl3K2hbLHmk", "capa-foot-draft-scaled-1.webp", "Bruno Pinto", "Foot Draft"),
-    ("pl0ah13B-CY", "capa-carmen-scaled-1.webp", "Carmen Ferreira", "Enfermagem"),
-    ("8XSuQEaG17U", "capa-mecia-scaled-1.webp", "Mécia Correia", "Marca pessoal"),
+    ("8QXWiBi7Z8I", "capa-auto-avenida-scaled-1.webp", "Luís Novais", "Auto Avenida", 402),
+    ("qbhpgXOUC9I", "capa-infante-scaled-1.webp", "Dr. Marco Infante da Câmara", "Infante da Câmara", 401),
+    ("LbNL0YDUDdI", "capa-apametal-scaled-1.webp", "Rita Rodrigues", "Apametal", 386),
+    ("kl3K2hbLHmk", "capa-foot-draft-scaled-1.webp", "Bruno Pinto", "Foot Draft", 413),
+    ("pl0ah13B-CY", "capa-carmen-scaled-1.webp", "Carmen Ferreira", "Enfermagem", 386),
+    ("8XSuQEaG17U", "capa-mecia-scaled-1.webp", "Mécia Correia", "Marca pessoal", 404),
 ]
 # Ficam seis, em duas filas de tres. Os outros dois testemunhos que temos —
 # Natália Teixeira e Sara Moreira — sao ambos de marca pessoal, que ja esta
@@ -1105,14 +1113,15 @@ _cartoes = "".join(
     f'<figure class="tst-card">'
     f'<div class="vsl-screen tst-screen" data-video="{vid}" role="button" tabindex="0" '
     f'aria-label="Ver o testemunho de {nome}">'
-    f'<img src="img/testemunhos/{capa}" alt="" decoding="async" fetchpriority="low">'
+    f'<img src="img/testemunhos/{capa}" width="720" height="{alt_px}" alt="" '
+    f'decoding="async" fetchpriority="low">'
     f'<span class="vsl-play" aria-hidden="true">'
     f'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span>'
     f"</div>"
     f'<figcaption class="tst-cap"><span class="tst-nome">{nome}</span>'
     f'<span class="tst-area">{area}</span></figcaption>'
     f"</figure>"
-    for vid, capa, nome, area in TESTEMUNHOS
+    for vid, capa, nome, area, alt_px in TESTEMUNHOS
 )
 
 TESTEMUNHOS_HTML = """<section id="testemunhos" class="tst-section">
@@ -1181,7 +1190,8 @@ html = troca(
 # O retrato original da pagina de IA, apanhado em blueboltai.online.
 # Vinha a 1440x1800; reduzido para 1000px de largura (o dobro dos ~500 a
 # que aparece), passa de 432KB a 202KB.
-html = troca(html, 'src="ricardo.webp"', 'src="img/ricardo.webp" loading="lazy" decoding="async"',
+html = troca(html, 'src="ricardo.webp"',
+             'src="img/ricardo.webp" width="1000" height="1250" loading="lazy" decoding="async"',
              "foto do Ricardo")
 
 # ══════════════════════════════════════════════════════════════════
