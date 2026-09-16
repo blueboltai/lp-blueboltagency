@@ -298,6 +298,29 @@ etapas passam para baixo do desenho.
 
 ## O vão entre secções
 
+> **A medida mudou.** Contava texto e imagens como tinta — mas a secção do
+> diagnóstico passou a começar com um cartão cheio, que o olho lê como tinta a
+> partir da borda e a medida não via. Media 258 onde o olho via 212. Agora conta
+> também caixas com fundo ou moldura visíveis (`vao3.mjs`), e foi com essa que se
+> afinou o que vem abaixo.
+>
+> Com a medida corrigida apareceram três vãos fora de compasso que estavam
+> escondidos: o do diagnóstico (50px até ao cartão, contra 269 até ao texto da
+> coluna ao lado), o da secção do Ricardo (−43) e o do CTA final (−55, que era a
+> folga que a pílula removida levou consigo).
+>
+> Resultado medido: **amplitude de 18px a 1440, 19px a 1024 e 6px a 390.**
+
+### As duas colunas do diagnóstico alinham pelo topo
+
+Estavam centradas. Com o formulário do CRM — bem mais alto do que o nosso era —
+isso dava uma secção apertada de um lado e larga do outro: o cartão arrancava a
+**50px** da emenda com a secção clara (23px a 1024), e o texto da esquerda
+afundava para **269px**. Alinhados pelo topo, os dois começam na mesma linha e é
+a margem da secção que manda, como em todas as outras.
+
+
+
 Padding igual não dá intervalos iguais. Cada secção tem folga própria por dentro
 — a moldura dos cartões, a barra de rolagem dos testemunhos, a sombra do funil,
 a pílula que abre cada secção. Medido de tinta a tinta (o primeiro e o último

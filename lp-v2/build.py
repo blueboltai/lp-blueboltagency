@@ -746,7 +746,7 @@ SECOES_CSS = """
 /* O diagnostico e a seccao do Ricardo sao duas metades da mesma conversa:
    entre elas o intervalo e mais curto. */
 .guia-section{ padding-bottom:calc(var(--ritmo) * .55); }
-.auth-section{ padding-top:calc(var(--ritmo) * .75); }
+.auth-section{ padding-top:calc(var(--ritmo) * .75 + 43px); }
 
 /* ══ Correccao do vao visivel ══
    O padding igual nao da intervalos iguais: cada seccao tem folga propria
@@ -771,9 +771,18 @@ SECOES_CSS = """
   #testemunhos{ padding-bottom:calc(var(--ritmo) - 22px); }
   /* Topo: seccoes que comecam com uma pilula ou um selo. */
   #bandeiras{ padding-top:calc(var(--ritmo) - 18px); }
-  .guia-section{ padding-top:calc(var(--ritmo) - 45px); }
+  /* As duas colunas passam a alinhar pelo topo. Estavam centradas, e com o
+     formulario do CRM — bem mais alto do que o nosso era — isso dava uma
+     seccao apertada de um lado e larga do outro: o cartao arrancava a 50px
+     da emenda com a seccao clara, e o texto da esquerda afundava para 269.
+     Alinhados pelo topo, os dois comecam na mesma linha e e a margem da
+     seccao que manda, como em todas as outras. */
+  .guia-inner{ align-items:start; }
+  .guia-section{ padding-top:calc(var(--ritmo) + 48px); }
   #testemunhos{ padding-top:calc(var(--ritmo) - 46px); }
-  .cta-section{ padding-top:calc(var(--ritmo) - 40px); }
+  /* +15 e nao -40: a pilula que estava aqui em cima levava consigo a
+     folga que este vao precisava. Sem ela, o titulo subiu 55px. */
+  .cta-section{ padding-top:calc(var(--ritmo) + 15px); }
   /* O CTA fecha contra o rodape, que tem pouco espaco proprio em cima. */
   .cta-section{ padding-bottom:calc(var(--ritmo) + 38px); }
   .ft{ padding-top:calc(var(--ritmo) - 2px); }
@@ -785,10 +794,10 @@ SECOES_CSS = """
      do ultimo cartao deixa muito espaco por baixo. */
   #quem{ padding-bottom:calc(var(--ritmo) - 20px); }
   #bandeiras{ padding-top:calc(var(--ritmo) - 20px);padding-bottom:calc(var(--ritmo) - 6px); }
-  .guia-section{ padding-top:calc(var(--ritmo) - 5px); }
+  .guia-section{ padding-top:calc(var(--ritmo) + 46px); }
   .auth-section{ padding-bottom:calc(var(--ritmo) - 15px); }
   #testemunhos{ padding-top:calc(var(--ritmo) - 14px);padding-bottom:calc(var(--ritmo) - 46px); }
-  .cta-section{ padding-top:calc(var(--ritmo) - 46px);padding-bottom:calc(var(--ritmo) + 35px); }
+  .cta-section{ padding-top:calc(var(--ritmo) + 9px);padding-bottom:calc(var(--ritmo) + 35px); }
   .ft{ padding-top:calc(var(--ritmo) + 34px); }
 }
 
@@ -796,9 +805,10 @@ SECOES_CSS = """
    pares, por serem duas metades da mesma conversa — mas menos do que
    estavam, que 169px contra 240 lia-se como um salto. */
 .guia-section{ padding-bottom:calc(var(--ritmo) * .75); }
-.auth-section{ padding-top:var(--ritmo); }
+/* +43: medido com a foto a contar como tinta, que e o que o olho ve. */
+.auth-section{ padding-top:calc(var(--ritmo) + 43px); }
 @media(max-width:899px){ .guia-section{ padding-bottom:calc(var(--ritmo) * .75 + 7px); }
-  .auth-section{ padding-top:calc(var(--ritmo) + 6px); } }
+  .auth-section{ padding-top:calc(var(--ritmo) + 50px); } }
 
 /* ══════════════════════════════════════════════════════════════════
    O QUE IMPLEMENTAMOS — continuacao de "O problema"
@@ -1151,6 +1161,11 @@ SECOES_CSS = """
      nao volta a sair. Num formulario de leads isso e a diferenca entre
      preencher e desistir. */
   .lead-input{ font-size:16px; }
+
+  /* O cartao tinha 40px de folga de cada lado: num ecra de 390 sobravam
+     260px para o formulario do CRM, e ele respondia com campos estreitos
+     e um botao quase quadrado. A 18px sobram 306. */
+  .lead-form{ padding:18px; }
 
   /* A saida alternativa do formulario e texto corrido: sem folga ficava
      com 14px de altura tocavel. */
@@ -1569,7 +1584,18 @@ VSL_CSS = """
 .vsl-shell{
   border-radius:24px;
   padding:6px;
-  box-shadow:0 30px 75px rgba(0,0,0,.9),0 0 55px rgba(47,161,255,.15);
+  /* A sombra tem de funcionar dos dois lados da emenda: em cima o hero e
+     escuro e ela nao se ve, em baixo o #f6f7f9 e claro e ela ve-se toda.
+     A 75px de desfoque e 90% de preto, sobre o claro deixava de ser sombra
+     e passava a ser um rectangulo cinzento por tras do video.
+
+     O `-18px` de espalhamento e o que faz a diferenca: encolhe a sombra
+     para dentro das arestas do cartao, e o que se ve passa a ser o cartao
+     a levantar do fundo em vez de uma mancha com a forma dele. O brilho
+     azul fica, que esse e o que faz o video ler-se como ecra aceso. */
+  box-shadow:0 22px 44px -18px rgba(0,0,0,.72),
+             0 6px 14px -8px rgba(0,0,0,.45),
+             0 0 55px rgba(47,161,255,.15);
 }
 .vsl-screen{
   position:relative;
