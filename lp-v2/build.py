@@ -369,122 +369,6 @@ SECOES_CSS = """
   .funil-img{ max-width:320px; }
 }
 
-/* ══════════════════════════════════════════════════════════════════
-   A LINHA DO TEMPO — em lista, nao em ziguezague
-   O desenho alternado deixava, a qualquer altura, mais de metade da
-   seccao em preto: cinco passos a ocupar 1600px para dizer o que cabe em
-   550. Os passos passam a linhas de largura toda — numero, etiqueta e
-   titulo a esquerda, texto a direita — separadas por um filete, com o
-   carril a esquerda a encher conforme se desce. Continua a ser a linha do
-   tempo; deixa de ser um ziguezague com o dobro do espaco vazio.
-   ══════════════════════════════════════════════════════════════════ */
-
-#trajetoria .traj-list{
-  max-width:var(--medida-titulo);
-  margin-inline:calc(50% - var(--medida-titulo) / 2);
-  min-height:0;
-}
-/* O carril passa da coluna do meio para a esquerda, ao pe dos numeros. */
-#trajetoria .traj-list::before,
-#trajetoria .traj-progress-line{ left:23px;transform:none; }
-#trajetoria .traj-progress-dot{ left:50%;transform:translateX(-50%); }
-
-#trajetoria .traj-item{
-  display:grid;
-  grid-template-columns:70px minmax(0,1fr);
-  gap:0;
-  align-items:start;
-  margin-bottom:0;
-  padding:clamp(1.4rem,2.4vw,1.9rem) 0;
-  border-bottom:1px solid rgba(255,255,255,.06);
-  opacity:.5;
-  filter:none;
-  transition:opacity .55s ease;
-}
-#trajetoria .traj-item:first-child{ padding-top:0; }
-#trajetoria .traj-item:last-child{ border-bottom:0; }
-#trajetoria .traj-item.active{ opacity:1; }
-#trajetoria .traj-item::before{ display:none; }
-/* A entrada vinha de lado, do tempo em que os passos alternavam esquerda e
-   direita. Numa lista alinhada isso lia-se como desalinhamento; sobe. */
-#trajetoria .traj-item:nth-child(odd) .traj-content,
-#trajetoria .traj-item:nth-child(even) .traj-content{ transform:translateY(12px); }
-#trajetoria .traj-item.active .traj-content{ transform:none; }
-
-/* O no, no carril */
-.traj-no{
-  grid-column:1;
-  grid-row:1;
-  justify-self:start;
-  align-self:start;
-  margin-top:-4px;
-  width:46px;height:46px;
-  display:grid;
-  place-items:center;
-  border-radius:50%;
-  /* opaco de proposito: e ele que corta o carril por tras */
-  background:#070a16;
-  border:1px solid rgba(255,255,255,.1);
-  position:relative;
-  z-index:3;
-  transition:border-color .45s ease, box-shadow .45s ease, background .45s ease;
-}
-.traj-no span{
-  font-family:'Archia',sans-serif;
-  font-size:15px;
-  letter-spacing:-.02em;
-  color:rgba(255,255,255,.42);
-  transition:color .45s ease;
-}
-.traj-item.active .traj-no{
-  border-color:rgba(47,161,255,.5);
-  background:radial-gradient(120% 120% at 50% 0%, rgba(47,161,255,.22), #070a16 70%);
-  box-shadow:0 0 0 4px rgba(47,161,255,.07), 0 0 22px rgba(47,161,255,.28);
-}
-.traj-item.active .traj-no span{ color:#fff; }
-
-/* A direita do numero, duas colunas: etiqueta e titulo numa, texto na
-   outra. A linha fica com a altura do que la esta dentro — era o segundo
-   `row` implicito do titulo que abria o vazio por baixo de cada passo. */
-#trajetoria .traj-content{
-  grid-column:2;
-  grid-row:1;
-  display:grid;
-  grid-template-columns:minmax(0,290px) minmax(0,1fr);
-  grid-template-rows:auto auto;
-  column-gap:clamp(1.5rem,3vw,3rem);
-  align-items:start;
-  text-align:left;
-  padding:0;
-}
-#trajetoria .traj-year{ grid-column:1;grid-row:1;margin-bottom:.4rem; }
-#trajetoria .traj-tag{ display:none; }
-#trajetoria .traj-title{
-  grid-column:1;
-  grid-row:2;
-  font-size:clamp(17px,1.5vw,21px);
-  margin:0;
-}
-#trajetoria .traj-desc{
-  grid-column:2;
-  grid-row:1 / span 2;
-  max-width:none;
-  margin:0;
-  font-size:14px;
-  line-height:1.7;
-  color:rgba(200,204,216,.6);
-}
-
-@media(max-width:820px){
-  #trajetoria .traj-item{ grid-template-columns:52px minmax(0,1fr); }
-  #trajetoria .traj-content{ grid-template-columns:1fr;grid-template-rows:auto auto auto; }
-  #trajetoria .traj-desc{ grid-column:1;grid-row:3;margin-top:.55rem; }
-  #trajetoria .traj-list::before,
-  #trajetoria .traj-progress-line{ left:19px; }
-  .traj-no{ width:38px;height:38px; }
-  .traj-no span{ font-size:13px; }
-}
-
 /* ══ Testemunhos em video ══
    Fila que rola na horizontal em vez de grelha: sao oito, e uma grelha de
    oito ou punha cartoes minusculos ou tres filas a encher o ecra. Rolar de
@@ -668,7 +552,6 @@ SECOES_CSS = """
    meia vazia. Passam a partilhar uma medida so, que encolhe com o ecra.
    O topo de #quem fica de fora: e ele que compensa a VSL a cavalo. */
 :root{ --ritmo: clamp(64px, 6.6vw, 98px); }
-#trajetoria,
 #bandeiras,
 .guia-section,
 .auth-section,
@@ -682,6 +565,77 @@ SECOES_CSS = """
    entre elas o intervalo e mais curto. */
 .guia-section{ padding-bottom:calc(var(--ritmo) * .55); }
 .auth-section{ padding-top:calc(var(--ritmo) * .75); }
+
+/* ══════════════════════════════════════════════════════════════════
+   O QUE IMPLEMENTAMOS — passa para a dobra escura
+   Ficou com o lugar que era da linha do tempo. Os cartoes ja usavam o
+   sistema da referencia — invólucro exterior, cartao interior e um aro
+   que acende com a aproximacao do cursor; so mudam de tom, e ganham a
+   grelha tecnica de fundo que faltava.
+   ══════════════════════════════════════════════════════════════════ */
+
+.band-section{
+  position:relative;
+  background:
+    radial-gradient(95% 55% at 50% 0%, rgba(47,161,255,.08) 0%, rgba(6,10,22,0) 68%),
+    #060a16;
+}
+.band-eyebrow{
+  color:#6cc0ff;
+  border-color:rgba(47,161,255,.28);
+  background:rgba(47,161,255,.08);
+}
+.band-tg{
+  background:linear-gradient(to bottom,#fff 0%,rgba(255,255,255,.62) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.band-sub{ color:rgba(190,200,220,.62); }
+
+.band-card{ border-color:rgba(255,255,255,.08); }
+.band-card-inner{
+  border-color:rgba(255,255,255,.07);
+  background:linear-gradient(160deg, rgba(255,255,255,.05) 0%, rgba(255,255,255,.015) 100%);
+  box-shadow:0 18px 44px rgba(0,0,0,.34);
+  transition:background .5s ease, border-color .5s ease;
+}
+.band-card:hover .band-card-inner{
+  background:linear-gradient(160deg, rgba(47,161,255,.08) 0%, rgba(255,255,255,.02) 100%);
+  border-color:rgba(47,161,255,.2);
+}
+/* Grelha tecnica de fundo, a 24px. Leva z-index:0 e o conteudo z-index:1:
+   um ::before absoluto pinta por cima do conteudo em fluxo, e a grelha
+   ficava por cima do texto. */
+.band-card-inner::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,.035) 1px, transparent 1px);
+  background-size:24px 24px;
+}
+.band-icon-wrap,
+.band-card-title,
+.band-card-desc{ position:relative;z-index:1; }
+
+.band-icon-wrap{
+  background:rgba(255,255,255,.05);
+  border-color:rgba(255,255,255,.1);
+  color:rgba(198,214,240,.78);
+  box-shadow:0 1px 3px rgba(0,0,0,.25);
+}
+.band-card:hover .band-icon-wrap{
+  color:#2fa1ff;
+  border-color:rgba(47,161,255,.35);
+  background:rgba(47,161,255,.1);
+}
+.band-card-title{
+  background:linear-gradient(135deg,#7cc8ff 0%,#2fa1ff 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.band-card-desc{ color:rgba(186,197,217,.6); }
 
 @media(max-width:640px){
   .hero-h1{ font-size:clamp(26px,7.6vw,36px); }
@@ -761,31 +715,22 @@ SEGUNDA_DOBRA = """<section id="quem">
 </section>"""
 
 # ══════════════════════════════════════════════════════════════════
-# A LINHA DO TEMPO — o numero deixa de ser um fantasma na coluna vazia
-# e passa a ser o no que a linha de progresso atravessa.
+# A LINHA DO TEMPO SAI
+# O "o que implementamos" passa a ocupar a dobra escura que era dela.
+# Sai a marcacao, o JS que a animava e a folha que lhe pertencia.
 # ══════════════════════════════════════════════════════════════════
 
-n_nos = len(re.findall(r'<div class="traj-photo-wrap">\s*<div class="traj-date-panel">\s*'
-                       r'<div class="traj-date-panel-day">\d+</div>\s*</div>\s*</div>', html))
-if n_nos != 5:
-    falhas.append(f"linha do tempo: esperava 5 numeros, encontrei {n_nos}")
-html = re.sub(
-    r'<div class="traj-photo-wrap">\s*<div class="traj-date-panel">\s*'
-    r'<div class="traj-date-panel-day">(\d+)</div>\s*</div>\s*</div>',
-    lambda m: f'<div class="traj-no"><span>{m.group(1)}</span></div>',
-    html,
-)
+seccao = re.search(r'<section id="trajetoria">.*?</section>\n', html, re.S)
+if not seccao:
+    falhas.append("linha do tempo: nao encontrei a seccao")
+else:
+    html = html.replace(seccao.group(0), "")
 
-# O ultimo passo so acendia depois de a seccao ja ter saido do ecra: a
-# barra de progresso conta a altura toda da lista, mas o gatilho ficava
-# em idx/total. Comprimindo a escala, os cinco passos acendem dentro da
-# seccao, que e onde se esta a olhar.
-html = troca(
-    html,
-    "var threshold = (idx / total) + 0.02;",
-    "var threshold = (idx / total) * 0.8;",
-    "gatilho dos passos da linha do tempo",
-)
+js = re.search(r"/\* Timeline scroll-driven \*/\n\(function\(\)\{.*?\n\}\)\(\);\n", html, re.S)
+if not js:
+    falhas.append("linha do tempo: nao encontrei o JS")
+else:
+    html = html.replace(js.group(0), "")
 
 # ══════════════════════════════════════════════════════════════════
 # TESTEMUNHOS EM VIDEO
@@ -1133,64 +1078,6 @@ if not seccao:
     falhas.append("segunda dobra: nao encontrei a seccao #quem")
 else:
     html = html.replace(seccao.group(0), SEGUNDA_DOBRA)
-
-# ══════════════════════════════════════════════════════════════════
-# COMO FUNCIONA — cinco passos
-# ══════════════════════════════════════════════════════════════════
-
-html = troca(
-    html,
-    '<span class="tg">Da primeira conversa ao </span><span class="ta">piloto automático.</span>',
-    '<span class="tg">Da primeira conversa ao </span><span class="ta">primeiro cliente fechado.</span>',
-    "h2 do processo",
-)
-
-PASSOS = [
-    (
-        "Diagnóstico",
-        "Diagnóstico e Mapa de Automação",
-        "Analisamos a sua operação e identificamos onde a IA poupa mais tempo e dinheiro. É por aqui que começamos, sem custo.",
-        "Diagnóstico",
-        "Diagnóstico e estrutura",
-        "Antes de investir um euro em anúncios, analisamos o negócio, a oferta, o processo comercial e onde estão os pontos de perda. Não começamos sem perceber o que já existe.",
-    ),
-    (
-        "Desenho",
-        "Desenho do Motor de IA",
-        "Desenhamos o sistema de agentes e automações à medida do seu negócio e das ferramentas que já usa.",
-        "Atração",
-        "Atração de leads qualificadas",
-        "Campanhas em Meta Ads e Google Ads orientadas a conversão. Criativos, copy e segmentação pensados para trazer o perfil certo, não só volume.",
-    ),
-    (
-        "Construção",
-        "Construção dos agentes",
-        "Construímos e testamos os agentes de IA e as automações, prontos a assumir o trabalho repetitivo.",
-        "Nutrição",
-        "Nutrição e qualificação",
-        "Fluxos de email e WhatsApp que aquecem e filtram antes do contacto comercial, para a sua equipa falar só com quem está pronto.",
-    ),
-    (
-        "Integração",
-        "Integração e formação",
-        "Ligamos tudo às suas ferramentas e formamos a sua equipa para trabalhar com a nova Equipa de IA.",
-        "Conversão",
-        "Processo comercial e CRM",
-        "Scripts, playbook e CRM integrado, para que nenhuma oportunidade se perca entre o pedido de informação e a venda.",
-    ),
-    (
-        "Otimização",
-        "Otimização contínua",
-        "Acompanhamos, medimos e melhoramos o sistema todos os meses, para render cada vez mais.",
-        "Otimização",
-        "Acompanhamento e otimização",
-        "Analisamos o pipeline, o que fecha e o que não fecha, e entregamos os próximos passos concretos. Todos os meses, com dados à frente.",
-    ),
-]
-for tag_a, titulo_a, desc_a, tag_n, titulo_n, desc_n in PASSOS:
-    html = troca(html, f'<div class="traj-tag">{tag_a}</div>', f'<div class="traj-tag">{tag_n}</div>', f"etiqueta {tag_a}")
-    html = troca(html, f'<h3 class="traj-title">{titulo_a}</h3>', f'<h3 class="traj-title">{titulo_n}</h3>', f"titulo {titulo_a}")
-    html = troca(html, f'<p class="traj-desc">{desc_a}</p>', f'<p class="traj-desc">{desc_n}</p>', f"descricao {tag_a}")
 
 # ══════════════════════════════════════════════════════════════════
 # CAPACIDADES — nove cartoes
