@@ -2498,7 +2498,12 @@ a{text-decoration:none;color:inherit}
 
 @media(max-width:860px){
   .funil{ grid-template-columns:1fr;gap:2.5rem; }
-  .funil-img{ max-width:320px; }
+  /* A 320px fixos a ampulheta ficava com 518px de altura — 61% do ecra de
+     um telemovel, e a mesma coisa num de 360 ou num de 430. Passa a
+     acompanhar a largura do aparelho, com tecto: a 390px da 242x391, que
+     e pouco menos de metade do ecra. Os rotulos das seis fatias continuam
+     a ler-se; abaixo disto e que comecavam a apertar. */
+  .funil-img{ max-width:min(62vw, 250px); }
 }
 
 /* ══ Testemunhos em video ══
@@ -3150,7 +3155,8 @@ a{text-decoration:none;color:inherit}
        para um fundo. No telemóvel fica o fotograma. -->
   <video class="hero-bg-video" muted loop playsinline preload="none"
          poster="img/hero-poster.jpg" aria-hidden="true"
-         data-src="img/hero-video.webm"></video>
+         data-src="img/hero-video.webm"
+         data-src-movel="img/hero-video-movel.webm"></video>
   <div class="hero-bg-veil" aria-hidden="true"></div>
 
   <!-- Glow orbs animados -->
@@ -3731,14 +3737,30 @@ if(typeof gsap!=='undefined'){
   });
 })();
 
-/* Vídeo de fundo do herói — só em ecrãs largos, e só depois de pintar */
+/* Vídeo de fundo do herói.
+   No telemóvel corre uma cópia própria: 720x405 a 24fps, sem faixa de som,
+   768KB contra os 7,7MB da de secretária. Atrás de um véu a 70% o detalhe
+   que se perde não se vê, e o peso deixa de ser uma razão para não o ter.
+   Em qualquer dos casos só entra depois de a página pintar, e nunca com
+   `prefers-reduced-motion` nem com poupança de dados ligada. */
 (function(){
   var v = document.querySelector('.hero-bg-video');
   if(!v || !v.dataset.src) return;
-  if(!window.matchMedia('(min-width: 861px)').matches) return;
   if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  /* Quem tem o Poupar Dados ligado, ou está em 2G/3G, fica com o
+     fotograma. Pedir-lhe 768KB de enfeite seria abusar. */
+  var c = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if(c){
+    if(c.saveData) return;
+    if(/^(slow-2g|2g|3g)$/.test(c.effectiveType || '')) return;
+  }
+
+  var largo  = window.matchMedia('(min-width: 861px)').matches;
+  var origem = largo ? v.dataset.src : (v.dataset.srcMovel || v.dataset.src);
+
   window.addEventListener('load', function(){
-    v.src = v.dataset.src;
+    v.src = origem;
     v.preload = 'auto';
     var t = v.play();
     if(t && t.catch) t.catch(function(){});

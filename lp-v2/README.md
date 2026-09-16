@@ -327,16 +327,26 @@ pastilha, abaixo do mínimo legível; aqui o cinzento é mais claro e passa os
 
 ## Telemóvel
 
-O vídeo de fundo do herói tem 7,7MB e estava a ser descarregado no telemóvel,
-onde nem se vê — era **94% do peso da página** para um fundo que o véu quase
-tapa. O `<source>` saiu da marcação e a origem passa a ser posta por JS, só em
-ecrãs a partir de 861px, depois do `load`, e nunca com `prefers-reduced-motion`.
-No telemóvel fica o fotograma. Medido no browser, a 390px:
+O vídeo de fundo do herói tem 7,7MB e estava a ser descarregado no telemóvel —
+era **94% do peso da página** para um fundo que o véu quase tapa. O `<source>`
+saiu da marcação e a origem passa a ser posta por JS, depois do `load`, e nunca
+com `prefers-reduced-motion`.
 
-| | Antes | Depois |
-| --- | --- | --- |
-| No arranque | 8,20 MB | **0,47 MB** |
-| Página toda percorrida | 8,34 MB | **0,81 MB** |
+No telemóvel deixou de haver vídeo nenhum, e isso foi longe demais: ficava um
+retângulo preto onde devia estar o escritório. Passou a haver uma cópia própria
+— **720×405 a 24fps, sem faixa de som, 768KB** contra os 7,7MB da de secretária.
+Atrás de um véu a 70% o detalhe que se perde não se vê, e o peso deixa de ser
+razão para não o ter. Medido no browser, a 390px:
+
+| | Original | Sem vídeo | Com a cópia de telemóvel |
+| --- | --- | --- | --- |
+| Primeira pintura | 8,20 MB | 0,47 MB | **0,49 MB** |
+| Página toda percorrida | 8,34 MB | 0,81 MB | **1,58 MB** |
+
+A primeira pintura não muda: o vídeo só começa a descarregar depois do `load`,
+como no computador. E há duas portas antes disso — com `prefers-reduced-motion`
+ou com o Poupar Dados ligado (ou em 2G/3G, pela Network Information API), fica o
+fotograma. Pedir 768KB de enfeite a quem está a contar megabytes seria abusar.
 
 O retrato do Ricardo (202KB) também vinha no arranque, apesar de estar muito
 abaixo da dobra; passou a `loading="lazy"`.
@@ -359,6 +369,12 @@ browser não o sabe antes do CSS aplicar.
 No rodapé, a folga que faz de cada contacto um alvo de toque de 44px empurrava o
 texto para baixo e deixava o ícone a flutuar acima da linha. O ícone passou a
 descer com ele: `margin-top: calc(.85rem + .15em)`.
+
+A ampulheta ocupava **61% do ecrã**: tinha um teto de 320px fixos, o que dava
+518px de altura — e os mesmos 518px num telemóvel de 360 ou num de 430. Passou a
+acompanhar a largura do aparelho com teto, `min(62vw, 250px)`, o que a 390px dá
+242×391 — pouco menos de metade do ecrã. Os rótulos das seis fatias continuam a
+ler-se; abaixo disto começavam a apertar.
 
 Sem transbordo horizontal a 320, 360, 390, 414, 430 e 768px. Sem `100vh`, sem
 alvos de toque abaixo dos 44px, sem imagens servidas acima do dobro do tamanho
