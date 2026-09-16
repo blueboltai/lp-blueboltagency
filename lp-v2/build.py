@@ -2837,7 +2837,12 @@ print(f"index.html reescrito: {len(html):,} bytes")
 # indexar, uma delas tem de levar `canonical` a apontar para a outra.
 # ══════════════════════════════════════════════════════════════════
 
-DOMINIO = "https://lp.blueboltagency.pt"
+# Subdominio proprio, de segundo nivel. Nao e o agencia.bluebolt.pt porque
+# esse ja tem um WordPress em cima, e nao e lp.agencia.bluebolt.pt porque um
+# wildcard *.bluebolt.pt nao chega a terceiro nivel e o certificado dava
+# trabalho. A verificacao de dominio do Meta Business Manager tambem abrange
+# subdominios: se o bluebolt.pt ja esta verificado, este herda-o.
+DOMINIO = "https://diagnostico.bluebolt.pt"
 
 CANAIS = {
     "meta":   "Meta Ads",

@@ -42,9 +42,18 @@ costuma deixar uma página de campanha paga, que não se quer a competir nos
 resultados orgânicos. Se alguma vez for para indexar, uma delas tem de levar
 `canonical` a apontar para a outra.
 
-O domínio está numa constante só, `DOMINIO` no `build.py`. Está em
-`https://lp.blueboltagency.pt` porque é o que o campo escondido do formulário do
-CRM já trazia por omissão; se for outro, muda-se aí e o build trata do resto.
+**O domínio é `diagnostico.bluebolt.pt`**, num subdomínio próprio de segundo
+nível. Não é o `agencia.bluebolt.pt` porque esse já tem um WordPress em cima, e
+não é `lp.agencia.bluebolt.pt` porque um wildcard `*.bluebolt.pt` não chega a
+terceiro nível e o certificado dava trabalho — uma página de tráfego pago com
+aviso de segurança no browser queima orçamento depressa.
+
+A verificação de domínio do Meta Business Manager abrange subdomínios: se o
+`bluebolt.pt` já está verificado, este herda-o, o que importa para a Aggregated
+Event Measurement em iOS. Um domínio novo teria de ser verificado de raiz.
+
+Está numa constante só, `DOMINIO` no `build.py`; se mudar, muda-se aí e o build
+trata do resto.
 
 ## No ar
 
@@ -578,6 +587,13 @@ formato dessa mensagem não está documentado e o script do GHL vem minificado**
 Não o adivinhei em silêncio: o ouvinte aceita várias formas conhecidas e escreve
 na consola tudo o que chega do domínio deles, para se ver o que aparece de facto.
 Confirmar no *Test Events* do Events Manager, com uma submissão a sério.
+
+### A origem permitida, quando o domínio mudar
+
+O `ORIGEM_PERMITIDA` que o servidor da CAPI usava apontava ao
+`blueboltai.github.io`. Com o site em `diagnostico.bluebolt.pt`, é esse o valor a
+pôr — e a mesma nota vale para qualquer lista de domínios permitidos que o CRM ou
+o Meta venham a pedir.
 
 ### O token da Conversions API: vai para o CRM, não para aqui
 
