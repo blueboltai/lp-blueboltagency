@@ -2141,14 +2141,16 @@ a{text-decoration:none;color:inherit}
      570, 600, 601 e 634px. Lado a lado nao havia dois iguais, e por baixo
      de titulos todos com a mesma medida isso lia-se como desalinho.
 
-     Passam a partilhar uma medida so, presa a do titulo: 62% dela, que
-     da 632px. Nao pode ser a medida inteira — 1020px de texto corrido a
-     17px sao 126 caracteres por linha, o dobro do que o olho segue sem
-     perder o sitio onde ia. A 62% sao 78, dentro da banda que se le bem, e
-     a relacao com o titulo por cima passa a ler-se como escolha em vez de
-     acaso. Abaixo do ponto em que o titulo deixa de caber, os dois
-     encolhem juntos e o subtitulo fica da largura do titulo. */
-  --medida-sub: min(calc(var(--medida-max) * .62), var(--medida-titulo));
+     Passam a partilhar a medida do titulo — a mesma, nao uma fraccao dela:
+     o subtitulo comeca e acaba onde o titulo comeca e acaba.
+
+     Foi pedido assim, sabendo o que custa: 1020px de texto a 17px sao
+     cerca de 126 caracteres por linha, mais do que o olho costuma seguir
+     sem perder o sitio onde ia ao mudar de linha. O que se pode fazer para
+     o compensar esta feito — a entrelinha sobe para 1,85 em todos, que e a
+     folga que ajuda a apanhar o inicio da linha seguinte numa medida
+     larga. */
+  --medida-sub: var(--medida-titulo);
 }
 .hero-h1,
 #quem .prob-head .quem-h2,
@@ -2182,6 +2184,13 @@ a{text-decoration:none;color:inherit}
   max-width:var(--medida-sub);
   margin-inline:auto;
 }
+/* Regra a parte, depois das que dao corpo a cada um, senao a entrelinha
+   propria de cada seccao ganhava-lhe por ordem de leitura. */
+.hero-sub,
+.prob-bio,
+.prob-bio p,
+.band-sub,
+.cta-sub{ line-height:1.85; }
 
 /* ══ Rodape ══
    Quatro colunas: marca e redes, contactos, informacoes uteis, parcerias.
@@ -2308,7 +2317,10 @@ a{text-decoration:none;color:inherit}
   max-width:1100px;
 }
 .prob-head{
-  max-width:min(980px,100%);
+  /* Era 980px. O titulo saia desta caixa pela margem calculada, o corpo
+     do texto nao — e com o corpo na medida do titulo era esta caixa que
+     lhe cortava 20px de cada lado. */
+  max-width:var(--medida-titulo);
   margin:0 auto clamp(3.5rem,7vw,6rem);
   text-align:center;
 }
@@ -2812,10 +2824,16 @@ a{text-decoration:none;color:inherit}
   border-radius:12px;
   background:#f1f5f9;
   border-color:#e2e8f0;
-  color:#64748b;
+  /* Azul de origem, nao so ao passar o rato. Um tom abaixo do acento da
+     pagina: a #2fa1ff o icone dava 2,5:1 contra a pastilha, e um desenho
+     de traco a 1,5px precisa de 3:1 para se ler. A #1183e0 da 3,6:1 e
+     continua a ser o azul da marca. */
+  color:#1183e0;
   box-shadow:0 1px 2px rgba(15,23,42,.05);
   transition:color .5s ease, border-color .5s ease, background .5s ease;
 }
+/* Ao passar o rato acende para o acento, como o titulo — a pastilha e a
+   borda acompanham, e e o conjunto que muda, nao so o icone. */
 .band-card:hover .band-icon-wrap{
   background:#f1f7ff;
   border-color:rgba(47,161,255,.3);
@@ -3051,6 +3069,35 @@ a{text-decoration:none;color:inherit}
 }
 @media(prefers-reduced-motion:reduce){
   .hero-bg-video{ display:none; }
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   OS SUBTITULOS SAEM DA CAIXA, COMO OS TITULOS
+   `max-width` sozinho nao chegava: o .hero-content tem 836px e o
+   .cta-inner 680, e o subtitulo parava ai enquanto o titulo, que ja
+   levava esta margem calculada, chegava aos 1020. Ficavam 184 e 340px de
+   diferenca — exactamente o que se via.
+
+   A margem e a mesma receita dos titulos: metade da caixa menos metade da
+   medida, o que deixa o elemento sair do pai sem precisar de saber a
+   largura dele. Quando o pai ja e da medida, da zero e nao faz nada.
+
+   Fica no fim da folha de proposito. Declarada mais acima, o
+   `margin:2rem auto 0` do .prob-callout e o `margin-inline:auto` do
+   .prob-bio ganhavam-lhe por ordem de leitura.
+
+   O #guia e o #autoridade ficam de fora, como os titulos: ali o subtitulo
+   e uma das duas colunas, e tem de ser a coluna a mandar. Por isso e
+   `#hero .hero-sub` e nao `.hero-sub` — a seccao do diagnostico usa a
+   mesma classe. */
+#hero .hero-sub,
+.prob-head .prob-bio,
+.prob-head .prob-callout,
+.band-sub,
+.cta-sub{
+  width:var(--medida-sub);
+  max-width:none;
+  margin-inline:calc(50% - var(--medida-sub) / 2);
 }
 </style>
 </head>

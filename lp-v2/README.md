@@ -98,9 +98,16 @@ eram as medidas e o movimento:
 | Fundo do cartão | degradê `#fbfcfe→#eef2f8` | **`#fff`**, `#f8fafc` no hover |
 | Altura mínima | — | **260px**, conteúdo centrado |
 | Pastilha do ícone | branca, azul no hover | **`slate-100`**, acento no hover |
+| Ícone | cinzento, azul no hover | **azul de origem** (`#1183e0`) |
 | Flutuação do ícone | −6px, 3,5s | **−12px + escala 1,1, 3s** |
 | Título | degradê azul, 17px | **`slate-800` 20px**, acento no hover |
 | Corpo | 13,5px | **15px**, `slate-600` |
+
+O ícone está azul de origem, não só ao passar o rato — um tom abaixo do acento
+da página. A `#2fa1ff` dava 2,5:1 contra a pastilha, e um desenho de traço a
+1,5px precisa de 3:1 para se ler; a `#1183e0` dá 3,6:1 e continua a ser o azul
+da marca. Ao passar o rato acende para o acento, com a pastilha e a borda a
+acompanhar.
 
 O aro exterior é o único valor que não é o da referência: ela usa `slate-200`
 sobre página branca, e aqui a secção é `#f6f7f9` — a `slate-200` o aro
@@ -154,23 +161,42 @@ O mesmo problema, um andar abaixo. Cada subtítulo tinha a largura do bloco onde
 calhou ficar — **500, 560, 570, 600, 601 e 634px** — e por baixo de títulos todos
 com a mesma medida isso lia-se como desalinho.
 
-Passaram a partilhar uma medida só, presa à do título: `--medida-sub` é 62% de
-`--medida-max`, ou seja **632px**. Não pode ser a medida inteira: 1020px de texto
-corrido a 17px são 126 caracteres por linha, o dobro do que o olho segue sem
-perder o sítio onde ia. A 62% são 78, dentro da banda que se lê bem, e a relação
-com o título por cima passa a ler-se como escolha em vez de acaso.
+Passaram a partilhar **a medida do título** — a mesma, não uma fração dela:
+`--medida-sub` é `var(--medida-titulo)`. O subtítulo começa e acaba onde o título
+começa e acaba.
 
-É `max-width`, não `width`. Nas duas secções em duas colunas (`#guia` e
-`#autoridade`) o subtítulo vive numa coluna mais estreita do que a medida, e ali
-tem de ser a coluna a mandar. E abaixo do ponto em que o título deixa de caber,
-os dois encolhem juntos: o subtítulo fica exatamente da largura do título.
+Foi pedido assim, sabendo o que custa: 1020px de texto a 17px são cerca de 126
+caracteres por linha, mais do que o olho costuma seguir sem perder o sítio onde
+ia ao mudar de linha. O que se podia fazer para o compensar está feito — a
+entrelinha subiu para 1,85 em todos, que é a folga que ajuda a apanhar o início
+da linha seguinte numa medida larga.
+
+`max-width` sozinho não chegava, e é aí que estava a diferença que continuava a
+ver depois da primeira tentativa. O `.hero-content` tem 836px e o `.cta-inner`
+680: o subtítulo parava aí enquanto o título, que já levava a margem calculada,
+chegava aos 1020. Eram **184 e 340px** de diferença. Os subtítulos passaram a
+levar a mesma margem dos títulos — metade da caixa menos metade da medida — que
+os deixa sair do pai sem precisar de saber a largura dele, e dá zero quando o pai
+já é da medida.
+
+Essa regra fica no fim da folha de propósito: declarada mais acima, o
+`margin:2rem auto 0` do `.prob-callout` e o `margin-inline:auto` do `.prob-bio`
+ganhavam-lhe por ordem de leitura. E a caixa do `.prob-head`, que tinha 980px,
+subiu para a medida do título — era ela que cortava 20px de cada lado ao corpo
+do texto.
+
+Ficam de fora `#guia` e `#autoridade`, como os títulos: ali o subtítulo é uma das
+duas colunas. Por isso a regra é `#hero .hero-sub` e não `.hero-sub` — a secção
+do diagnóstico usa a mesma classe.
 
 Dois corpos de letra subiram para os 17px dos restantes — o do bloco do problema
 (estava a 16) e o do "o que implementamos" (a 15,8, o único abaixo dos 17 da
 página). Uma medida comum só se lê como comum se o corpo de letra também for.
 
-Medido no browser a 1440px: hero, problema, o que implementamos e CTA final, os
-quatro a 632px.
+Medido no browser: a 1440px as caixas de título e subtítulo são as duas de
+1020px em hero, problema, o que implementamos e CTA final, e o texto composto
+chega aos 998–1010. A 390px todos os títulos e subtítulos da página assentam nas
+mesmas arestas, 24→366px.
 
 **Segunda dobra** passou a branco/cinza (`#f6f7f9`), com o texto e a grelha de
 fundo invertidos para tom escuro. É isso que faz a VSL ler como na referência:
