@@ -2812,6 +2812,82 @@ if falhas:
 open(PAGE, "w", encoding="utf-8").write(html)
 print(f"index.html reescrito: {len(html):,} bytes")
 
+# ══════════════════════════════════════════════════════════════════
+# AS DUAS PAGINAS: /meta/ e /google/
+# A mesma pagina em dois enderecos, um para cada canal, para o trafego e
+# as conversoes de cada plataforma se medirem em separado.
+#
+# Nao sao duas copias: sao geradas da mesma construcao, e as imagens, o
+# CSS e as fontes ficam uma so vez na raiz. As duas paginas apontam para
+# `../img/` e `../assets/`. Sao 8MB que nao se duplicam, e trocar uma
+# imagem serve as duas.
+#
+# Estrutura a subir para o public_html da Hostinger:
+#
+#   public_html/
+#     index.html          ← a pagina solta, se for precisa
+#     meta/index.html
+#     google/index.html
+#     img/  assets/  archia-regular.woff2  archia-regular.woff
+#
+# NOTA SOBRE O GOOGLE: duas paginas iguais em dois enderecos sao conteudo
+# duplicado. Enquanto o `robots` estiver em `noindex` nao ha problema —
+# e e assim que se costuma deixar uma pagina de campanha paga, que nao se
+# quer a competir nos resultados organicos. Se alguma vez for para
+# indexar, uma delas tem de levar `canonical` a apontar para a outra.
+# ══════════════════════════════════════════════════════════════════
+
+DOMINIO = "https://lp.blueboltagency.pt"
+
+CANAIS = {
+    "meta":   "Meta Ads",
+    "google": "Google Ads",
+}
+
+
+def pagina_do_canal(base_html, canal, rotulo):
+    """A mesma pagina, um nivel mais abaixo e marcada com o canal."""
+    h = base_html
+
+    # 1. Os caminhos sobem um nivel. Sao poucos e todos na raiz da lp-v2:
+    #    img/, img/testemunhos/, assets/ e as duas fontes.
+    for antes, depois in (
+        ('="img/', '="../img/'),
+        ('="assets/', '="../assets/'),
+        ("url('img/", "url('../img/"),
+        ("url('archia-regular.", "url('../archia-regular."),
+    ):
+        if antes not in h:
+            falhas.append(f"{canal}: nao encontrei o caminho {antes!r} para reescrever")
+        h = h.replace(antes, depois)
+
+    # 2. O endereco proprio, para as partilhas e para o dia em que deixar
+    #    de estar em `noindex`.
+    h = h.replace('<link rel="canonical" href="https://bluebolt.pt/ai">',
+                  f'<link rel="canonical" href="{DOMINIO}/{canal}/">')
+    h = h.replace('<meta property="og:url" content="https://bluebolt.pt/ai/ads">',
+                  f'<meta property="og:url" content="{DOMINIO}/{canal}/">')
+
+    # 3. O canal no dataLayer, antes de o GTM arrancar: assim a primeira
+    #    visualizacao ja o traz e o GA4 consegue separar os dois sem
+    #    depender de a UTM ter sido posta no anuncio.
+    h = h.replace(
+        "  <!-- Google Tag Manager -->",
+        f"  <script>window.dataLayer=window.dataLayer||[];"
+        f"dataLayer.push({{canal:'{canal}',canal_nome:'{rotulo}'}});</script>\n"
+        "  <!-- Google Tag Manager -->",
+    )
+    return h
+
+
+for canal, rotulo in CANAIS.items():
+    pasta = os.path.join(os.path.dirname(PAGE), canal)
+    os.makedirs(pasta, exist_ok=True)
+    destino = os.path.join(pasta, "index.html")
+    open(destino, "w", encoding="utf-8").write(pagina_do_canal(html, canal, rotulo))
+    print(f"{canal}/index.html reescrito: {len(html):,} bytes")
+
+
 restos = [t for t in ("Equipa de IA", "agentes de IA", "bluebolt-ai-brand", "ricardo.webp") if t in html]
 fora_da_seccao_ricardo = [t for t in restos if t not in ("Equipa de IA",)]
 print("menções a IA restantes (secção do Ricardo incluída):", html.count("IA"))

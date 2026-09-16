@@ -5,6 +5,47 @@ fontes, cores, efeitos e animações — mas a vender a **Blue Bolt Agency**
 (Sistema Previsível de Aquisição de Clientes). Leva a VSL a cavalo entre a
 primeira e a segunda dobra.
 
+## Duas páginas, uma para cada canal
+
+A mesma página em dois endereços, para o tráfego e as conversões de cada
+plataforma se medirem em separado:
+
+```
+public_html/
+  index.html          ← a página solta, se for precisa
+  meta/index.html     ← Meta Ads
+  google/index.html   ← Google Ads
+  img/  assets/  archia-regular.woff2  archia-regular.woff
+```
+
+**Não são duas cópias.** São geradas da mesma construção pelo `build.py`, e as
+imagens, o CSS e as fontes ficam uma só vez na raiz — as duas páginas apontam
+para `../img/` e `../assets/`. São 8MB que não se duplicam, e trocar uma imagem
+serve as duas. Editar uma página à mão é o erro a evitar: da próxima vez que o
+build correr, é reescrita.
+
+Cada uma leva o seu `canonical`, o seu `og:url`, e empurra o canal para o
+`dataLayer` **antes de o GTM arrancar** — assim a primeira visualização já o traz
+e o GA4 separa os dois sem depender de a UTM ter sido posta no anúncio:
+
+```js
+dataLayer.push({canal:'meta', canal_nome:'Meta Ads'})
+```
+
+Verificado a servir a estrutura como ela fica na Hostinger: os 20 recursos que
+cada página pede respondem todos 200 a partir da subpasta, a Archia carrega, não
+há transbordo nem erros de consola.
+
+**Sobre o Google:** duas páginas iguais em dois endereços são conteúdo duplicado.
+Enquanto o `robots` estiver em `noindex` não há problema — e é assim que se
+costuma deixar uma página de campanha paga, que não se quer a competir nos
+resultados orgânicos. Se alguma vez for para indexar, uma delas tem de levar
+`canonical` a apontar para a outra.
+
+O domínio está numa constante só, `DOMINIO` no `build.py`. Está em
+`https://lp.blueboltagency.pt` porque é o que o campo escondido do formulário do
+CRM já trazia por omissão; se for outro, muda-se aí e o build trata do resto.
+
 ## No ar
 
 **https://blueboltai.github.io/lp-blueboltagency/**

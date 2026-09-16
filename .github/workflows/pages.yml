@@ -42,6 +42,9 @@ jobs:
           mkdir -p site
           cp -r lp-v2/. site/
           rm -rf site/source site/build.py site/README.md
+          # As duas paginas de campanha vao juntas, para se poderem ver
+          # antes de subir: /meta/ e /google/ partilham o img/ e o assets/
+          # da raiz, por isso nao ha nada a duplicar.
           touch site/.nojekyll
           echo "— o que vai ser publicado —"
           find site -maxdepth 2 -not -path '*/img/testemunhos/*' | sort
