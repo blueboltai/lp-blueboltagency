@@ -550,21 +550,6 @@ SECOES_CSS = """
 .hero-sub{ color:rgba(198,208,226,.84); }
 .hero-sub strong{ color:#fff;font-weight:600; }
 
-/* O botao do hero passa a claro. Na dobra escura e o branco que salta;
-   no CTA final, que esta sobre fundo claro, o azul continua a ser o certo. */
-#hero .cta-btn-main{
-  background:linear-gradient(to bottom,#fff 0%,rgba(255,255,255,.95) 55%,rgba(255,255,255,.72) 100%);
-  border-color:rgba(255,255,255,.5);
-  color:#08101f;
-  box-shadow:0 14px 38px rgba(0,0,0,.42), 0 0 0 1px rgba(255,255,255,.12);
-  transition:transform .25s cubic-bezier(.16,1,.3,1), padding .5s cubic-bezier(.16,1,.3,1), box-shadow .3s;
-}
-#hero .cta-btn-main:hover{ transform:scale(1.035); }
-#hero .cta-btn-main:active{ transform:scale(.98); }
-#hero .cta-btn-text{ color:#08101f; }
-#hero .cta-btn-circle{ background:#08101f;color:#fff; }
-#hero .cta-btn-circle svg{ color:#fff; }
-
 /* Halo por tras da VSL: e o que faz o video ler-se como um ecra aceso em
    vez de um rectangulo colado ao fundo. */
 .vsl-straddle{ position:relative; }
@@ -701,21 +686,25 @@ SECOES_CSS = """
   z-index:0;
   pointer-events:none;
   background-image:
-    linear-gradient(to right, rgba(10,15,35,.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(10,15,35,.05) 1px, transparent 1px);
-  background-size:24px 24px;
+    linear-gradient(to right, rgba(10,15,35,.032) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(10,15,35,.032) 1px, transparent 1px);
+  background-size:26px 26px;
   /* A grelha desvanece nos quatro lados em vez de bater na borda do
      cartao. Sao duas mascaras — uma na horizontal, outra na vertical —
      cruzadas: cada uma apaga um par de lados, e a interseccao apaga os
      quatro. Uma radial so fecharia os cantos, deixando o meio dos lados
-     a chegar a borda. */
+     a chegar a borda.
+
+     As paragens intermedias sao o que torna o desvanecimento gradual em
+     vez de um patamar cheio no meio: a grelha so chega a sua densidade
+     maxima — que ja e pouca — no centro do cartao, e desce desde ai. */
   -webkit-mask-image:
-    linear-gradient(to right, transparent 0, #000 16%, #000 84%, transparent 100%),
-    linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
+    linear-gradient(to right, transparent 0, rgba(0,0,0,.18) 20%, rgba(0,0,0,.6) 38%, #000 50%, rgba(0,0,0,.6) 62%, rgba(0,0,0,.18) 80%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, rgba(0,0,0,.18) 18%, rgba(0,0,0,.6) 36%, #000 50%, rgba(0,0,0,.6) 64%, rgba(0,0,0,.18) 82%, transparent 100%);
   -webkit-mask-composite:source-in;
   mask-image:
-    linear-gradient(to right, transparent 0, #000 16%, #000 84%, transparent 100%),
-    linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
+    linear-gradient(to right, transparent 0, rgba(0,0,0,.18) 20%, rgba(0,0,0,.6) 38%, #000 50%, rgba(0,0,0,.6) 62%, rgba(0,0,0,.18) 80%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, rgba(0,0,0,.18) 18%, rgba(0,0,0,.6) 36%, #000 50%, rgba(0,0,0,.6) 64%, rgba(0,0,0,.18) 82%, transparent 100%);
   mask-composite:intersect;
 }
 .band-icon-wrap,
@@ -862,8 +851,12 @@ SECOES_CSS = """
   to{ transform:translate(-50%,-50%) scale(4);opacity:0; }
 }
 
+/* No formulario o botao ocupa a linha toda, como ocupava o que substitui. */
+.lm-btn-bloco{ display:flex;width:100%;height:52px;margin-top:.25rem; }
+
 @media(max-width:640px){
   .lm-btn{ height:46px;padding:0 22px; }
+  .lm-btn-bloco{ height:50px; }
   .lm-label{ font-size:13px; }
 }
 
@@ -1330,13 +1323,21 @@ html = troca(html, "\n/* Submissão do formulário de lead", VSL_JS + "\n/* Subm
 # fazem a mesma franja cromatica.
 # ══════════════════════════════════════════════════════════════════
 
-BOTAO_LM = """<a href="#guia" class="lm-btn" data-lm aria-label="Agendar sessão estratégica">
-            <span class="lm-aro" aria-hidden="true"></span>
-            <span class="lm-face" aria-hidden="true"></span>
-            <span class="lm-conteudo">
-              <span class="lm-label">Agendar sessão estratégica</span>
-            </span>
-          </a>"""
+def botao_lm(rotulo, *, href=None, tipo=None, classe=""):
+    """O botao, de uma so receita — e usado no hero, no formulario e no CTA."""
+    if href:
+        abre = f'<a href="{href}" class="lm-btn{classe}" data-lm>'
+        fecha = "</a>"
+    else:
+        abre = f'<button type="{tipo or "button"}" class="lm-btn{classe}" data-lm>'
+        fecha = "</button>"
+    return (abre
+            + '<span class="lm-aro" aria-hidden="true"></span>'
+            + '<span class="lm-face" aria-hidden="true"></span>'
+            + f'<span class="lm-conteudo"><span class="lm-label">{rotulo}</span></span>'
+            + fecha)
+
+BOTAO_LM = botao_lm("Agendar sessão estratégica", href="#guia")
 
 ctas = re.search(r'<div class="hero-ctas">\s*<a href="#guia" class="cta-btn-main">.*?</a>\s*</div>', html, re.S)
 if not ctas:
@@ -1813,6 +1814,20 @@ if not rodape:
     falhas.append("rodape: nao encontrei o bloco")
 else:
     html = html.replace(rodape.group(0), RODAPE_HTML)
+
+# ── O mesmo botao no formulario e no CTA final ───────────────────────
+html = troca(
+    html,
+    '<button class="lead-submit" type="submit">Quero o meu diagnóstico gratuito</button>',
+    botao_lm("Quero o meu diagnóstico gratuito", tipo="submit", classe=" lm-btn-bloco"),
+    "botão do formulário",
+)
+
+cta = re.search(r'<a href="#guia" class="cta-btn-main">.*?</a>', html, re.S)
+if not cta:
+    falhas.append("CTA final: nao encontrei o botao")
+else:
+    html = html.replace(cta.group(0), botao_lm("Agendar sessão estratégica", href="#guia"))
 
 # ══════════════════════════════════════════════════════════════════
 # DADOS ESTRUTURADOS (JSON-LD) — tem de descrever a empresa certa

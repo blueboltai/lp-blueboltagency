@@ -141,7 +141,11 @@ compensa a VSL a cavalo. O diagnóstico e a secção do Ricardo levam um interva
 mais curto entre si, por serem duas metades da mesma conversa. Medido no
 browser, a página passa de ~8700px para 8098px sem perder nada.
 
-## O botão do hero
+## O botão
+
+É o mesmo nos três sítios — herói, formulário e CTA final — gerado por uma
+função só no `build.py`, para não voltarem a divergir. No formulário ocupa a
+linha toda; no resto ajusta-se ao texto.
 
 Réplica do componente *liquid metal* pedido, sem WebGL. Onde o original monta um
 fragment shader do `@paper-design/shaders`, aqui há um `repeating-conic-gradient`

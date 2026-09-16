@@ -2525,21 +2525,6 @@ a{text-decoration:none;color:inherit}
 .hero-sub{ color:rgba(198,208,226,.84); }
 .hero-sub strong{ color:#fff;font-weight:600; }
 
-/* O botao do hero passa a claro. Na dobra escura e o branco que salta;
-   no CTA final, que esta sobre fundo claro, o azul continua a ser o certo. */
-#hero .cta-btn-main{
-  background:linear-gradient(to bottom,#fff 0%,rgba(255,255,255,.95) 55%,rgba(255,255,255,.72) 100%);
-  border-color:rgba(255,255,255,.5);
-  color:#08101f;
-  box-shadow:0 14px 38px rgba(0,0,0,.42), 0 0 0 1px rgba(255,255,255,.12);
-  transition:transform .25s cubic-bezier(.16,1,.3,1), padding .5s cubic-bezier(.16,1,.3,1), box-shadow .3s;
-}
-#hero .cta-btn-main:hover{ transform:scale(1.035); }
-#hero .cta-btn-main:active{ transform:scale(.98); }
-#hero .cta-btn-text{ color:#08101f; }
-#hero .cta-btn-circle{ background:#08101f;color:#fff; }
-#hero .cta-btn-circle svg{ color:#fff; }
-
 /* Halo por tras da VSL: e o que faz o video ler-se como um ecra aceso em
    vez de um rectangulo colado ao fundo. */
 .vsl-straddle{ position:relative; }
@@ -2676,21 +2661,25 @@ a{text-decoration:none;color:inherit}
   z-index:0;
   pointer-events:none;
   background-image:
-    linear-gradient(to right, rgba(10,15,35,.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(10,15,35,.05) 1px, transparent 1px);
-  background-size:24px 24px;
+    linear-gradient(to right, rgba(10,15,35,.032) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(10,15,35,.032) 1px, transparent 1px);
+  background-size:26px 26px;
   /* A grelha desvanece nos quatro lados em vez de bater na borda do
      cartao. Sao duas mascaras — uma na horizontal, outra na vertical —
      cruzadas: cada uma apaga um par de lados, e a interseccao apaga os
      quatro. Uma radial so fecharia os cantos, deixando o meio dos lados
-     a chegar a borda. */
+     a chegar a borda.
+
+     As paragens intermedias sao o que torna o desvanecimento gradual em
+     vez de um patamar cheio no meio: a grelha so chega a sua densidade
+     maxima — que ja e pouca — no centro do cartao, e desce desde ai. */
   -webkit-mask-image:
-    linear-gradient(to right, transparent 0, #000 16%, #000 84%, transparent 100%),
-    linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
+    linear-gradient(to right, transparent 0, rgba(0,0,0,.18) 20%, rgba(0,0,0,.6) 38%, #000 50%, rgba(0,0,0,.6) 62%, rgba(0,0,0,.18) 80%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, rgba(0,0,0,.18) 18%, rgba(0,0,0,.6) 36%, #000 50%, rgba(0,0,0,.6) 64%, rgba(0,0,0,.18) 82%, transparent 100%);
   -webkit-mask-composite:source-in;
   mask-image:
-    linear-gradient(to right, transparent 0, #000 16%, #000 84%, transparent 100%),
-    linear-gradient(to bottom, transparent 0, #000 14%, #000 86%, transparent 100%);
+    linear-gradient(to right, transparent 0, rgba(0,0,0,.18) 20%, rgba(0,0,0,.6) 38%, #000 50%, rgba(0,0,0,.6) 62%, rgba(0,0,0,.18) 80%, transparent 100%),
+    linear-gradient(to bottom, transparent 0, rgba(0,0,0,.18) 18%, rgba(0,0,0,.6) 36%, #000 50%, rgba(0,0,0,.6) 64%, rgba(0,0,0,.18) 82%, transparent 100%);
   mask-composite:intersect;
 }
 .band-icon-wrap,
@@ -2837,8 +2826,12 @@ a{text-decoration:none;color:inherit}
   to{ transform:translate(-50%,-50%) scale(4);opacity:0; }
 }
 
+/* No formulario o botao ocupa a linha toda, como ocupava o que substitui. */
+.lm-btn-bloco{ display:flex;width:100%;height:52px;margin-top:.25rem; }
+
 @media(max-width:640px){
   .lm-btn{ height:46px;padding:0 22px; }
+  .lm-btn-bloco{ height:50px; }
   .lm-label{ font-size:13px; }
 }
 
@@ -2912,13 +2905,7 @@ a{text-decoration:none;color:inherit}
         </p>
 
         <div class="hero-ctas">
-          <a href="#guia" class="lm-btn" data-lm aria-label="Agendar sessão estratégica">
-            <span class="lm-aro" aria-hidden="true"></span>
-            <span class="lm-face" aria-hidden="true"></span>
-            <span class="lm-conteudo">
-              <span class="lm-label">Agendar sessão estratégica</span>
-            </span>
-          </a>
+          <a href="#guia" class="lm-btn" data-lm><span class="lm-aro" aria-hidden="true"></span><span class="lm-face" aria-hidden="true"></span><span class="lm-conteudo"><span class="lm-label">Agendar sessão estratégica</span></span></a>
         </div>
 
       </div>
@@ -3136,7 +3123,7 @@ a{text-decoration:none;color:inherit}
           <label for="lead-empresa">Empresa</label>
           <input class="lead-input" id="lead-empresa" name="empresa" type="text" placeholder="Nome da sua empresa" required>
         </div>
-        <button class="lead-submit" type="submit">Quero o meu diagnóstico gratuito</button>
+        <button type="submit" class="lm-btn lm-btn-bloco" data-lm><span class="lm-aro" aria-hidden="true"></span><span class="lm-face" aria-hidden="true"></span><span class="lm-conteudo"><span class="lm-label">Quero o meu diagnóstico gratuito</span></span></button>
         <p class="lead-fine">Sem spam e sem compromisso. A nossa equipa entra em contacto em menos de 24 horas.</p>
       </form>
     </div>
@@ -3210,14 +3197,7 @@ a{text-decoration:none;color:inherit}
     <h2 class="cta-h2" data-reveal data-delay="1">Pare de depender de indicações <span class="cta-ta">e monte um sistema previsível.</span></h2>
     <p class="cta-sub" data-reveal data-delay="2">Comece com um diagnóstico gratuito de 30 minutos e veja, em concreto, onde está a perder clientes e o que muda quando a atração, a nutrição e o processo comercial passam a trabalhar juntos. O diagnóstico é grátis, mas só aceitamos um número limitado de novos projetos por mês.</p>
     <div class="cta-actions" data-reveal data-delay="3">
-      <a href="#guia" class="cta-btn-main">
-        <span class="cta-btn-text">Agendar sessão estratégica</span>
-        <span class="cta-btn-circle">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>
-          </svg>
-        </span>
-      </a>
+      <a href="#guia" class="lm-btn" data-lm><span class="lm-aro" aria-hidden="true"></span><span class="lm-face" aria-hidden="true"></span><span class="lm-conteudo"><span class="lm-label">Agendar sessão estratégica</span></span></a>
     </div>
   </div>
 </section>
