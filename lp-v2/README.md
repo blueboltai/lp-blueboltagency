@@ -639,15 +639,26 @@ fundo, mesmo véu (`#000000C4`, preto a 77%, tirado do CSS do Elementor deles),
 mesmo texto e as mesmas três redes. O fundo veio de um PNG de 1920×1080 com
 817KB; reduzido para 1600px e em webp, ficou em **33KB**.
 
-O véu é que ficou mais aberto. A original punha preto a **77%** e a foto quase
-desaparecia. Medido no próprio fotograma — que é uma imagem clara, não escura —
-mesmo a 52% o pior pixel por trás do texto ainda dá 5,5:1 contra o branco, acima
-do 4,5 que o subtítulo a 16px precisa. Ficou em **58%**: passa 1,8× mais luz e o
-pior caso fica em 6,7:1, com folga.
+O véu é que mudou. A original punha preto a **77%** uniforme e a foto quase
+desaparecia — é uma imagem clara, não escura, e o véu é que a apagava.
 
-O enquadramento também: o Ricardo está na metade esquerda do fotograma, e com
-`cover` o `center` cortava-o de fora. Está a `38%` no computador e a `25%` no
-telemóvel, onde o `cover` corta mais de mil pixels de largura.
+Mas o véu não tem de ser igual em toda a largura: **o Ricardo está à esquerda e o
+texto ao centro.** Um gradiente na horizontal deixa entrar luz onde está ele e
+fecha onde estão as letras, e assim ganha-se dos dois lados. Medido no próprio
+fotograma, contra um véu uniforme a 58%:
+
+| | Uniforme 58% | Gradiente 28%→66% |
+| --- | --- | --- |
+| Luz na zona do Ricardo | 0,016 | **0,048** (3×) |
+| Branco, pior caso no texto | 6,7:1 | **8,8:1** |
+
+O texto fica com *mais* contraste, não menos. Num ecrã em pé isto não serve: o
+`cover` corta mais de mil pixels de largura, o Ricardo passa a ocupar o
+fotograma todo e o texto assenta por cima dele — sem lados para separar, volta a
+ser um véu uniforme, a 62%.
+
+O enquadramento também: com `cover`, o `center` cortava-o de fora. Está a `38%`
+no computador e a `25%` no telemóvel.
 Determinístico, sem depender de mensagens que o GHL não documenta. Verificado no
 browser:
 

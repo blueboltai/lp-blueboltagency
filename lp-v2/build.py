@@ -2983,19 +2983,30 @@ body{
   font-family:'Manrope',system-ui,sans-serif;
   text-align:center;
 }
-/* A pagina original punha aqui preto a 77% (#000000C4) e a foto quase
-   desaparecia. Medido no proprio fotograma: mesmo a 52% o pior pixel por
-   tras do texto ainda da 5,5:1 contra o branco, acima do 4,5 que o
-   subtitulo a 16px precisa. A 58% passa 1,8x mais luz do que a 77% — o
-   Ricardo ve-se — e o pior caso fica em 6,7:1, com folga. */
-body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,.58);pointer-events:none}
-/* Ecra estreito: menos imagem visivel e o texto ocupa-a quase toda, por
-   isso fecha-se um pouco mais. */
+/* O veu nao tem de ser igual em toda a largura: o Ricardo esta a
+   esquerda e o texto ao centro. Um gradiente na horizontal deixa entrar
+   luz onde esta ele e fecha onde estao as letras — e assim ganha-se dos
+   dois lados.
+
+   Medido no proprio fotograma, contra o veu uniforme a 58% que estava
+   aqui: a zona do Ricardo recebe 3x mais luz, e o pior pixel por tras do
+   texto MELHORA de 6,7:1 para 8,8:1 contra o branco. A pagina original
+   punha 77% uniforme, e com ela a foto quase desaparecia. */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background:linear-gradient(90deg,
+    rgba(0,0,0,.28)   0%,
+    rgba(0,0,0,.40)  16%,
+    rgba(0,0,0,.62)  32%,
+    rgba(0,0,0,.66)  44%,
+    rgba(0,0,0,.66) 100%);
+}
+/* Num ecra em pe isto nao serve: o `cover` corta mais de 1000px de
+   largura, o Ricardo passa a ocupar o fotograma todo e o texto assenta
+   por cima dele. Sem lados para separar, volta a ser um veu uniforme. */
 @media(max-width:700px){
-  /* Num ecra em pe o `cover` corta mais de 1000px de largura. A 42% o
-     Ricardo ficava de fora; a 25% a janela visivel apanha-o. */
   body{background-position:25% center}
-  body::before{background:rgba(0,0,0,.66)}
+  body::before{background:rgba(0,0,0,.62)}
 }
 .ob{position:relative;max-width:640px}
 h1{
