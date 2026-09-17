@@ -1430,7 +1430,21 @@ html = troca(
 # CAMINHOS DOS FICHEIROS — as imagens passam a viver em img/
 # ══════════════════════════════════════════════════════════════════
 
-html = troca(html, 'href="bluebolt-logo.webp"', 'href="img/bluebolt-logo.webp"', "favicon")
+# O favicon era o logo completo da agencia — monograma mais "BLUE BOLT
+# AGENCY" por baixo. Num separador de browser isso da 16 pixeis onde as
+# letras nao sao letras nenhumas, e um borrao. Fica so o monograma, a
+# branco sobre o navy da marca, recortado do logo original: e o que se
+# le a esse tamanho. O de 512 serve o ecra inicial do Android, o
+# apple-touch-icon o do iPhone, e o theme-color pinta a barra do browser.
+html = troca(
+    html,
+    '<link rel="icon" type="image/webp" href="bluebolt-logo.webp">',
+    '<link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">\n'
+    '  <link rel="icon" type="image/png" sizes="512x512" href="img/favicon-512.png">\n'
+    '  <link rel="apple-touch-icon" href="img/apple-touch-icon.png">\n'
+    '  <meta name="theme-color" content="#000122">',
+    "favicon",
+)
 html = troca(
     html,
     '<img src="bluebolt-logo.webp" alt="Blue Bolt AI" style=',
@@ -1808,34 +1822,7 @@ AVISO_CSS = """
 }
 """
 
-ENTRADA_CSS = """
-/* ══ Entrada do hero, sem biblioteca ══
-   Era o GSAP a fazer isto: 70KB a bloquear o desenho para cinco fades.
-   Transform e opacity so, para o browser o resolver no compositor e nao
-   ter de refazer o layout a cada fotograma. */
-@keyframes heroEntra{
-  from{ opacity:0;transform:translateY(30px); }
-  to  { opacity:1;transform:none; }
-}
-.hero-badge,.hero-h1,.hero-sub,.hero-ctas,.hero-trust{
-  animation:heroEntra 1s cubic-bezier(.16,1,.3,1) both;
-}
-.hero-badge{ animation-duration:.5s;animation-delay:.1s; }
-.hero-h1   { animation-delay:.25s; }
-.hero-sub  { animation-delay:.45s; }
-.hero-ctas { animation-delay:.65s; }
-.hero-trust{ animation-duration:.8s;animation-delay:.85s; }
-/* `both` deixa o elemento no estado inicial antes de comecar, ou seja
-   invisivel. Com movimento reduzido nao ha animacao — logo tem de se
-   garantir que ficam visiveis. */
-@media(prefers-reduced-motion:reduce){
-  .hero-badge,.hero-h1,.hero-sub,.hero-ctas,.hero-trust{
-    animation:none;opacity:1;transform:none;
-  }
-}
-"""
-
-html = troca(html, "</style>", VSL_CSS + NAV_CSS + SECOES_CSS + AVISO_CSS + ENTRADA_CSS + "</style>", "CSS da VSL, do hero, das secções e do aviso de cookies")
+html = troca(html, "</style>", VSL_CSS + NAV_CSS + SECOES_CSS + AVISO_CSS + "</style>", "CSS da VSL, do hero, das secções e do aviso de cookies")
 html = troca(html, '\n<!-- QUEM É -->', VSL_HTML + '\n<!-- QUEM É -->', "marcacao da VSL")
 html = troca(html, "\n/* Submissão do formulário de lead", VSL_JS + "\n/* Submissão do formulário de lead", "JS da VSL")
 
@@ -2467,67 +2454,6 @@ html = troca(
     "script do embed do CRM",
 )
 
-
-# ══════════════════════════════════════════════════════════════════
-# VELOCIDADE: TIRAR O QUE BLOQUEIA O DESENHO
-# O PageSpeed dava 870ms em pedidos que bloqueiam, e o LCP em 3,4s
-# (bom e ate 2,5). O grosso do JavaScript da pagina — 476KB por usar,
-# 7,6s de thread — e do formulario do CRM e do GTM, e esses nao se tiram
-# sem tirar o formulario. Estes quatro sao nossos:
-#
-#   1. O GSAP. 70KB de biblioteca, a bloquear, para cinco fades no hero.
-#      E estavam dentro de um `if(typeof gsap!=='undefined')` — se nao
-#      carregasse, a pagina nem animava. Passa a CSS: mesma animacao,
-#      zero pedidos.
-#   2. A folha do Google Fonts, que bloqueia. Carrega como `print` e
-#      promove-se a `all` no onload — o browser desenha sem esperar por
-#      ela e o texto entra com a letra de recurso ate trocar.
-#   3. A Archia. E a letra do titulo, que e o provavel LCP, e so se
-#      descobre depois de o CSS ser lido. Um preload adianta-a.
-#   4. O iframe do formulario, que esta abaixo da dobra e mesmo assim
-#      carregava logo — e traz uma aplicacao inteira atras. `lazy`.
-# ══════════════════════════════════════════════════════════════════
-
-# 1. Fora o GSAP: o script e o bloco que o usava.
-gs = re.search(r'\s*<script src="https://cdnjs\.cloudflare\.com/ajax/libs/gsap/[^"]*"></script>\n', html)
-if not gs:
-    falhas.append("velocidade: nao encontrei o <script> do GSAP")
-else:
-    html = html.replace(gs.group(0), "\n")
-
-gsjs = re.search(r"if\(typeof gsap!=='undefined'\)\{.*?\n\}\n", html, re.S)
-if not gsjs:
-    falhas.append("velocidade: nao encontrei o bloco que usava o GSAP")
-else:
-    html = html.replace(gsjs.group(0), "")
-
-# 2. A folha do Google Fonts deixa de bloquear.
-gf = re.search(r'<link href="(https://fonts\.googleapis\.com/css2\?[^"]*)" rel="stylesheet">', html)
-if not gf:
-    falhas.append("velocidade: nao encontrei a folha do Google Fonts")
-else:
-    u = gf.group(1)
-    html = html.replace(
-        gf.group(0),
-        f'<link rel="stylesheet" href="{u}" media="print" onload="this.media=\'all\'">'
-        f'<noscript><link rel="stylesheet" href="{u}"></noscript>',
-    )
-
-# 3. A Archia adiantada — e a letra do titulo, o provavel LCP.
-html = troca(
-    html,
-    '<link rel="preconnect" href="https://fonts.googleapis.com">',
-    '<link rel="preload" href="archia-regular.woff2" as="font" type="font/woff2" crossorigin>\n'
-    '  <link rel="preconnect" href="https://fonts.googleapis.com">',
-    "preload da Archia",
-)
-
-# 4. O formulario do CRM esta abaixo da dobra: nao ha razao para vir ja.
-html = troca(html, '<iframe src="https://api.leadconnectorhq.com/widget/form/',
-             '<iframe loading="lazy" src="https://api.leadconnectorhq.com/widget/form/',
-             "carregamento adiado do formulario")
-
-
 # ══════════════════════════════════════════════════════════════════
 # GOOGLE TAG MANAGER
 # O contentor entra em dois sitios: o script o mais cedo possivel no
@@ -3052,7 +2978,10 @@ OBRIGADO_HTML = """<!DOCTYPE html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Obrigado | Blue Bolt Agency</title>
 <meta name="robots" content="noindex, nofollow">
-<link rel="icon" href="../img/bluebolt-logo.webp">
+<link rel="icon" type="image/png" sizes="32x32" href="../img/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="../img/favicon-512.png">
+<link rel="apple-touch-icon" href="../img/apple-touch-icon.png">
+<meta name="theme-color" content="#000122">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
 CABECA_MARCACAO

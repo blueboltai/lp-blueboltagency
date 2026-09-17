@@ -445,7 +445,8 @@ ou com o Poupar Dados ligado (ou em 2G/3G, pela Network Information API), fica o
 fotograma. Pedir 768KB de enfeite a quem está a contar megabytes seria abusar.
 
 O retrato do Ricardo (202KB) também vinha no arranque, apesar de estar muito
-abaixo da dobra; passou a `loading="lazy"`.
+abaixo da dobra; passou a `loading="lazy"`. (O do formulário do CRM não pode:
+ver **Velocidade**.)
 
 Os alvos de toque abaixo dos 44px foram corrigidos: os ícones das redes no
 rodapé (34px) e as ligações de contacto e políticas, que sendo texto corrido
@@ -759,24 +760,46 @@ vai numa tag própria, no fim, que tira a dúvida de vez.
 O PageSpeed dava **85 no telemóvel**, com CLS a 0 e TBT a 160ms — os dois já bons
 — e o LCP a **3,4s**, quando bom é até 2,5.
 
-Chegar a 100 não é objetivo. O grosso do custo não é nosso: **476KB de JavaScript
-por usar e 7,6s de thread principal** vêm do formulário do CRM e do GTM, e esses
-não se tiram sem tirar o formulário e a medição. O que se tirou foi o que era
-nosso:
+Houve uma tentativa de baixar o LCP que foi **desfeita**, e fica aqui escrita para
+não se repetir. Tirava o GSAP (70KB a bloquear o desenho, para cinco fades no
+hero), punha a folha do Google Fonts a carregar sem bloquear, adiantava a Archia
+com um `preload` e adiava o iframe do formulário com `loading="lazy"`. No papel
+eram quatro ganhos; no PageSpeed a nota **caiu de 85 para 65**, com o FCP a subir
+de 2,6 para 4,1s e o LCP de 3,4 para 6,1s. Duas razões:
+
+- O `preload` da Archia apontava para `archia-regular.woff2` **relativo à pasta**.
+  Em `/meta/` e `/google/` isso é 404: um pedido falhado logo no arranque e a
+  letra do título — que é o LCP — a chegar só depois, descoberta pelo CSS.
+- O `loading="lazy"` **partiu o formulário**. O `form_embed.js` do CRM monta e
+  dimensiona o iframe no `load` da página; com o iframe adiado não havia o que
+  montar, e o cartão ficava com o título, o subtítulo e a letra miúda — e nenhum
+  campo. O formulário é o único caminho de conversão da página.
+
+Voltou tudo ao estado dos 85. Chegar a 100 não era objetivo de qualquer forma: o
+grosso do custo não é nosso — **476KB de JavaScript por usar e 7,6s de thread
+principal** vêm do formulário do CRM e do GTM, e esses não se tiram sem tirar o
+formulário e a medição. Sobram décimos, e décimos não valem um formulário vazio.
+
+O que ficou do lote foi o `.htaccess`, que não toca no desenho da página: trata
+dos 904KB que o relatório apontava como pedidos repetidos por falta de validade
+declarada — um ano para imagens, fontes e vídeo, um mês para CSS e JS, e **nada
+para o HTML**, que é ele que traz as alterações.
+
+## Favicon
+
+O favicon era o logo completo — o monograma mais "BLUE BOLT AGENCY" por baixo.
+Num separador de browser são 16 pixéis, e a esse tamanho as letras deixam de ser
+letras. Ficou só o monograma, recortado do logo original por densidade de linhas
+(o desenho ocupa as linhas 340–639 do ficheiro; o texto começa na 666), pintado
+de branco e assente no navy da marca, `#000122`, num quadrado de cantos
+arredondados.
 
 | | |
 | --- | --- |
-| **GSAP** | 70KB de biblioteca, **a bloquear o desenho**, para cinco fades no hero. E estavam dentro de um `if(typeof gsap!=='undefined')` — se não carregasse, a página nem animava. Passou a CSS: mesma animação, zero pedidos. |
-| **Google Fonts** | A folha bloqueava. Carrega como `media="print"` e promove-se a `all` no `onload`; o `<noscript>` cobre quem não tem JS. |
-| **Archia** | É a letra do título, o provável LCP, e só se descobre depois de o CSS ser lido. Um `preload` adianta-a. |
-| **Formulário do CRM** | Está abaixo da dobra e carregava logo, trazendo uma aplicação inteira atrás. `loading="lazy"`. |
-
-Pedidos a bloquear o desenho: eram três, ficou **um** — a nossa própria folha, 24KB
-local.
-
-O `.htaccess` trata dos 904KB que o relatório apontava como pedidos repetidos por
-falta de validade declarada: um ano para imagens, fontes e vídeo, um mês para CSS
-e JS, e **nada para o HTML**, que é ele que traz as alterações.
+| `img/favicon-32.png` | o separador do browser |
+| `img/favicon-512.png` | o ecrã inicial do Android |
+| `img/apple-touch-icon.png` | o ecrã inicial do iPhone, 180px |
+| `<meta name="theme-color">` | pinta a barra do browser de navy |
 
 ## Por ligar antes de publicar
 
