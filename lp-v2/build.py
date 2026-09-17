@@ -2896,7 +2896,26 @@ def pagina_do_canal(base_html, canal, rotulo):
     h = h.replace('<meta property="og:url" content="https://bluebolt.pt/ai/ads">',
                   f'<meta property="og:url" content="{DOMINIO}/{canal}/">')
 
-    # 4. O canal no dataLayer, antes de o GTM arrancar: assim a primeira
+    # 4. A mesma origem, agora tambem na query string da propria pagina.
+    #    O form_embed.js do GHL le o `window.top.location.search` — a query
+    #    da PAGINA, nao a do iframe — e e essa que reencaminha para dentro
+    #    do formulario. So no endereco do iframe podia nao chegar la.
+    #    O `replaceState` nao recarrega nada e corre antes de o embed
+    #    arrancar. Se a pessoa ja vier com `landingpage` no endereco (nao
+    #    deve acontecer), respeita-se o que vier.
+    h = h.replace(
+        "  <!-- Google Tag Manager -->",
+        "  <script>(function(){try{"
+        "var u=new URL(location.href);"
+        "if(!u.searchParams.has('landingpage')){"
+        f"u.searchParams.set('landingpage','{origem}');"
+        "history.replaceState(null,'',u);}"
+        "}catch(e){}})();</script>\n"
+        "  <!-- Google Tag Manager -->",
+        1,
+    )
+
+    # 5. O canal no dataLayer, antes de o GTM arrancar: assim a primeira
     #    visualizacao ja o traz e o GA4 consegue separar os dois sem
     #    depender de a UTM ter sido posta no anuncio.
     h = h.replace(
