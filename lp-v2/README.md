@@ -754,6 +754,30 @@ tenha lá dentro**. O código ficava no ficheiro, visível no código-fonte, e n
 corria. O evento de `Lead` nunca teria disparado. Agora tudo o que acrescentamos
 vai numa tag própria, no fim, que tira a dúvida de vez.
 
+## Velocidade
+
+O PageSpeed dava **85 no telemóvel**, com CLS a 0 e TBT a 160ms — os dois já bons
+— e o LCP a **3,4s**, quando bom é até 2,5.
+
+Chegar a 100 não é objetivo. O grosso do custo não é nosso: **476KB de JavaScript
+por usar e 7,6s de thread principal** vêm do formulário do CRM e do GTM, e esses
+não se tiram sem tirar o formulário e a medição. O que se tirou foi o que era
+nosso:
+
+| | |
+| --- | --- |
+| **GSAP** | 70KB de biblioteca, **a bloquear o desenho**, para cinco fades no hero. E estavam dentro de um `if(typeof gsap!=='undefined')` — se não carregasse, a página nem animava. Passou a CSS: mesma animação, zero pedidos. |
+| **Google Fonts** | A folha bloqueava. Carrega como `media="print"` e promove-se a `all` no `onload`; o `<noscript>` cobre quem não tem JS. |
+| **Archia** | É a letra do título, o provável LCP, e só se descobre depois de o CSS ser lido. Um `preload` adianta-a. |
+| **Formulário do CRM** | Está abaixo da dobra e carregava logo, trazendo uma aplicação inteira atrás. `loading="lazy"`. |
+
+Pedidos a bloquear o desenho: eram três, ficou **um** — a nossa própria folha, 24KB
+local.
+
+O `.htaccess` trata dos 904KB que o relatório apontava como pedidos repetidos por
+falta de validade declarada: um ano para imagens, fontes e vídeo, um mês para CSS
+e JS, e **nada para o HTML**, que é ele que traz as alterações.
+
 ## Por ligar antes de publicar
 
 - **O formulário não envia nada.** O `handleLeadSubmit` mostra a mensagem de
