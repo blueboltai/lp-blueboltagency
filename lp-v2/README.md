@@ -606,7 +606,37 @@ O `landingpage` responde "Meta ou Google". As UTMs respondem "que campanha, que
 anúncio, que palavra-chave" — que é o que diz onde pôr o dinheiro. As duas coisas
 não competem: uma funciona mesmo em visitas diretas, a outra dá o detalhe.
 
-### O evento de Lead precisa de uma submissão de teste
+### A página de obrigado, e porque é que ela resolve o evento de Lead
+
+O formulário do CRM **redireciona ao submeter**. Estava a mandar para
+`lp.blueboltagency.pt/obrigado/` — existe e funciona, mas é outro domínio, e isso
+custa duas coisas:
+
+**O evento de Lead.** O ouvinte da página espera uma mensagem do iframe, mas a
+página navega para fora antes — é uma corrida que se perde. Era esta a razão de o
+evento nunca se confirmar.
+
+**A atribuição.** Saltar de domínio faz o GA4 abrir sessão nova com origem
+"referral", e perde-se a campanha que gerou a conversão.
+
+A página `/obrigado/` resolve as duas: o `Lead` dispara no carregamento dela.
+Determinístico, sem depender de mensagens que o GHL não documenta. Verificado no
+browser:
+
+| | `fbq` | Evento `Lead` | `dataLayer` |
+| --- | --- | --- | --- |
+| Sem consentimento | não carrega | não dispara | `lead_enviada` ✓ |
+| Com marketing aceite | carrega | `init` + `PageView` + `Lead` ✓ | `lead_enviada` ✓ |
+
+O `dataLayer` recebe o evento nos dois casos — o GTM conta a conversão, e o pixel
+só entra com consentimento. A escolha de cookies é lida do mesmo domínio, por
+isso viaja da página de campanha para esta.
+
+**Falta apontar o redirecionamento do formulário**, nas definições do GHL:
+`Ao enviar → Redirecionar para URL` passa a
+`https://sessaoestrategica.bluebolt.pt/obrigado/`.
+
+### O ouvinte do iframe, quando já não for preciso
 
 O formulário é um iframe de outro domínio: não se lhe pode pendurar um
 `onsubmit`. O que dá é ouvir o que ele grita para a página ao submeter — e **o

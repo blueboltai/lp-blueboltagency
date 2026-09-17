@@ -2938,3 +2938,164 @@ for canal, rotulo in CANAIS.items():
 restos = [t for t in ("Equipa de IA", "agentes de IA", "bluebolt-ai-brand", "ricardo.webp") if t in html]
 fora_da_seccao_ricardo = [t for t in restos if t not in ("Equipa de IA",)]
 print("menções a IA restantes (secção do Ricardo incluída):", html.count("IA"))
+
+# ══════════════════════════════════════════════════════════════════
+# A PAGINA DE OBRIGADO
+# O formulario do CRM redireciona ao submeter. Estava a mandar para
+# lp.blueboltagency.pt/obrigado/ — existe e funciona, mas e outro dominio,
+# e isso custa duas coisas:
+#
+#   O evento de Lead do pixel. O ouvinte da pagina espera uma mensagem do
+#   iframe, mas a pagina navega para fora antes — e uma corrida que se
+#   perde. Numa pagina de obrigado propria o Lead dispara no carregamento:
+#   deterministico, sem depender de mensagens que o GHL nao documenta.
+#
+#   A atribuicao. Saltar de dominio faz o GA4 abrir sessao nova com
+#   origem "referral", e perde-se a campanha que gerou a conversao.
+#
+# E a pagina mais simples do sitio de proposito: quem chega aqui ja
+# converteu, e o unico trabalho que lhe resta e marcar a hora.
+# ══════════════════════════════════════════════════════════════════
+
+OBRIGADO_HTML = """<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Obrigado | Blue Bolt Agency</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../img/bluebolt-logo.webp">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet">
+CABECA_MARCACAO
+<style>
+@font-face{font-family:'Archia';src:url('../archia-regular.woff2') format('woff2'),url('../archia-regular.woff') format('woff');font-weight:400;font-style:normal;font-display:swap}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:clamp(1.5rem,5vw,3rem);
+  background:#000122;color:#fff;
+  font-family:'Manrope',system-ui,sans-serif;
+  text-align:center;
+}
+/* O mesmo halo azul do topo da VSL: e o que liga esta pagina a de onde se veio. */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(70% 55% at 50% 22%, rgba(47,161,255,.16), transparent 70%);
+}
+.ob{position:relative;max-width:560px}
+.ob-logo{height:34px;width:auto;margin-bottom:2.5rem;opacity:.9}
+.ob-selo{
+  width:64px;height:64px;margin:0 auto 1.75rem;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;
+  background:rgba(47,161,255,.12);
+  border:1px solid rgba(47,161,255,.35);
+}
+.ob-selo svg{width:30px;height:30px;stroke:#2fa1ff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+h1{
+  font-family:'Archia',sans-serif;
+  font-size:clamp(28px,4.4vw,40px);font-weight:600;
+  letter-spacing:-.03em;line-height:1.15;margin:0 0 1rem;
+}
+.ob-sub{font-size:clamp(15px,1.5vw,17px);line-height:1.75;font-weight:300;color:rgba(255,255,255,.72);margin:0 0 2.5rem}
+.ob-passo{
+  display:flex;gap:1rem;text-align:left;
+  padding:1.1rem 1.25rem;margin-bottom:.75rem;
+  border:1px solid rgba(255,255,255,.12);border-radius:14px;
+  background:rgba(255,255,255,.03);
+}
+.ob-num{
+  flex:0 0 auto;width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(47,161,255,.15);color:#6cc0ff;
+  font-size:12.5px;font-weight:700;
+}
+.ob-passo p{margin:0;font-size:14.5px;line-height:1.6;font-weight:300;color:rgba(255,255,255,.75)}
+.ob-passo strong{color:#fff;font-weight:600}
+.ob-fim{margin:2.5rem 0 0;font-size:13px;color:rgba(255,255,255,.45)}
+.ob-fim a{color:rgba(255,255,255,.7)}
+@media(max-width:600px){ .ob-passo{padding:1rem} }
+</style>
+</head>
+<body>
+<div class="ob">
+  <img class="ob-logo" src="../img/bluebolt-lockup.webp" alt="Blue Bolt Agency" width="300" height="287" style="height:34px;width:auto">
+  <div class="ob-selo" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+  </div>
+  <h1>Recebemos o seu pedido.</h1>
+  <p class="ob-sub">Falta um passo para o diagnóstico ficar marcado.</p>
+
+  <div class="ob-passo">
+    <span class="ob-num">1</span>
+    <p><strong>Vá ao seu email.</strong> Acabámos de lhe enviar uma mensagem com o link para escolher o horário que lhe dá jeito.</p>
+  </div>
+  <div class="ob-passo">
+    <span class="ob-num">2</span>
+    <p><strong>Escolha a hora.</strong> São 30 minutos, por videochamada. Se não estiver na caixa de entrada, veja no spam ou nas promoções.</p>
+  </div>
+  <div class="ob-passo">
+    <span class="ob-num">3</span>
+    <p><strong>Traga os números que tiver.</strong> Quanto gasta em anúncios e quantos clientes entram por mês chega para começarmos com coisas concretas.</p>
+  </div>
+
+  <p class="ob-fim">Alguma coisa correu mal? Escreva para <a href="mailto:geral@bluebolt.pt">geral@bluebolt.pt</a>.</p>
+</div>
+CORPO_MARCACAO
+</body>
+</html>
+"""
+
+
+def pagina_obrigado(base_html):
+    """Leva a marcacao da pagina principal, para o Lead e a conversao
+    dispararem aqui — que e o unico sitio onde se sabe, de certeza, que a
+    submissao chegou ao fim."""
+    consent = re.search(r'  <!-- Consent Mode v2.*?</script>\n', base_html, re.S)
+    gtm     = re.search(r'  <!-- Google Tag Manager -->.*?<!-- End Google Tag Manager -->\n', base_html, re.S)
+    pixel   = re.search(r'  <!-- Meta Pixel.*?</script>\n', base_html, re.S)
+    gtmbody = re.search(r'<!-- Google Tag Manager \(noscript\).*?<!-- End Google Tag Manager -->\n', base_html, re.S)
+    if not all((consent, gtm, pixel, gtmbody)):
+        falhas.append("pagina de obrigado: nao encontrei os blocos de marcacao para copiar")
+        return None
+
+    cabeca = (consent.group(0) + gtm.group(0) + pixel.group(0)).replace("../", "../").replace('href="img/', 'href="../img/')
+    corpo = gtmbody.group(0) + """<script>
+/* A conversao dispara aqui, no carregamento: quem chega a esta pagina
+   submeteu mesmo. Nao ha mensagens de iframe a adivinhar nem corridas
+   com o redireccionamento. */
+(function(){
+  var eid = 'lead-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+  function marcar(){
+    if(window.fbq){
+      fbq('track', 'Lead', {
+        content_name: 'Diagnóstico gratuito de 30 minutos',
+        content_category: 'formulario'
+      }, { eventID: eid });
+    }
+  }
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event: 'lead_enviada', event_id: eid });
+
+  /* O pixel só existe se houve consentimento de marketing; a pagina
+     anterior guardou a escolha no mesmo dominio, por isso le-se aqui. */
+  try{
+    var g = JSON.parse(localStorage.getItem('bb-cookies') || 'null');
+    if(g && g.marketing && window.carregarPixel){ window.carregarPixel(); }
+  }catch(e){}
+  setTimeout(marcar, 400);
+})();
+</script>
+"""
+    h = OBRIGADO_HTML.replace("CABECA_MARCACAO", cabeca.rstrip()).replace("CORPO_MARCACAO", corpo.rstrip())
+    return h
+
+
+_ob = pagina_obrigado(html)
+if _ob:
+    pasta = os.path.join(os.path.dirname(PAGE), "obrigado")
+    os.makedirs(pasta, exist_ok=True)
+    open(os.path.join(pasta, "index.html"), "w", encoding="utf-8").write(_ob)
+    print(f"obrigado/index.html reescrito: {len(_ob):,} bytes")

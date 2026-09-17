@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Obrigado | Blue Bolt Agency</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="../img/bluebolt-logo.webp">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <!-- Consent Mode v2: tudo negado ate haver escolha -->
+  <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  (function(){
+    var guardado = null;
+    try{ guardado = JSON.parse(localStorage.getItem('bb-cookies') || 'null'); }catch(e){}
+    var valido = guardado && guardado.v === 1 &&
+                 (Date.now() - guardado.quando) < 15552000000;   /* 6 meses */
+    var analise   = valido && guardado.analise   ? 'granted' : 'denied';
+    var marketing = valido && guardado.marketing ? 'granted' : 'denied';
+    gtag('consent', 'default', {
+      ad_storage: marketing,
+      ad_user_data: marketing,
+      ad_personalization: marketing,
+      analytics_storage: analise,
+      functionality_storage: 'granted',
+      security_storage: 'granted',
+      wait_for_update: 500
+    });
+  })();
+  </script>
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WG4ZH4LF');</script>
+  <!-- End Google Tag Manager -->
+  <!-- Meta Pixel: so carrega com consentimento de marketing -->
+  <script>
+  window.carregarPixel = function(){
+    if(window.fbq) return;
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '260575891666892');
+    fbq('track', 'PageView');
+  };
+  </script>
+<style>
+@font-face{font-family:'Archia';src:url('../archia-regular.woff2') format('woff2'),url('../archia-regular.woff') format('woff');font-weight:400;font-style:normal;font-display:swap}
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  padding:clamp(1.5rem,5vw,3rem);
+  background:#000122;color:#fff;
+  font-family:'Manrope',system-ui,sans-serif;
+  text-align:center;
+}
+/* O mesmo halo azul do topo da VSL: e o que liga esta pagina a de onde se veio. */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;
+  background:radial-gradient(70% 55% at 50% 22%, rgba(47,161,255,.16), transparent 70%);
+}
+.ob{position:relative;max-width:560px}
+.ob-logo{height:34px;width:auto;margin-bottom:2.5rem;opacity:.9}
+.ob-selo{
+  width:64px;height:64px;margin:0 auto 1.75rem;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;
+  background:rgba(47,161,255,.12);
+  border:1px solid rgba(47,161,255,.35);
+}
+.ob-selo svg{width:30px;height:30px;stroke:#2fa1ff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+h1{
+  font-family:'Archia',sans-serif;
+  font-size:clamp(28px,4.4vw,40px);font-weight:600;
+  letter-spacing:-.03em;line-height:1.15;margin:0 0 1rem;
+}
+.ob-sub{font-size:clamp(15px,1.5vw,17px);line-height:1.75;font-weight:300;color:rgba(255,255,255,.72);margin:0 0 2.5rem}
+.ob-passo{
+  display:flex;gap:1rem;text-align:left;
+  padding:1.1rem 1.25rem;margin-bottom:.75rem;
+  border:1px solid rgba(255,255,255,.12);border-radius:14px;
+  background:rgba(255,255,255,.03);
+}
+.ob-num{
+  flex:0 0 auto;width:26px;height:26px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(47,161,255,.15);color:#6cc0ff;
+  font-size:12.5px;font-weight:700;
+}
+.ob-passo p{margin:0;font-size:14.5px;line-height:1.6;font-weight:300;color:rgba(255,255,255,.75)}
+.ob-passo strong{color:#fff;font-weight:600}
+.ob-fim{margin:2.5rem 0 0;font-size:13px;color:rgba(255,255,255,.45)}
+.ob-fim a{color:rgba(255,255,255,.7)}
+@media(max-width:600px){ .ob-passo{padding:1rem} }
+</style>
+</head>
+<body>
+<div class="ob">
+  <img class="ob-logo" src="../img/bluebolt-lockup.webp" alt="Blue Bolt Agency" width="300" height="287" style="height:34px;width:auto">
+  <div class="ob-selo" aria-hidden="true">
+    <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+  </div>
+  <h1>Recebemos o seu pedido.</h1>
+  <p class="ob-sub">Falta um passo para o diagnóstico ficar marcado.</p>
+
+  <div class="ob-passo">
+    <span class="ob-num">1</span>
+    <p><strong>Vá ao seu email.</strong> Acabámos de lhe enviar uma mensagem com o link para escolher o horário que lhe dá jeito.</p>
+  </div>
+  <div class="ob-passo">
+    <span class="ob-num">2</span>
+    <p><strong>Escolha a hora.</strong> São 30 minutos, por videochamada. Se não estiver na caixa de entrada, veja no spam ou nas promoções.</p>
+  </div>
+  <div class="ob-passo">
+    <span class="ob-num">3</span>
+    <p><strong>Traga os números que tiver.</strong> Quanto gasta em anúncios e quantos clientes entram por mês chega para começarmos com coisas concretas.</p>
+  </div>
+
+  <p class="ob-fim">Alguma coisa correu mal? Escreva para <a href="mailto:geral@bluebolt.pt">geral@bluebolt.pt</a>.</p>
+</div>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WG4ZH4LF"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager -->
+<script>
+/* A conversao dispara aqui, no carregamento: quem chega a esta pagina
+   submeteu mesmo. Nao ha mensagens de iframe a adivinhar nem corridas
+   com o redireccionamento. */
+(function(){
+  var eid = 'lead-' + Date.now() + '-' + Math.random().toString(16).slice(2);
+  function marcar(){
+    if(window.fbq){
+      fbq('track', 'Lead', {
+        content_name: 'Diagnóstico gratuito de 30 minutos',
+        content_category: 'formulario'
+      }, { eventID: eid });
+    }
+  }
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({ event: 'lead_enviada', event_id: eid });
+
+  /* O pixel só existe se houve consentimento de marketing; a pagina
+     anterior guardou a escolha no mesmo dominio, por isso le-se aqui. */
+  try{
+    var g = JSON.parse(localStorage.getItem('bb-cookies') || 'null');
+    if(g && g.marketing && window.carregarPixel){ window.carregarPixel(); }
+  }catch(e){}
+  setTimeout(marcar, 400);
+})();
+</script>
+</body>
+</html>
