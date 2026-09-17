@@ -42,7 +42,7 @@ costuma deixar uma página de campanha paga, que não se quer a competir nos
 resultados orgânicos. Se alguma vez for para indexar, uma delas tem de levar
 `canonical` a apontar para a outra.
 
-**O domínio é `diagnostico.bluebolt.pt`**, num subdomínio próprio de segundo
+**O domínio é `sessaoestrategica.bluebolt.pt`**, num subdomínio próprio de segundo
 nível. Não é o `agencia.bluebolt.pt` porque esse já tem um WordPress em cima, e
 não é `lp.agencia.bluebolt.pt` porque um wildcard `*.bluebolt.pt` não chega a
 terceiro nível e o certificado dava trabalho — uma página de tráfego pago com
@@ -618,7 +618,7 @@ Confirmar no *Test Events* do Events Manager, com uma submissão a sério.
 ### A origem permitida, quando o domínio mudar
 
 O `ORIGEM_PERMITIDA` que o servidor da CAPI usava apontava ao
-`blueboltai.github.io`. Com o site em `diagnostico.bluebolt.pt`, é esse o valor a
+`blueboltai.github.io`. Com o site em `sessaoestrategica.bluebolt.pt`, é esse o valor a
 pôr — e a mesma nota vale para qualquer lista de domínios permitidos que o CRM ou
 o Meta venham a pedir.
 

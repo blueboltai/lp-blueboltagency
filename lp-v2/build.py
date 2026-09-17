@@ -2843,7 +2843,7 @@ print(f"index.html reescrito: {len(html):,} bytes")
 # wildcard *.bluebolt.pt nao chega a terceiro nivel e o certificado dava
 # trabalho. A verificacao de dominio do Meta Business Manager tambem abrange
 # subdominios: se o bluebolt.pt ja esta verificado, este herda-o.
-DOMINIO = "https://diagnostico.bluebolt.pt"
+DOMINIO = "https://sessaoestrategica.bluebolt.pt"
 
 CANAIS = {
     "meta":   "Meta Ads",
