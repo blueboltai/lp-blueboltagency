@@ -579,6 +579,33 @@ Como o formulário passou a ser o único caminho de conversão da página, e viv
 num domínio que não é nosso, há uma saída alternativa por baixo: se o iframe não
 carregar, fica o `geral@bluebolt.pt` em vez de uma caixa vazia.
 
+### A origem da lead no CRM
+
+O formulário tem um campo escondido "LandingPage" com a chave de query
+`landingpage` — visto no HTML do próprio widget: `data-q="landingpage"`. Sem lhe
+passar nada, o campo vai vazio e o CRM mostra o **texto de exemplo** do campo,
+`Formulário [lp.blueboltagency.pt]`, que ainda por cima traz um domínio que já
+não existe. Era isso que fazia todas as leads chegarem com a mesma origem.
+
+Cada página passa a levar a sua no endereço do iframe:
+
+| Página | Origem no CRM |
+| --- | --- |
+| `/meta/` | `Meta Ads` |
+| `/google/` | `Google Ads` |
+| `/` | (nenhuma — é a cópia sem canal) |
+
+### As UTMs chegam sozinhas
+
+O `form_embed.js` do GHL lê o `window.top.location.search` da página e injeta-o
+no formulário (confirmado no código deles: `postMessage(["query-params", …])`).
+As UTMs que estiverem no endereço do anúncio chegam ao CRM sem código nenhum
+deste lado.
+
+O `landingpage` responde "Meta ou Google". As UTMs respondem "que campanha, que
+anúncio, que palavra-chave" — que é o que diz onde pôr o dinheiro. As duas coisas
+não competem: uma funciona mesmo em visitas diretas, a outra dá o detalhe.
+
 ### O evento de Lead precisa de uma submissão de teste
 
 O formulário é um iframe de outro domínio: não se lhe pode pendurar um

@@ -12,6 +12,7 @@ Corre sobre index.html, no sitio.
 
 import os
 import re
+import urllib.parse
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -2849,6 +2850,19 @@ CANAIS = {
     "google": "Google Ads",
 }
 
+# O formulario do CRM tem um campo escondido "LandingPage" com a chave de
+# query `landingpage` (visto no HTML do proprio widget: data-q="landingpage").
+# Sem lhe passar nada, o campo vai vazio e o CRM mostra o texto de exemplo
+# — que ainda por cima traz um dominio que ja nao existe. Passando-lhe o
+# valor no endereco do iframe, cada lead chega a dizer de onde veio.
+FORMULARIO_BASE = f"https://api.leadconnectorhq.com/widget/form/{FORMULARIO_CRM}"
+
+
+def origem_do_canal(canal, rotulo):
+    """O que aparece no campo Origem do CRM. Curto de proposito: quem olha
+    para a ficha quer ler "Google Ads", nao um endereco."""
+    return rotulo
+
 
 def pagina_do_canal(base_html, canal, rotulo):
     """A mesma pagina, um nivel mais abaixo e marcada com o canal."""
@@ -2866,14 +2880,23 @@ def pagina_do_canal(base_html, canal, rotulo):
             falhas.append(f"{canal}: nao encontrei o caminho {antes!r} para reescrever")
         h = h.replace(antes, depois)
 
-    # 2. O endereco proprio, para as partilhas e para o dia em que deixar
+    # 2. A origem que vai para o CRM, no endereco do formulario.
+    origem = origem_do_canal(canal, rotulo)
+    if f'src="{FORMULARIO_BASE}"' not in h:
+        falhas.append(f"{canal}: nao encontrei o iframe do formulario para marcar a origem")
+    h = h.replace(
+        f'src="{FORMULARIO_BASE}"',
+        f'src="{FORMULARIO_BASE}?landingpage={urllib.parse.quote(origem)}"',
+    )
+
+    # 3. O endereco proprio, para as partilhas e para o dia em que deixar
     #    de estar em `noindex`.
     h = h.replace('<link rel="canonical" href="https://bluebolt.pt/ai">',
                   f'<link rel="canonical" href="{DOMINIO}/{canal}/">')
     h = h.replace('<meta property="og:url" content="https://bluebolt.pt/ai/ads">',
                   f'<meta property="og:url" content="{DOMINIO}/{canal}/">')
 
-    # 3. O canal no dataLayer, antes de o GTM arrancar: assim a primeira
+    # 4. O canal no dataLayer, antes de o GTM arrancar: assim a primeira
     #    visualizacao ja o traz e o GA4 consegue separar os dois sem
     #    depender de a UTM ter sido posta no anuncio.
     h = h.replace(
