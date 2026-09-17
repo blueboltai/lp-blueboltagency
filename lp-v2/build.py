@@ -2966,82 +2966,58 @@ OBRIGADO_HTML = """<!DOCTYPE html>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" href="../img/bluebolt-logo.webp">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
 CABECA_MARCACAO
 <style>
 @font-face{font-family:'Archia';src:url('../archia-regular.woff2') format('woff2'),url('../archia-regular.woff') format('woff');font-weight:400;font-style:normal;font-display:swap}
 *{box-sizing:border-box}
+html,body{height:100%}
 body{
   margin:0;min-height:100vh;
   display:flex;align-items:center;justify-content:center;
   padding:clamp(1.5rem,5vw,3rem);
-  background:#000122;color:#fff;
+  background:#000 url('../img/obrigado-fundo.webp') center/cover no-repeat;
+  color:#fff;
   font-family:'Manrope',system-ui,sans-serif;
   text-align:center;
 }
-/* O mesmo halo azul do topo da VSL: e o que liga esta pagina a de onde se veio. */
-body::before{
-  content:'';position:fixed;inset:0;pointer-events:none;
-  background:radial-gradient(70% 55% at 50% 22%, rgba(47,161,255,.16), transparent 70%);
-}
-.ob{position:relative;max-width:560px}
-.ob-logo{height:34px;width:auto;margin-bottom:2.5rem;opacity:.9}
-.ob-selo{
-  width:64px;height:64px;margin:0 auto 1.75rem;
-  display:flex;align-items:center;justify-content:center;
-  border-radius:50%;
-  background:rgba(47,161,255,.12);
-  border:1px solid rgba(47,161,255,.35);
-}
-.ob-selo svg{width:30px;height:30px;stroke:#2fa1ff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+/* O mesmo veu da pagina original: preto a 77%. E ele que poe o texto a
+   frente sem apagar o retrato por tras. */
+body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,.77);pointer-events:none}
+.ob{position:relative;max-width:640px}
 h1{
   font-family:'Archia',sans-serif;
-  font-size:clamp(28px,4.4vw,40px);font-weight:600;
-  letter-spacing:-.03em;line-height:1.15;margin:0 0 1rem;
+  font-size:clamp(40px,6vw,64px);font-weight:400;
+  letter-spacing:-.02em;line-height:1.1;margin:0 0 1.5rem;
 }
-.ob-sub{font-size:clamp(15px,1.5vw,17px);line-height:1.75;font-weight:300;color:rgba(255,255,255,.72);margin:0 0 2.5rem}
-.ob-passo{
-  display:flex;gap:1rem;text-align:left;
-  padding:1.1rem 1.25rem;margin-bottom:.75rem;
-  border:1px solid rgba(255,255,255,.12);border-radius:14px;
-  background:rgba(255,255,255,.03);
+.ob-sub{
+  font-size:clamp(14px,1.4vw,16px);line-height:1.8;font-weight:300;
+  color:rgba(255,255,255,.88);margin:0 0 2.25rem;
 }
-.ob-num{
-  flex:0 0 auto;width:26px;height:26px;border-radius:50%;
+.ob-redes{display:flex;gap:.75rem;justify-content:center}
+.ob-redes a{
+  width:44px;height:44px;border-radius:50%;
   display:flex;align-items:center;justify-content:center;
-  background:rgba(47,161,255,.15);color:#6cc0ff;
-  font-size:12.5px;font-weight:700;
+  background:rgba(255,255,255,.14);
+  color:#fff;text-decoration:none;
+  transition:background .25s ease,transform .25s ease;
 }
-.ob-passo p{margin:0;font-size:14.5px;line-height:1.6;font-weight:300;color:rgba(255,255,255,.75)}
-.ob-passo strong{color:#fff;font-weight:600}
-.ob-fim{margin:2.5rem 0 0;font-size:13px;color:rgba(255,255,255,.45)}
-.ob-fim a{color:rgba(255,255,255,.7)}
-@media(max-width:600px){ .ob-passo{padding:1rem} }
+.ob-redes a:hover{background:rgba(255,255,255,.26);transform:translateY(-2px)}
+.ob-redes svg{width:19px;height:19px;fill:currentColor}
 </style>
 </head>
 <body>
 <div class="ob">
-  <img class="ob-logo" src="../img/bluebolt-lockup.webp" alt="Blue Bolt Agency" width="300" height="287" style="height:34px;width:auto">
-  <div class="ob-selo" aria-hidden="true">
-    <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+  <h1>Obrigado</h1>
+  <p class="ob-sub">Em breve entraremos em contacto consigo.<br>Aproveite este intervalo de tempo e procure conhecer-nos melhor.</p>
+  <div class="ob-redes">
+    <a href="https://www.facebook.com/blueboltagency/" target="_blank" rel="noopener" aria-label="Facebook">
+      <svg viewBox="0 0 24 24"><path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z"/></svg></a>
+    <a href="https://www.instagram.com/bluebolt.agency/" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg viewBox="0 0 24 24"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41-.56-.22-.96-.48-1.38-.9-.42-.42-.68-.82-.9-1.38-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zM12 0C8.74 0 8.33.01 7.05.07 5.78.13 4.9.33 4.14.63c-.79.3-1.46.72-2.13 1.38C1.35 2.68.93 3.35.63 4.14.33 4.9.13 5.78.07 7.05.01 8.33 0 8.74 0 12s.01 3.67.07 4.95c.06 1.27.26 2.15.56 2.91.3.79.72 1.46 1.38 2.13.67.66 1.34 1.08 2.13 1.38.76.3 1.64.5 2.91.56C8.33 23.99 8.74 24 12 24s3.67-.01 4.95-.07c1.27-.06 2.15-.26 2.91-.56.79-.3 1.46-.72 2.13-1.38.66-.67 1.08-1.34 1.38-2.13.3-.76.5-1.64.56-2.91.06-1.28.07-1.69.07-4.95s-.01-3.67-.07-4.95c-.06-1.27-.26-2.15-.56-2.91-.3-.79-.72-1.46-1.38-2.13C21.32 1.35 20.65.93 19.86.63 19.1.33 18.22.13 16.95.07 15.67.01 15.26 0 12 0zm0 5.84a6.16 6.16 0 100 12.32 6.16 6.16 0 000-12.32zM12 16a4 4 0 110-8 4 4 0 010 8zm7.85-10.4a1.44 1.44 0 11-2.88 0 1.44 1.44 0 012.88 0z"/></svg></a>
+    <a href="https://www.linkedin.com/company/blue-bolt-agency/" target="_blank" rel="noopener" aria-label="LinkedIn">
+      <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.63-1.85 3.36-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 110-4.13 2.06 2.06 0 010 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z"/></svg></a>
   </div>
-  <h1>Recebemos o seu pedido.</h1>
-  <p class="ob-sub">Falta um passo para o diagnóstico ficar marcado.</p>
-
-  <div class="ob-passo">
-    <span class="ob-num">1</span>
-    <p><strong>Vá ao seu email.</strong> Acabámos de lhe enviar uma mensagem com o link para escolher o horário que lhe dá jeito.</p>
-  </div>
-  <div class="ob-passo">
-    <span class="ob-num">2</span>
-    <p><strong>Escolha a hora.</strong> São 30 minutos, por videochamada. Se não estiver na caixa de entrada, veja no spam ou nas promoções.</p>
-  </div>
-  <div class="ob-passo">
-    <span class="ob-num">3</span>
-    <p><strong>Traga os números que tiver.</strong> Quanto gasta em anúncios e quantos clientes entram por mês chega para começarmos com coisas concretas.</p>
-  </div>
-
-  <p class="ob-fim">Alguma coisa correu mal? Escreva para <a href="mailto:geral@bluebolt.pt">geral@bluebolt.pt</a>.</p>
 </div>
 CORPO_MARCACAO
 </body>

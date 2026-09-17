@@ -620,6 +620,12 @@ evento nunca se confirmar.
 "referral", e perde-se a campanha que gerou a conversão.
 
 A página `/obrigado/` resolve as duas: o `Lead` dispara no carregamento dela.
+
+É uma cópia da que estava em `lp.blueboltagency.pt/obrigado/` — mesmo retrato de
+fundo, mesmo véu (`#000000C4`, preto a 77%, tirado do CSS do Elementor deles),
+mesmo texto e as mesmas três redes. O fundo veio de um PNG de 1920×1080 com
+817KB; reduzido para 1600px e em webp, ficou em **33KB**. Por trás de um véu a
+77% não se perde nada que se veja.
 Determinístico, sem depender de mensagens que o GHL não documenta. Verificado no
 browser:
 
