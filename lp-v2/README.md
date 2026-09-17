@@ -562,7 +562,7 @@ partir dele — que é precisamente o caso para o qual a CAPI existe.
 
 Era nosso, era bonito e não servia para nada: mostrava "Obrigado!" e deitava a
 lead fora. Passou a ser o formulário do **Go High Level**
-(`api.leadconnectorhq.com/widget/form/ZBEyR6JAk4CBl4jVfnSD`), e as submissões
+(`api.leadconnectorhq.com/widget/form/LsucMnYcVBLHJseC8oUQ`), e as submissões
 caem no CRM.
 
 Já vem estilizado para fundo escuro — campos a `#FFFFFF0D`, texto branco,
@@ -578,6 +578,19 @@ sem ele o iframe fica com os 640px fixos e corta o botão em ecrãs pequenos.
 Como o formulário passou a ser o único caminho de conversão da página, e vive
 num domínio que não é nosso, há uma saída alternativa por baixo: se o iframe não
 carregar, fica o `geral@bluebolt.pt` em vez de uma caixa vazia.
+
+### Um formulário só, e é o novo
+
+Ficou um formulário partilhado pelas duas páginas, não um por canal. Dois
+formulários só se justificariam para dar tratamento diferente às leads de cada
+canal — outro email de seguimento, outro pipeline, outro responsável. Para
+*saber* de onde veio a lead já chega o campo abaixo, e duplicar traria cinco
+campos, o consentimento e o CSS próprio a manter em sincronia: o mesmo problema
+que evitámos ao gerar as duas páginas da mesma fonte.
+
+O `LsucMnYcVBLHJseC8oUQ` é novo, criado para não misturar com as leads da LP
+antiga. Verificado antes de trocar: mesmos campos, o CSS escuro lá, e o campo
+`landingpage` já sem o valor predefinido que dava problemas.
 
 ### A origem da lead no CRM
 
