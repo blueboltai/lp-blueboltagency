@@ -624,8 +624,17 @@ A página `/obrigado/` resolve as duas: o `Lead` dispara no carregamento dela.
 É uma cópia da que estava em `lp.blueboltagency.pt/obrigado/` — mesmo retrato de
 fundo, mesmo véu (`#000000C4`, preto a 77%, tirado do CSS do Elementor deles),
 mesmo texto e as mesmas três redes. O fundo veio de um PNG de 1920×1080 com
-817KB; reduzido para 1600px e em webp, ficou em **33KB**. Por trás de um véu a
-77% não se perde nada que se veja.
+817KB; reduzido para 1600px e em webp, ficou em **33KB**.
+
+O véu é que ficou mais aberto. A original punha preto a **77%** e a foto quase
+desaparecia. Medido no próprio fotograma — que é uma imagem clara, não escura —
+mesmo a 52% o pior pixel por trás do texto ainda dá 5,5:1 contra o branco, acima
+do 4,5 que o subtítulo a 16px precisa. Ficou em **58%**: passa 1,8× mais luz e o
+pior caso fica em 6,7:1, com folga.
+
+O enquadramento também: o Ricardo está na metade esquerda do fotograma, e com
+`cover` o `center` cortava-o de fora. Está a `38%` no computador e a `25%` no
+telemóvel, onde o `cover` corta mais de mil pixels de largura.
 Determinístico, sem depender de mensagens que o GHL não documenta. Verificado no
 browser:
 

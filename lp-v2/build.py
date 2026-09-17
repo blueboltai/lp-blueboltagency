@@ -2976,14 +2976,27 @@ body{
   margin:0;min-height:100vh;
   display:flex;align-items:center;justify-content:center;
   padding:clamp(1.5rem,5vw,3rem);
-  background:#000 url('../img/obrigado-fundo.webp') center/cover no-repeat;
+  /* 38% e nao `center`: o Ricardo esta na metade esquerda do fotograma, e
+     com `cover` num ecra estreito o centro cortava-o de fora. */
+  background:#000 url('../img/obrigado-fundo.webp') 38% center/cover no-repeat;
   color:#fff;
   font-family:'Manrope',system-ui,sans-serif;
   text-align:center;
 }
-/* O mesmo veu da pagina original: preto a 77%. E ele que poe o texto a
-   frente sem apagar o retrato por tras. */
-body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,.77);pointer-events:none}
+/* A pagina original punha aqui preto a 77% (#000000C4) e a foto quase
+   desaparecia. Medido no proprio fotograma: mesmo a 52% o pior pixel por
+   tras do texto ainda da 5,5:1 contra o branco, acima do 4,5 que o
+   subtitulo a 16px precisa. A 58% passa 1,8x mais luz do que a 77% — o
+   Ricardo ve-se — e o pior caso fica em 6,7:1, com folga. */
+body::before{content:'';position:fixed;inset:0;background:rgba(0,0,0,.58);pointer-events:none}
+/* Ecra estreito: menos imagem visivel e o texto ocupa-a quase toda, por
+   isso fecha-se um pouco mais. */
+@media(max-width:700px){
+  /* Num ecra em pe o `cover` corta mais de 1000px de largura. A 42% o
+     Ricardo ficava de fora; a 25% a janela visivel apanha-o. */
+  body{background-position:25% center}
+  body::before{background:rgba(0,0,0,.66)}
+}
 .ob{position:relative;max-width:640px}
 h1{
   font-family:'Archia',sans-serif;
