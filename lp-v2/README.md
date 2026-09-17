@@ -785,6 +785,48 @@ dos 904KB que o relatório apontava como pedidos repetidos por falta de validade
 declarada — um ano para imagens, fontes e vídeo, um mês para CSS e JS, e **nada
 para o HTML**, que é ele que traz as alterações.
 
+## O aperto do formulário
+
+O formulário é do CRM e vive num iframe de outro domínio, o que quer dizer
+que metade do problema se resolve aqui e a outra metade no GHL.
+
+Medido num ecrã de 390px, antes: o cartão tinha 18px de folga de cada lado, o
+iframe ficava com 304px — e dentro dele o construtor do GHL põe
+`padding: 60px 40px 30px` no `#_builder-form`. Sobravam **222px** para os
+campos, ou seja 43% da largura do ecrã perdida só em margens. Os campos tinham
+**35px de altura e 12px de corpo**; abaixo de 16px o iPhone aproxima a página
+ao focar um campo e não volta a sair sozinho.
+
+E não era só no telemóvel. A partir dos 900px a secção passa a duas colunas e,
+até perto dos 1200, o cartão anda pelos 450px: com 40px de folga sobravam 366
+para o iframe — menos do que num telemóvel de 430.
+
+Deste lado:
+
+| | antes | depois |
+| --- | --- | --- |
+| `.lead-form` até 768px | 18px | **12px** |
+| `.lead-form` entre 900 e 1199px | 40px | **24px** |
+
+Do lado do GHL, em *Estilos → CSS personalizado* do formulário, fica o que está
+em [`ghl-form.css`](ghl-form.css): tira a folga a dobrar do `#_builder-form` e
+põe os campos a 46px de altura com 16px de corpo. **Não está no repositório por
+via nenhuma — é preciso colá-lo lá à mão**, e se o formulário for recriado
+perde-se.
+
+O resultado, medido campo a campo no formulário verdadeiro:
+
+| largura do iframe | campo antes | campo depois |
+| --- | --- | --- |
+| 694px (tablet) | 568px | 620px |
+| 518px (desktop, 2 colunas) | 436px | 488px |
+| 398px (1024px, 2 colunas) | 316px | 368px |
+| 316px (telemóvel de 390) | 222px | **286px** |
+| 286px (telemóvel de 360) | 204px | 256px |
+
+Nenhuma das larguras transborda, e a altura do iframe continua a ser o
+`form_embed.js` a pô-la.
+
 ## Favicon
 
 O favicon era o logo completo — o monograma mais "BLUE BOLT AGENCY" por baixo.

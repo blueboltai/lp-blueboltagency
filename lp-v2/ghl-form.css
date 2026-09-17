@@ -1,0 +1,21 @@
+/* O formulario vive dentro de um cartao que ja tem folga propria; os
+   40px de cada lado que o construtor poe sao folga a dobrar, e num
+   telemovel comem um terco da largura. */
+#_builder-form.form-builder--wrap,
+.form-builder--wrap.form-builder--wrap-full{
+  padding: 28px 14px 22px !important;
+}
+
+/* Campos de 35px de altura e 12px de corpo: apertados de ler e de tocar.
+   E abaixo de 16px o iPhone aproxima a pagina ao focar um campo, e nao
+   volta a sair sozinho. */
+.form-builder--wrap .form-control,
+.form-builder--wrap input.form-control,
+.form-builder--wrap .iti input{
+  min-height: 46px !important;
+  height: 46px !important;
+  font-size: 16px !important;
+}
+.form-builder--wrap textarea.form-control{
+  min-height: 92px !important; height: auto !important; font-size: 16px !important;
+}

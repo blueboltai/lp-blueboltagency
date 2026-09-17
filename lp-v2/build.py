@@ -1165,8 +1165,11 @@ SECOES_CSS = """
 
   /* O cartao tinha 40px de folga de cada lado: num ecra de 390 sobravam
      260px para o formulario do CRM, e ele respondia com campos estreitos
-     e um botao quase quadrado. A 18px sobram 306. */
-  .lead-form{ padding:18px; }
+     e um botao quase quadrado. A 12px sobram 318.
+     Nao chega: o proprio formulario do CRM traz 40px de folga interna de
+     cada lado, e esses so se tiram no CSS do GHL (ver README). Aqui
+     ganha-se o que se pode ganhar deste lado. */
+  .lead-form{ padding:12px; }
 
   /* A saida alternativa do formulario e texto corrido: sem folga ficava
      com 14px de altura tocavel. */
@@ -1183,6 +1186,14 @@ SECOES_CSS = """
 @media(max-width:640px){
   .hero-h1{ font-size:clamp(26px,7.6vw,36px); }
   .hero-sub{ font-size:14.5px; }
+}
+
+/* O aperto do formulario nao e so no telemovel. A partir dos 900px a
+   seccao do diagnostico passa a duas colunas, e ate perto dos 1200 o
+   cartao anda pelos 450px — com 40px de folga de cada lado sobravam 366
+   para o formulario, menos do que ha num telemovel de 430. */
+@media(min-width:900px) and (max-width:1199px){
+  .lead-form{ padding:24px; }
 }
 @media(prefers-reduced-motion:reduce){
   .hero-bg-video{ display:none; }
