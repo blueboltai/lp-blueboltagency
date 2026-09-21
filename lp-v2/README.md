@@ -785,6 +785,35 @@ dos 904KB que o relatório apontava como pedidos repetidos por falta de validade
 declarada — um ano para imagens, fontes e vídeo, um mês para CSS e JS, e **nada
 para o HTML**, que é ele que traz as alterações.
 
+## Dois contentores de GTM
+
+O Google Ads levou contentor próprio, `GTM-KNN9N786`, ao lado do que já lá
+estava, `GTM-WG4ZH4LF`. Quem os distribui é o `build.py`:
+
+| página | contentores |
+| --- | --- |
+| `/` | os dois |
+| `/meta/` | só `GTM-WG4ZH4LF` |
+| `/google/` | os dois |
+| `/obrigado/` | os dois |
+
+**O ponto que interessa é a página de obrigado**, porque é a mesma para os dois
+canais. Quando isto foi editado à mão no servidor, o contentor de lá foi
+*substituído* em vez de acrescentado — e tudo o que estivesse configurado no
+contentor antigo deixou de disparar no único sítio onde a conversão acontece. É
+por isso que `segundo_gtm()` acrescenta e nunca troca, e que o `/meta/` fica com
+o contentor de sempre.
+
+Nota: dois contentores na mesma página disparam as suas etiquetas os dois. Se a
+mesma etiqueta (um GA4, por exemplo) existir nos dois, o evento conta a dobrar.
+Cada contentor deve ficar com o que é seu.
+
+Junto vai a captura de **gclid**, em todas as páginas: guarda `gclid`, `wbraid`
+ou `gbraid` num cookie `bb_gclid` de 90 dias em `.bluebolt.pt`, e expõe
+`window.bbGclid()`. Não mede nada — serve para a importação de conversões
+offline, quando a lead fecha semanas depois e é preciso ligar a venda ao clique
+que a trouxe.
+
 ## O aperto do formulário
 
 O formulário é do CRM e vive num iframe de outro domínio, o que quer dizer

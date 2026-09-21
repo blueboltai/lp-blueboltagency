@@ -13,6 +13,20 @@
        Esta página não envia dados a lado nenhum enquanto os IDs não forem trocados. ===== -->
 
   <!-- Google Analytics (GA4) -->
+  <!-- Captura de GCLID: guarda o identificador do clique para importacao offline -->
+  <script>
+  (function(){
+    var p = new URLSearchParams(location.search);
+    var g = p.get('gclid') || p.get('wbraid') || p.get('gbraid');
+    if(g){
+      try{ document.cookie = 'bb_gclid=' + g + ';max-age=7776000;path=/;domain=.bluebolt.pt;SameSite=Lax'; }catch(e){}
+    }
+    window.bbGclid = function(){
+      var m = document.cookie.match(/(?:^|;\s*)bb_gclid=([^;]+)/);
+      return m ? decodeURIComponent(m[1]) : '';
+    };
+  })();
+  </script>
   <!-- Consent Mode v2: tudo negado ate haver escolha -->
   <script>
   window.dataLayer = window.dataLayer || [];
@@ -41,6 +55,13 @@
   j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-WG4ZH4LF');</script>
+  <!-- End Google Tag Manager -->
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-KNN9N786');</script>
   <!-- End Google Tag Manager -->
 
   <!-- Meta Pixel: so carrega com consentimento de marketing -->
@@ -3361,6 +3382,10 @@ a{text-decoration:none;color:inherit}
 <body>
 <!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WG4ZH4LF"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager -->
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KNN9N786"
 height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager -->
 

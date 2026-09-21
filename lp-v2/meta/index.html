@@ -13,6 +13,20 @@
        Esta página não envia dados a lado nenhum enquanto os IDs não forem trocados. ===== -->
 
   <!-- Google Analytics (GA4) -->
+  <!-- Captura de GCLID: guarda o identificador do clique para importacao offline -->
+  <script>
+  (function(){
+    var p = new URLSearchParams(location.search);
+    var g = p.get('gclid') || p.get('wbraid') || p.get('gbraid');
+    if(g){
+      try{ document.cookie = 'bb_gclid=' + g + ';max-age=7776000;path=/;domain=.bluebolt.pt;SameSite=Lax'; }catch(e){}
+    }
+    window.bbGclid = function(){
+      var m = document.cookie.match(/(?:^|;\s*)bb_gclid=([^;]+)/);
+      return m ? decodeURIComponent(m[1]) : '';
+    };
+  })();
+  </script>
   <!-- Consent Mode v2: tudo negado ate haver escolha -->
   <script>
   window.dataLayer = window.dataLayer || [];

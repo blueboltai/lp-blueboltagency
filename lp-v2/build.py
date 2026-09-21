@@ -2477,23 +2477,79 @@ html = troca(
 # para eventos contados a dobrar.
 # ══════════════════════════════════════════════════════════════════
 
-GTM_ID = "GTM-WG4ZH4LF"
+# Sao dois contentores. O GTM_BASE e o de sempre, e esta em todas as
+# paginas. O GTM_GOOGLE foi criado para o Google Ads e junta-se ao
+# primeiro — nao o substitui — nas paginas onde o Google Ads chega: a
+# raiz, o /google/ e a pagina de obrigado.
+#
+# A pagina de obrigado e a parte que interessa: e a mesma para os dois
+# canais. Trocar la o contentor em vez de acrescentar deixa de disparar
+# tudo o que estiver no contentor antigo, e e nele que vive a medicao do
+# Meta. Foi o que aconteceu quando isto foi editado a mao no servidor.
+GTM_BASE = "GTM-WG4ZH4LF"
+GTM_GOOGLE = "GTM-KNN9N786"
 
-GTM_HEAD = (
-    "  <!-- Google Tag Manager -->\n"
-    "  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\n"
-    "  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\n"
-    "  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=\n"
-    "  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\n"
-    f"  }})(window,document,'script','dataLayer','{GTM_ID}');</script>\n"
-    "  <!-- End Google Tag Manager -->\n"
-)
 
-GTM_BODY = (
-    "<!-- Google Tag Manager (noscript) -->\n"
-    f'<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={GTM_ID}"\n'
-    'height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>\n'
-    "<!-- End Google Tag Manager -->\n"
+def gtm_cabeca(gid):
+    return (
+        "  <!-- Google Tag Manager -->\n"
+        "  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':\n"
+        "  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],\n"
+        "  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=\n"
+        "  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);\n"
+        f"  }})(window,document,'script','dataLayer','{gid}');</script>\n"
+        "  <!-- End Google Tag Manager -->\n"
+    )
+
+
+def gtm_corpo(gid):
+    return (
+        "<!-- Google Tag Manager (noscript) -->\n"
+        f'<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={gid}"\n'
+        'height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>\n'
+        "<!-- End Google Tag Manager -->\n"
+    )
+
+
+def segundo_gtm(h, gid, onde):
+    """Acrescenta um segundo contentor a seguir ao primeiro, na cabeca e
+    no corpo. Nao substitui o primeiro: os dois carregam."""
+    fim_cabeca = f"'{GTM_BASE}');</script>\n  <!-- End Google Tag Manager -->\n"
+    fim_corpo = (f'<noscript><iframe src="https://www.googletagmanager.com/ns.html?id={GTM_BASE}"\n'
+                 'height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>\n'
+                 "<!-- End Google Tag Manager -->\n")
+    for alvo, extra, nome in ((fim_cabeca, gtm_cabeca(gid), "cabeca"),
+                              (fim_corpo, gtm_corpo(gid), "corpo")):
+        if h.count(alvo) != 1:
+            falhas.append(f"{onde}: esperava um {nome} do GTM base, encontrei {h.count(alvo)}")
+            continue
+        h = h.replace(alvo, alvo + extra, 1)
+    return h
+
+
+GTM_ID = GTM_BASE
+GTM_HEAD = gtm_cabeca(GTM_BASE)
+GTM_BODY = gtm_corpo(GTM_BASE)
+
+# Guarda o identificador do clique do Google Ads num cookie de 90 dias,
+# para a importacao de conversoes offline: a lead entra no CRM, fecha-se
+# semanas depois, e o gclid e o que liga essa venda ao anuncio que a
+# trouxe. Nao mede nada por si — so guarda.
+GCLID_JS = (
+    "  <!-- Captura de GCLID: guarda o identificador do clique para importacao offline -->\n"
+    "  <script>\n"
+    "  (function(){\n"
+    "    var p = new URLSearchParams(location.search);\n"
+    "    var g = p.get('gclid') || p.get('wbraid') || p.get('gbraid');\n"
+    "    if(g){\n"
+    "      try{ document.cookie = 'bb_gclid=' + g + ';max-age=7776000;path=/;domain=.bluebolt.pt;SameSite=Lax'; }catch(e){}\n"
+    "    }\n"
+    "    window.bbGclid = function(){\n"
+    "      var m = document.cookie.match(/(?:^|;\\s*)bb_gclid=([^;]+)/);\n"
+    "      return m ? decodeURIComponent(m[1]) : '';\n"
+    "    };\n"
+    "  })();\n"
+    "  </script>\n"
 )
 
 # Fora o GA meio ligado.
@@ -2503,7 +2559,7 @@ ga = re.search(
 if not ga:
     falhas.append("snippet do Google Analytics por preencher")
 else:
-    html = html.replace(ga.group(0), GTM_HEAD)
+    html = html.replace(ga.group(0), GCLID_JS + GTM_HEAD)
 
 html = troca(html, "<body>", "<body>\n" + GTM_BODY, "iframe de recurso do GTM")
 
@@ -2835,7 +2891,7 @@ if falhas:
         print("  -", f, file=sys.stderr)
     sys.exit(1)
 
-open(PAGE, "w", encoding="utf-8").write(html)
+open(PAGE, "w", encoding="utf-8").write(segundo_gtm(html, GTM_GOOGLE, "raiz"))
 print(f"index.html reescrito: {len(html):,} bytes")
 
 # ══════════════════════════════════════════════════════════════════
@@ -2949,6 +3005,8 @@ def pagina_do_canal(base_html, canal, rotulo):
         f"dataLayer.push({{canal:'{canal}',canal_nome:'{rotulo}'}});</script>\n"
         "  <!-- Google Tag Manager -->",
     )
+    if canal == "google":
+        h = segundo_gtm(h, GTM_GOOGLE, canal)
     return h
 
 
@@ -2959,6 +3017,12 @@ for canal, rotulo in CANAIS.items():
     open(destino, "w", encoding="utf-8").write(pagina_do_canal(html, canal, rotulo))
     print(f"{canal}/index.html reescrito: {len(html):,} bytes")
 
+
+if falhas:
+    print("SUBSTITUIÇÕES FALHADAS (paginas dos canais e de obrigado):", file=sys.stderr)
+    for f in falhas:
+        print("  -", f, file=sys.stderr)
+    sys.exit(1)
 
 restos = [t for t in ("Equipa de IA", "agentes de IA", "bluebolt-ai-brand", "ricardo.webp") if t in html]
 fora_da_seccao_ricardo = [t for t in restos if t not in ("Equipa de IA",)]
@@ -3118,7 +3182,10 @@ def pagina_obrigado(base_html):
 </script>
 """
     h = OBRIGADO_HTML.replace("CABECA_MARCACAO", cabeca.rstrip()).replace("CORPO_MARCACAO", corpo.rstrip())
-    return h
+    if h.count("  <!-- Google Tag Manager -->") != 1:
+        falhas.append("obrigado: nao encontrei onde por a captura do gclid")
+    h = h.replace("  <!-- Google Tag Manager -->", GCLID_JS + "  <!-- Google Tag Manager -->", 1)
+    return segundo_gtm(h, GTM_GOOGLE, "obrigado")
 
 
 _ob = pagina_obrigado(html)
