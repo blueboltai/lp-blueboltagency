@@ -785,6 +785,49 @@ dos 904KB que o relatório apontava como pedidos repetidos por falta de validade
 declarada — um ano para imagens, fontes e vídeo, um mês para CSS e JS, e **nada
 para o HTML**, que é ele que traz as alterações.
 
+## Um formulário por canal
+
+A origem da lead ia num campo escondido do formulário, preenchido pelo
+`landingpage` no endereço. A página fazia a sua parte — medido no site a
+correr, `/meta/` entregava `Meta Ads` e `/google/` entregava `Google Ads` no
+campo certo, estável aos 3, 9 e 15 segundos — e o GHL registava o valor no
+*Detalhe da página* de cada envio. No registo da lead, o campo vinha **vazio**.
+
+Três coisas, todas do lado do CRM, fecharam esse caminho:
+
+- O campo tem um **valor por omissão**, `Formulário [lp.blueboltagency.pt]`, e
+  um valor por omissão ganha ao preenchimento pelo endereço. Limpa-se, e volta
+  sozinho — vive no campo personalizado, não no formulário, por isso gravar o
+  formulário repõe-no.
+- O preenchimento é **só no browser**: o HTML que o servidor do GHL manda não
+  traz o valor. No envio, não vai.
+- As **condições dos workflows não dão acesso ao URL da lead**. O grupo
+  *Contact First Attribution* só tem UTMs, campanha e medium — e as UTMs
+  colidem com as que o Google e o Meta põem nos próprios anúncios.
+
+Passou a haver **dois formulários no CRM**, um por canal:
+
+| | formulário | id |
+| --- | --- | --- |
+| `/` | `[Lp - Meta]` | `LsucMnYcVBLHJseC8oUQ` |
+| `/meta/` | `[Lp - Meta]` | `LsucMnYcVBLHJseC8oUQ` |
+| `/google/` | `[Lp - Google]` | `uUuR8Xs5yQoy4ekWogwP` |
+
+O `pagina_do_canal()` troca o id nos quatro sítios onde ele aparece — o
+endereço, o `id` do iframe, o `data-layout-iframe-id` e o `data-form-id` — e
+conta-os antes de trocar, que é o que impede uma troca pela metade.
+
+No CRM, um workflow por formulário escreve a origem em **texto fixo**. Não
+depende do campo escondido, nem do valor por omissão, nem da atribuição.
+
+O `?landingpage=` fica no endereço do iframe. Já não é ele que manda, mas
+continua a aparecer no *Detalhe da página* de cada envio, que é onde se
+confere de onde veio.
+
+⚠️ A raiz usa o formulário do Meta. É tráfego residual — a página está em
+`noindex` e não é anunciada — mas as leads que entrem por lá vão ser marcadas
+como Meta. Se isso incomodar, é um terceiro formulário.
+
 ## Dois contentores de GTM
 
 O Google Ads levou contentor próprio, `GTM-KNN9N786`, ao lado do que já lá

@@ -2420,7 +2420,21 @@ html = troca(
 # do iframe nao os podiamos compor nem traduzir.
 # ══════════════════════════════════════════════════════════════════
 
-FORMULARIO_CRM = "LsucMnYcVBLHJseC8oUQ"
+# Sao dois formularios no CRM, um por canal, e nao um so com um campo
+# escondido a dizer de onde veio. Tentou-se o campo escondido: a pagina
+# entregava "Meta Ads"/"Google Ads" no sitio certo, o GHL registava-o no
+# detalhe da pagina — e no registo da lead o campo vinha vazio. O valor
+# por omissao do campo ("Formulário [lp.blueboltagency.pt]") volta sozinho
+# depois de se limpar, e as condicoes dos workflows do GHL nao dao acesso
+# ao URL da lead, so a UTMs — que colidem com as dos proprios anuncios.
+#
+# Com um formulario por canal nao ha nada a adivinhar: o workflow olha
+# para qual dos dois foi submetido e escreve a origem em texto fixo.
+FORMULARIO_CRM = "LsucMnYcVBLHJseC8oUQ"          # [Lp - Meta] — e o da raiz
+FORMULARIOS = {
+    "meta": "LsucMnYcVBLHJseC8oUQ",
+    "google": "uUuR8Xs5yQoy4ekWogwP",
+}
 
 IFRAME_CRM = (
     '<div class="lead-form" id="lead-form">'
@@ -2961,23 +2975,37 @@ def pagina_do_canal(base_html, canal, rotulo):
             falhas.append(f"{canal}: nao encontrei o caminho {antes!r} para reescrever")
         h = h.replace(antes, depois)
 
-    # 2. A origem que vai para o CRM, no endereco do formulario.
+    # 2. O formulario do canal. O id aparece em quatro sitios — o
+    #    endereco, o id do iframe, o data-layout-iframe-id e o
+    #    data-form-id. Trocam-se todos de uma vez.
+    id_canal = FORMULARIOS.get(canal)
+    if not id_canal:
+        falhas.append(f"{canal}: nao sei que formulario do CRM usar")
+        id_canal = FORMULARIO_CRM
+    if h.count(FORMULARIO_CRM) != 4:
+        falhas.append(f"{canal}: esperava o id do formulario 4 vezes, encontrei {h.count(FORMULARIO_CRM)}")
+    h = h.replace(FORMULARIO_CRM, id_canal)
+
+    # 3. A origem tambem no endereco do formulario. Com dois formularios ja
+    #    nao e ela que manda no CRM, mas continua a aparecer no detalhe da
+    #    pagina de cada envio, que e onde se confere de onde veio.
     origem = origem_do_canal(canal, rotulo)
-    if f'src="{FORMULARIO_BASE}"' not in h:
+    base_canal = f"https://api.leadconnectorhq.com/widget/form/{id_canal}"
+    if f'src="{base_canal}"' not in h:
         falhas.append(f"{canal}: nao encontrei o iframe do formulario para marcar a origem")
     h = h.replace(
-        f'src="{FORMULARIO_BASE}"',
-        f'src="{FORMULARIO_BASE}?landingpage={urllib.parse.quote(origem)}"',
+        f'src="{base_canal}"',
+        f'src="{base_canal}?landingpage={urllib.parse.quote(origem)}"',
     )
 
-    # 3. O endereco proprio, para as partilhas e para o dia em que deixar
+    # 4. O endereco proprio, para as partilhas e para o dia em que deixar
     #    de estar em `noindex`.
     h = h.replace('<link rel="canonical" href="https://bluebolt.pt/ai">',
                   f'<link rel="canonical" href="{DOMINIO}/{canal}/">')
     h = h.replace('<meta property="og:url" content="https://bluebolt.pt/ai/ads">',
                   f'<meta property="og:url" content="{DOMINIO}/{canal}/">')
 
-    # 4. A mesma origem, agora tambem na query string da propria pagina.
+    # 5. A mesma origem, agora tambem na query string da propria pagina.
     #    O form_embed.js do GHL le o `window.top.location.search` — a query
     #    da PAGINA, nao a do iframe — e e essa que reencaminha para dentro
     #    do formulario. So no endereco do iframe podia nao chegar la.
@@ -2996,7 +3024,7 @@ def pagina_do_canal(base_html, canal, rotulo):
         1,
     )
 
-    # 5. O canal no dataLayer, antes de o GTM arrancar: assim a primeira
+    # 6. O canal no dataLayer, antes de o GTM arrancar: assim a primeira
     #    visualizacao ja o traz e o GA4 consegue separar os dois sem
     #    depender de a UTM ter sido posta no anuncio.
     h = h.replace(
