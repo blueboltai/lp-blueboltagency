@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-PT">
+<html lang="pt-PT" data-canal="google">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -89,8 +89,8 @@
   <!-- ===== FIM TRACKING E ANALYTICS ===== -->
 
   <!-- SEO primário -->
-  <title>Blue Bolt Agency | Sistema Previsível de Aquisição de Clientes</title>
-  <meta name="description" content="Construímos o sistema que transforma anúncios em clientes: atração, nutrição e processo comercial, com resultados medidos todos os meses. Diagnóstico gratuito de 30 minutos.">
+  <title>Agência de marketing digital que trabalha até à venda | Blue Bolt Agency</title>
+  <meta name="description" content="Agência de marketing digital, Google Partner e Meta Business Partner. Anúncios, funil e processo comercial numa só equipa, até à venda. Diagnóstico gratuito de 30 minutos.">
   <meta name="keywords" content="agência de marketing digital, geração de leads, tráfego pago, Google Ads, Meta Ads, funil de vendas, aquisição de clientes, Blue Bolt, Blue Bolt Agency">
   <meta name="author" content="Blue Bolt Agency">
   <meta name="robots" content="noindex, nofollow">
@@ -98,8 +98,8 @@
 
   <!-- Open Graph (Facebook, WhatsApp, LinkedIn) -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Aumente a sua faturação com um sistema previsível | Blue Bolt Agency">
-  <meta property="og:description" content="Construímos o sistema que transforma anúncios em clientes: atração, nutrição e processo comercial, com resultados medidos todos os meses. Diagnóstico gratuito de 30 minutos.">
+  <meta property="og:title" content="Agência de marketing digital que trabalha até à venda | Blue Bolt Agency">
+  <meta property="og:description" content="Agência de marketing digital, Google Partner e Meta Business Partner. Anúncios, funil e processo comercial numa só equipa, até à venda. Diagnóstico gratuito de 30 minutos.">
   <meta property="og:image" content="https://bluebolt.pt/ai/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -3379,6 +3379,53 @@ a{text-decoration:none;color:inherit}
   .ck-botoes{ flex-direction:column; }
   .ck-texto{ font-size:13.5px; }
 }
+
+/* ══ Prova no hero — so a versao do Google a usa ══
+   Quem chega pelo Google pesquisou uma categoria ("agência de marketing
+   digital") e esta a comparar fornecedores com varios separadores abertos.
+   As perguntas sao: e uma agencia a serio, o que a distingue, quem ja
+   confiou. As credenciais e os numeros respondem as tres no primeiro
+   ecra, em vez de so aparecerem depois do formulario.
+   Vao em texto e nao em imagem: a 40px de altura o selo do Scoring e um
+   borrao e o "Google Partner" da imagem nao se le; a palavra le-se. Os
+   selos verdadeiros continuam no rodape. */
+.hero-prova{
+  display:flex;flex-direction:column;align-items:center;gap:.95rem;
+  margin-top:-1.35rem;margin-bottom:2.75rem;
+}
+.hero-prova-selos{ display:flex;flex-wrap:wrap;justify-content:center;gap:.45rem; }
+.hero-prova-selos span{
+  font-family:'Manrope',sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.02em;
+  color:rgba(255,255,255,.88);
+  padding:.36rem .8rem;border-radius:9999px;
+  border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);
+  backdrop-filter:blur(6px);
+  text-shadow:0 1px 2px rgba(0,1,34,.6);
+}
+.hero-prova-nums{ display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem 1.9rem;list-style:none;margin:0;padding:0; }
+.hero-prova-nums li{ display:flex;align-items:baseline;gap:.4rem;font-family:'Manrope',sans-serif; }
+.hero-prova-nums b{
+  font-weight:800;font-size:21px;letter-spacing:-.03em;line-height:1;
+  background:var(--brand-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 1px 2px rgba(0,1,34,.7));
+}
+.hero-prova-nums span{ font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);text-shadow:0 1px 2px rgba(0,1,34,.6); }
+/* Com "Quem somos" antes do formulario, as costuras de baixo passam a
+   juntar outros paddings: medido tinta-a-tinta, quem-somos→formulario dava
+   238px (a referencia do /meta/ e 220) e formulario→testemunhos 159 (183).
+   No telemovel, 198 contra 170. Acerta-se so aqui, sem tocar no /meta/. */
+html[data-canal="google"] #autoridade{ padding-bottom:calc(var(--ritmo) - 18px); }
+html[data-canal="google"] #guia{ padding-bottom:calc(var(--ritmo) * .75 + 24px); }
+@media(max-width:768px){
+  html[data-canal="google"] #autoridade{ padding-bottom:calc(var(--ritmo) - 29px); }
+  html[data-canal="google"] #guia{ padding-top:calc(var(--ritmo) + 32px);padding-bottom:calc(var(--ritmo) - 9px); }
+}
+@media(max-width:640px){
+  .hero-prova{ margin-top:-.6rem;margin-bottom:2.25rem;gap:.8rem; }
+  .hero-prova-selos span{ font-size:11px;padding:.32rem .7rem; }
+  .hero-prova-nums{ gap:.5rem 1.2rem; }
+  .hero-prova-nums b{ font-size:19px; }
+}
 </style>
 </head>
 <body>
@@ -3421,20 +3468,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
         <div class="hero-badge" data-reveal="fade">
           <span class="hero-badge-dot" aria-hidden="true"></span>
-          Diagnóstico gratuito de 30 minutos
+          Agência de marketing digital · Portugal
         </div>
 
         <h1 class="hero-h1">
-          <span class="t1">Se depende de sorte com anúncios ou de alguém o recomendar, </span><span class="t2">está a jogar à sorte, não a gerir um negócio.</span>
+          <span class="t1">A agência de marketing digital que trabalha até à venda, </span><span class="t2">não só até ao lead.</span>
         </h1>
 
         <p class="hero-sub">
-          <strong>As empresas que escalam têm um sistema.</strong> Com o Sistema Previsível de Aquisição de Clientes, sabe todos os meses onde o dinheiro se perdeu, onde gerou oportunidades e onde se transformou em clientes.
+          <strong>Google Partner e Meta Business Partner</strong>, com mais de 400 negócios acompanhados. Comece com um diagnóstico gratuito de 30 minutos e saia com um plano para os próximos 90 dias.
         </p>
 
         <div class="hero-ctas">
-          <a href="#guia" class="lm-btn" data-lm><span class="lm-aro" aria-hidden="true"></span><span class="lm-face" aria-hidden="true"></span><span class="lm-conteudo"><span class="lm-label">Agendar sessão estratégica</span></span></a>
+          <a href="#guia" class="lm-btn" data-lm><span class="lm-aro" aria-hidden="true"></span><span class="lm-face" aria-hidden="true"></span><span class="lm-conteudo"><span class="lm-label">Marcar diagnóstico gratuito</span></span></a>
         </div>
+
+        <div class="hero-trust hero-prova" aria-label="Credenciais e resultados"><div class="hero-prova-selos"><span>Google Partner</span><span>Meta Business Partner</span><span>Top 5% PME de Portugal</span></div><ul class="hero-prova-nums"><li><b>3,72x</b><span>ROAS</span></li><li><b>+562%</b><span>vendas</span></li><li><b>7x</b><span>retorno</span></li></ul></div>
 
       </div>
     </div>
@@ -3619,28 +3668,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <div class="ig-cta-wrap">
 
 <!-- ===== O GUIA + FORMULÁRIO ===== -->
-<section id="guia" class="guia-section">
-  <div class="guia-inner">
-    <div data-reveal="left">
-      <div class="quem-eyebrow">Diagnóstico gratuito</div>
-      <h2 class="quem-h2">
-        <span class="tg">Descubra o que está a travar </span><span class="ta">o crescimento do seu negócio.</span>
-      </h2>
-      <p class="hero-sub" style="max-width:none;margin-bottom:0">Trinta minutos com a nossa equipa, sem custo e sem pitch de vendas. Neste diagnóstico, vai receber:</p>
-      <div class="stack-list">
-        <div class="stack-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="stack-item-name"><b>Um raio-x do seu funil</b>, da atração ao fecho, com os pontos de perda identificados</span></div>
-        <div class="stack-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="stack-item-name"><b>Quanto lhe custa hoje cada cliente</b> e onde esse custo pode descer</span></div>
-        <div class="stack-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="stack-item-name"><b>As oportunidades de maior impacto</b>, por ordem de prioridade</span></div>
-        <div class="stack-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="stack-item-name"><b>Um plano claro dos próximos 90 dias</b>, sem compromisso de compra</span></div>
-      </div>
-    </div>
-    <div data-reveal="right">
-      <div class="lead-form" id="lead-form"><div class="lead-form-title">Agendar a minha sessão estratégica</div><p class="lead-form-sub">Deixe os seus dados e marcamos o diagnóstico de 30 minutos. Sem custo, sem compromisso.</p><iframe src="https://api.leadconnectorhq.com/widget/form/uUuR8Xs5yQoy4ekWogwP?landingpage=Google%20Ads" class="lead-crm" id="inline-uUuR8Xs5yQoy4ekWogwP" title="Formulário de contacto" style="width:100%;height:640px;border:none;background:transparent" data-layout="{'id':'INLINE'}" data-trigger-type="alwaysShow" data-activation-type="alwaysActivated" data-deactivation-type="neverDeactivate" data-form-name="Diagnóstico gratuito" data-height="640" data-layout-iframe-id="inline-uUuR8Xs5yQoy4ekWogwP" data-form-id="uUuR8Xs5yQoy4ekWogwP"></iframe><p class="lead-fine">Sem spam e sem compromisso. A nossa equipa entra em contacto em menos de 24 horas.<br>Se o formulário não carregar, escreva para <a href="mailto:geral@bluebolt.pt">geral@bluebolt.pt</a>.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===== AUTORIDADE (Quem está por trás) ===== -->
 <section id="autoridade" class="auth-section">
   <div class="auth-inner">
     <div class="expert-photo" data-reveal="left">
@@ -3681,6 +3708,28 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <span>Decisões e Soluções</span>
         <span>Apametal</span>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AUTORIDADE (Quem está por trás) ===== -->
+<section id="guia" class="guia-section">
+  <div class="guia-inner">
+    <div data-reveal="left">
+      <div class="quem-eyebrow">Diagnóstico gratuito</div>
+      <h2 class="quem-h2">
+        <span class="tg">Descubra o que está a travar </span><span class="ta">o crescimento do seu negócio.</span>
+      </h2>
+      <p class="hero-sub" style="max-width:none;margin-bottom:0">Trinta minutos com a nossa equipa, sem custo e sem pitch de vendas. Neste diagnóstico, vai receber:</p>
+      <div class="stack-list">
+        <div class="stack-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="stack-item-name"><b>Um raio-x do seu funil</b>, da atração ao fecho, com os pontos de perda identificados</span></div>
+        <div class="stack-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="stack-item-name"><b>Quanto lhe custa hoje cada cliente</b> e onde esse custo pode descer</span></div>
+        <div class="stack-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="stack-item-name"><b>As oportunidades de maior impacto</b>, por ordem de prioridade</span></div>
+        <div class="stack-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg><span class="stack-item-name"><b>Um plano claro dos próximos 90 dias</b>, sem compromisso de compra</span></div>
+      </div>
+    </div>
+    <div data-reveal="right">
+      <div class="lead-form" id="lead-form"><div class="lead-form-title">Agendar a minha sessão estratégica</div><p class="lead-form-sub">Deixe os seus dados e marcamos o diagnóstico de 30 minutos. Sem custo, sem compromisso. No diagnóstico falamos de números: quanto faz sentido investir e que retorno é realista, antes de qualquer proposta.</p><iframe src="https://api.leadconnectorhq.com/widget/form/uUuR8Xs5yQoy4ekWogwP?landingpage=Google%20Ads" class="lead-crm" id="inline-uUuR8Xs5yQoy4ekWogwP" title="Formulário de contacto" style="width:100%;height:640px;border:none;background:transparent" data-layout="{'id':'INLINE'}" data-trigger-type="alwaysShow" data-activation-type="alwaysActivated" data-deactivation-type="neverDeactivate" data-form-name="Diagnóstico gratuito" data-height="640" data-layout-iframe-id="inline-uUuR8Xs5yQoy4ekWogwP" data-form-id="uUuR8Xs5yQoy4ekWogwP"></iframe><p class="lead-fine">Sem spam e sem compromisso. A nossa equipa entra em contacto em menos de 24 horas.<br>Se o formulário não carregar, escreva para <a href="mailto:geral@bluebolt.pt">geral@bluebolt.pt</a>.</p></div>
     </div>
   </div>
 </section>

@@ -1712,6 +1712,55 @@ VSL_JS = """
 })();
 """
 
+PROVA_CSS = """
+/* ══ Prova no hero — so a versao do Google a usa ══
+   Quem chega pelo Google pesquisou uma categoria ("agência de marketing
+   digital") e esta a comparar fornecedores com varios separadores abertos.
+   As perguntas sao: e uma agencia a serio, o que a distingue, quem ja
+   confiou. As credenciais e os numeros respondem as tres no primeiro
+   ecra, em vez de so aparecerem depois do formulario.
+   Vao em texto e nao em imagem: a 40px de altura o selo do Scoring e um
+   borrao e o "Google Partner" da imagem nao se le; a palavra le-se. Os
+   selos verdadeiros continuam no rodape. */
+.hero-prova{
+  display:flex;flex-direction:column;align-items:center;gap:.95rem;
+  margin-top:-1.35rem;margin-bottom:2.75rem;
+}
+.hero-prova-selos{ display:flex;flex-wrap:wrap;justify-content:center;gap:.45rem; }
+.hero-prova-selos span{
+  font-family:'Manrope',sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.02em;
+  color:rgba(255,255,255,.88);
+  padding:.36rem .8rem;border-radius:9999px;
+  border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);
+  backdrop-filter:blur(6px);
+  text-shadow:0 1px 2px rgba(0,1,34,.6);
+}
+.hero-prova-nums{ display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem 1.9rem;list-style:none;margin:0;padding:0; }
+.hero-prova-nums li{ display:flex;align-items:baseline;gap:.4rem;font-family:'Manrope',sans-serif; }
+.hero-prova-nums b{
+  font-weight:800;font-size:21px;letter-spacing:-.03em;line-height:1;
+  background:var(--brand-grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 1px 2px rgba(0,1,34,.7));
+}
+.hero-prova-nums span{ font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);text-shadow:0 1px 2px rgba(0,1,34,.6); }
+/* Com "Quem somos" antes do formulario, as costuras de baixo passam a
+   juntar outros paddings: medido tinta-a-tinta, quem-somos→formulario dava
+   238px (a referencia do /meta/ e 220) e formulario→testemunhos 159 (183).
+   No telemovel, 198 contra 170. Acerta-se so aqui, sem tocar no /meta/. */
+html[data-canal="google"] #autoridade{ padding-bottom:calc(var(--ritmo) - 18px); }
+html[data-canal="google"] #guia{ padding-bottom:calc(var(--ritmo) * .75 + 24px); }
+@media(max-width:768px){
+  html[data-canal="google"] #autoridade{ padding-bottom:calc(var(--ritmo) - 29px); }
+  html[data-canal="google"] #guia{ padding-top:calc(var(--ritmo) + 32px);padding-bottom:calc(var(--ritmo) - 9px); }
+}
+@media(max-width:640px){
+  .hero-prova{ margin-top:-.6rem;margin-bottom:2.25rem;gap:.8rem; }
+  .hero-prova-selos span{ font-size:11px;padding:.32rem .7rem; }
+  .hero-prova-nums{ gap:.5rem 1.2rem; }
+  .hero-prova-nums b{ font-size:19px; }
+}
+"""
+
 AVISO_CSS = """
 /* ══ Aviso de cookies ══
    Preso ao fundo e nao a meio do ecra: um painel a tapar a pagina toda
@@ -1833,7 +1882,7 @@ AVISO_CSS = """
 }
 """
 
-html = troca(html, "</style>", VSL_CSS + NAV_CSS + SECOES_CSS + AVISO_CSS + "</style>", "CSS da VSL, do hero, das secções e do aviso de cookies")
+html = troca(html, "</style>", VSL_CSS + NAV_CSS + SECOES_CSS + AVISO_CSS + PROVA_CSS + "</style>", "CSS da VSL, do hero, das secções, do aviso de cookies e da prova no hero")
 html = troca(html, '\n<!-- QUEM É -->', VSL_HTML + '\n<!-- QUEM É -->', "marcacao da VSL")
 html = troca(html, "\n/* Submissão do formulário de lead", VSL_JS + "\n/* Submissão do formulário de lead", "JS da VSL")
 
@@ -2959,6 +3008,128 @@ def origem_do_canal(canal, rotulo):
     return rotulo
 
 
+# ══════════════════════════════════════════════════════════════════
+# A VERSAO DO GOOGLE
+# Os termos de pesquisa de setembro (521 termos, 60 cliques, 125€) dizem
+# quem chega por ali: 60% dos cliques e 71% do custo sao categoria pura
+# — "agência de marketing digital", "empresas de marketing", "agências de
+# marketing" — e ha cliques em nomes de concorrentes (spartads, v7 sales,
+# clever advertising). E alguem a escolher fornecedor, a comparar.
+#
+# O gancho da sorte esta certo para o Meta, onde interrompe quem nao
+# estava a procura. No Google a pessoa ja esta a procura, e o gancho
+# atrasa a resposta. As perguntas dela sao: e uma agencia a serio, o que
+# a distingue, quem ja confiou, quanto custa descobrir. A pagina ja tinha
+# tudo isto — a frase que distingue estava enterrada na seccao do
+# problema, e a prova so aparecia depois do formulario.
+#
+# Nao se refaz nada. Troca-se o topo, sobe-se a prova para o hero, a
+# seccao "Quem somos" passa para antes do formulario, e uma linha no
+# formulario responde a quem pesquisou "preço".
+# ══════════════════════════════════════════════════════════════════
+
+GOOGLE_BADGE = "Agência de marketing digital · Portugal"
+GOOGLE_H1_T1 = "A agência de marketing digital que trabalha até à venda, "
+GOOGLE_H1_T2 = "não só até ao lead."
+GOOGLE_SUB = (
+    "<strong>Google Partner e Meta Business Partner</strong>, com mais de 400 negócios "
+    "acompanhados. Comece com um diagnóstico gratuito de 30 minutos e saia com um plano "
+    "para os próximos 90 dias."
+)
+GOOGLE_CTA = "Marcar diagnóstico gratuito"
+# A classe hero-trust e a que o GSAP ja anima na entrada (delay .85).
+GOOGLE_PROVA = (
+    '<div class="hero-trust hero-prova" aria-label="Credenciais e resultados">'
+    '<div class="hero-prova-selos">'
+    "<span>Google Partner</span><span>Meta Business Partner</span><span>Top 5% PME de Portugal</span>"
+    "</div>"
+    '<ul class="hero-prova-nums">'
+    "<li><b>3,72x</b><span>ROAS</span></li>"
+    "<li><b>+562%</b><span>vendas</span></li>"
+    "<li><b>7x</b><span>retorno</span></li>"
+    "</ul></div>"
+)
+GOOGLE_PRECO = (
+    " No diagnóstico falamos de números: quanto faz sentido investir e que retorno é "
+    "realista, antes de qualquer proposta."
+)
+GOOGLE_TITLE = "Agência de marketing digital que trabalha até à venda | Blue Bolt Agency"
+GOOGLE_DESC = (
+    "Agência de marketing digital, Google Partner e Meta Business Partner. Anúncios, funil "
+    "e processo comercial numa só equipa, até à venda. Diagnóstico gratuito de 30 minutos."
+)
+
+
+def versao_google(h):
+    """O topo, a prova e a ordem, so na pagina do Google."""
+    def troca_g(texto, antes, depois, nome, esperado=1):
+        n = texto.count(antes)
+        if n != esperado:
+            falhas.append(f"google: {nome}: esperava {esperado}, encontrei {n}")
+            return texto
+        return texto.replace(antes, depois)
+
+    # O hero e tratado a parte: .hero-sub e o rotulo do botao repetem-se
+    # noutras seccoes, e so os do hero e que mudam.
+    ini = h.find('<section id="hero"')
+    fim = h.find("</section>", ini) + len("</section>")
+    hero = h[ini:fim]
+
+    hero = troca_g(hero,
+        '<span class="hero-badge-dot" aria-hidden="true"></span>\n          Diagnóstico gratuito de 30 minutos',
+        f'<span class="hero-badge-dot" aria-hidden="true"></span>\n          {GOOGLE_BADGE}',
+        "rotulo do hero")
+    hero = troca_g(hero,
+        '<span class="t1">Se depende de sorte com anúncios ou de alguém o recomendar, </span>'
+        '<span class="t2">está a jogar à sorte, não a gerir um negócio.</span>',
+        f'<span class="t1">{GOOGLE_H1_T1}</span><span class="t2">{GOOGLE_H1_T2}</span>',
+        "titulo do hero")
+    sub = re.search(r'<p class="hero-sub">.*?</p>', hero, re.S)
+    if not sub:
+        falhas.append("google: nao encontrei o subtitulo do hero")
+    else:
+        hero = hero.replace(sub.group(0), f'<p class="hero-sub">\n          {GOOGLE_SUB}\n        </p>')
+    hero = troca_g(hero,
+        '<span class="lm-label">Agendar sessão estratégica</span>',
+        f'<span class="lm-label">{GOOGLE_CTA}</span>',
+        "rotulo do botao")
+    # A prova entra logo a seguir ao botao. O botao nao tem <div> la
+    # dentro, por isso o primeiro </div> depois de .hero-ctas e o dela.
+    i = hero.find('<div class="hero-ctas">')
+    j = hero.find("</div>", i) + len("</div>")
+    if i == -1:
+        falhas.append("google: nao encontrei os botoes do hero")
+    else:
+        hero = hero[:j] + "\n\n        " + GOOGLE_PROVA + hero[j:]
+    h = h[:ini] + hero + h[fim:]
+
+    # "Quem somos" (com os numeros e os logotipos) passa para antes do
+    # formulario: quem compara quer saber quem e antes de dar os dados.
+    # As duas seccoes vivem dentro do mesmo .ig-cta-wrap, por isso a
+    # troca nao mexe em fundos.
+    g = re.search(r'<section id="guia".*?</section>', h, re.S)
+    a = re.search(r'<section id="autoridade".*?</section>', h, re.S)
+    if not (g and a) or g.start() > a.start():
+        falhas.append("google: nao encontrei as seccoes do formulario e do quem somos pela ordem esperada")
+    else:
+        h = h[:g.start()] + a.group(0) + h[g.end():a.start()] + g.group(0) + h[a.end():]
+
+    # O CSS precisa de saber que esta na pagina do Google: a troca de ordem
+    # muda que paddings se encontram em cada costura, e os do /meta/ foram
+    # afinados para a ordem de la.
+    h = troca_g(h, '<html lang="pt-PT">', '<html lang="pt-PT" data-canal="google">', "atributo do canal")
+
+    # A objecao do preco, no bloco do formulario.
+    h = troca_g(h, "Sem custo, sem compromisso.</p>", "Sem custo, sem compromisso." + GOOGLE_PRECO + "</p>", "linha do preco")
+
+    # O titulo do separador e o que o anuncio ve.
+    h = re.sub(r"<title>.*?</title>", f"<title>{GOOGLE_TITLE}</title>", h, count=1, flags=re.S)
+    h = re.sub(r'(<meta property="og:title" content=")[^"]*(")', rf"\g<1>{GOOGLE_TITLE}\g<2>", h, count=1)
+    h = re.sub(r'(<meta name="description" content=")[^"]*(")', rf"\g<1>{GOOGLE_DESC}\g<2>", h, count=1)
+    h = re.sub(r'(<meta property="og:description" content=")[^"]*(")', rf"\g<1>{GOOGLE_DESC}\g<2>", h, count=1)
+    return h
+
+
 def pagina_do_canal(base_html, canal, rotulo):
     """A mesma pagina, um nivel mais abaixo e marcada com o canal."""
     h = base_html
@@ -3034,6 +3205,7 @@ def pagina_do_canal(base_html, canal, rotulo):
         "  <!-- Google Tag Manager -->",
     )
     if canal == "google":
+        h = versao_google(h)
         h = segundo_gtm(h, GTM_GOOGLE, canal)
     return h
 

@@ -785,6 +785,73 @@ dos 904KB que o relatório apontava como pedidos repetidos por falta de validade
 declarada — um ano para imagens, fontes e vídeo, um mês para CSS e JS, e **nada
 para o HTML**, que é ele que traz as alterações.
 
+## A versão do Google
+
+Os anúncios convertem no Meta e não no Google — e as duas páginas eram iguais.
+Os termos de pesquisa de setembro dizem porquê: **521 termos, 60 cliques, 125 €,
+1 conversão** registada pelo Google Ads. Por intenção:
+
+| intenção | cliques | custo |
+| --- | --- | --- |
+| categoria — "agência de marketing digital", "empresas de marketing"… | **36** (60%) | **89 €** (71%) |
+| local — braga, porto, lisboa | 13 | 18 € |
+| serviço específico — tráfego, ads, redes sociais | 6 | 9 € |
+| nome de concorrente — spartads, v7 sales, clever advertising… | 4 | 6 € |
+| leads / vendas | 4 | 9 € |
+| preço | 1 | 2 € |
+
+Quem chega por ali pesquisou uma **categoria** e está a escolher fornecedor, com
+vários separadores abertos a comparar. As perguntas são quatro: é uma agência a
+sério, o que a distingue, quem já confiou nela, quanto custa descobrir.
+
+O gancho da sorte está certo para o Meta, onde interrompe quem não estava à
+procura. No Google a pessoa já está à procura, e o gancho atrasa a resposta. A
+página já tinha tudo o que faltava — a frase que distingue ("para a maioria das
+agências, atrair leads é o objetivo final; para nós, é o ponto de partida")
+estava enterrada na secção do problema, e a prova (Google Partner, Meta Partner,
+Top 5%, os três números) só aparecia depois do formulário.
+
+`versao_google()` não refaz nada. Troca o que está por cima e a ordem:
+
+| | `/meta/` | `/google/` |
+| --- | --- | --- |
+| rótulo | Diagnóstico gratuito de 30 minutos | Agência de marketing digital · Portugal |
+| título | Se depende de sorte com anúncios… | **A agência de marketing digital que trabalha até à venda, não só até ao lead.** |
+| subtítulo | As empresas que escalam têm um sistema… | Google Partner e Meta Business Partner, com mais de 400 negócios acompanhados. Comece com um diagnóstico gratuito de 30 minutos e saia com um plano para os próximos 90 dias. |
+| botão | Agendar sessão estratégica | Marcar diagnóstico gratuito |
+| por baixo do botão | — | três credenciais em texto + 3,72x ROAS · +562% vendas · 7x retorno |
+| ordem | … o que implementamos → **formulário** → quem somos → testemunhos | … o que implementamos → **quem somos** → formulário → testemunhos |
+| formulário | Sem custo, sem compromisso. | + *No diagnóstico falamos de números: quanto faz sentido investir e que retorno é realista, antes de qualquer proposta.* |
+| `<title>` | Blue Bolt Agency \| Sistema Previsível… | Agência de marketing digital que trabalha até à venda \| Blue Bolt Agency |
+
+Cada elemento do topo faz um trabalho só: o rótulo diz a categoria e o país (há
+pesquisas por Braga, Porto e Lisboa), o título diz a categoria e o que distingue,
+o subtítulo dá a prova e a oferta, as credenciais respondem a "é a sério", os
+números a "e resulta". O título passa a conter as palavras que 60% dos cliques
+pesquisaram, o que também pesa na relevância da página para o anúncio.
+
+As credenciais vão em **texto**, não em imagem: a 40px de altura o selo do
+Scoring é um borrão e o "Google Partner" da imagem não se lê. Os selos
+verdadeiros continuam no rodapé. A classe `hero-trust` é a que o GSAP já animava
+na entrada — entra com o mesmo ritmo do resto.
+
+"Quem somos" sobe para antes do formulário porque quem compara quer saber quem é
+antes de dar os dados. As duas secções vivem dentro do mesmo `.ig-cta-wrap`, por
+isso a troca não mexe em fundos. O botão do hero continua a apontar para
+`#guia`, que é o formulário.
+
+Tudo isto está só no `/google/`. Nada muda no `/meta/` nem na raiz.
+
+Fora da página, três coisas que os termos mostram e que a página não resolve:
+
+- **"gestão de redes sociais porto"** — 3 cliques, 4 €, fora de alvo. É palavra
+  negativa na campanha.
+- Os anúncios dizem *"mais de 120 clientes ativos"* e a página *"mais de 400
+  negócios acompanhados"*. Podem ser os dois verdade; quem lê os dois estranha.
+- O Google Ads contou 1 conversão, mas a etiqueta do Google só entrou na página
+  a 21 de setembro. Antes disso não havia medição nenhuma. O CRM, com o
+  LandingPage a funcionar, é que diz quantas leads vieram de cada canal.
+
 ## Um formulário por canal
 
 A origem da lead ia num campo escondido do formulário, preenchido pelo
