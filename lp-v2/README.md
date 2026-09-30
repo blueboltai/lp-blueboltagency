@@ -839,7 +839,7 @@ Top 5%, os três números) só aparecia depois do formulário.
 | título | Se depende de sorte com anúncios… | **A agência de marketing digital que trabalha até à venda, não só até ao lead.** |
 | subtítulo | As empresas que escalam têm um sistema… | Google Partner e Meta Business Partner, no Top 5% das PME de Portugal, com mais de 400 negócios acompanhados. Comece com um diagnóstico gratuito de 30 minutos e saia com um plano para os próximos 90 dias. |
 | botão | Agendar sessão estratégica | Marcar diagnóstico gratuito |
-| por baixo do botão | — | 3,72x ROAS · +562% vendas · 7x retorno |
+| por baixo do botão | — | 9x ROAS · +562% vendas · 7x retorno |
 | ordem | … o que implementamos → **formulário** → quem somos → testemunhos | … o que implementamos → **quem somos** → formulário → testemunhos |
 | formulário | Sem custo, sem compromisso. | + *No diagnóstico falamos de números: quanto faz sentido investir e que retorno é realista, antes de qualquer proposta.* |
 | `<title>` | Blue Bolt Agency \| Sistema Previsível… | Agência de marketing digital que trabalha até à venda \| Blue Bolt Agency |
@@ -861,7 +861,12 @@ antes de dar os dados. As duas secções vivem dentro do mesmo `.ig-cta-wrap`, p
 isso a troca não mexe em fundos. O botão do hero continua a apontar para
 `#guia`, que é o formulário.
 
-Tudo isto está só no `/google/`. Nada muda no `/meta/` nem na raiz.
+O caso do ROAS mudou nas três páginas: o 3,72x da Therafactor era o número mais
+fraco dos três e o primeiro que se lê; há um cliente com 9x e passa a ser esse.
+`ROAS_CLIENTE` no `build.py` está por preencher — o 9x não fica ao lado de
+"Therafactor", que é outro cliente, nem se inventa um nome.
+
+Tudo o resto está só no `/google/`. Nada muda no `/meta/` nem na raiz.
 
 Fora da página, três coisas que os termos mostram e que a página não resolve:
 

@@ -2941,6 +2941,25 @@ html = troca(
 )
 
 # ══════════════════════════════════════════════════════════════════
+# O CASO DO ROAS
+# O 3,72x da Therafactor era o numero mais fraco dos tres, e e o primeiro
+# que se le. Ha um cliente com 9x: passa a ser esse. O nome desse cliente
+# fica por preencher ate o Ricardo o dar — nao se poe o 9x ao lado de
+# "Therafactor", que e outro cliente, nem se inventa um nome.
+# ══════════════════════════════════════════════════════════════════
+
+ROAS_NUM = "9x"
+ROAS_CLIENTE = ""   # por preencher: o cliente dos 9x
+html = troca(
+    html,
+    '<div class="auth-case-num">3,72x</div>\n          <div class="auth-case-label">ROAS · Therafactor</div>',
+    f'<div class="auth-case-num">{ROAS_NUM}</div>\n          <div class="auth-case-label">ROAS'
+    + (f" · {ROAS_CLIENTE}" if ROAS_CLIENTE else "") + '</div>',
+    "o caso do ROAS no Quem somos",
+)
+
+
+# ══════════════════════════════════════════════════════════════════
 
 if falhas:
     print("SUBSTITUIÇÕES FALHADAS:", file=sys.stderr)
@@ -3039,7 +3058,7 @@ GOOGLE_CTA = "Marcar diagnóstico gratuito"
 GOOGLE_PROVA = (
     '<div class="hero-trust hero-prova" aria-label="Resultados">'
     '<ul class="hero-prova-nums">'
-    "<li><b>3,72x</b><span>ROAS</span></li>"
+    f"<li><b>{ROAS_NUM}</b><span>ROAS</span></li>"
     "<li><b>+562%</b><span>vendas</span></li>"
     "<li><b>7x</b><span>retorno</span></li>"
     "</ul></div>"
