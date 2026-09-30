@@ -785,6 +785,26 @@ dos 904KB que o relatório apontava como pedidos repetidos por falta de validade
 declarada — um ano para imagens, fontes e vídeo, um mês para CSS e JS, e **nada
 para o HTML**, que é ele que traz as alterações.
 
+## O véu do hero, mais fechado
+
+A pedido — o gancho lia-se pouco sobre o vídeo — o véu subiu, nas duas páginas:
+a faixa por trás do texto de `.48` para `.64`, a base de `.38/.50` para
+`.48/.60`, o halo radial de `.52` para `.58` nas pontas. Medido com o vídeo
+parado no primeiro fotograma e o texto escondido, no pior pixel por baixo de
+cada elemento:
+
+| | antes | depois |
+| --- | --- | --- |
+| título, palavras a azul | 3,25:1 | **5,0:1** |
+| título, branco | 8,9:1 | 13,5:1 |
+| subtítulo | 3,4:1 | 5,1:1 |
+| luminância média sob o título | 0,027 | 0,014 |
+
+O azul passa de "passa o mínimo de texto grande, sem folga" para AA de texto
+normal. A cena do vídeo continua a ler-se como ambiente — escritório, pessoas,
+quadro — mas já não compete com as letras. A ferramenta é `veu-medir.mjs`, e é
+ela que decide, não o olho.
+
 ## A versão do Google
 
 Os anúncios convertem no Meta e não no Google — e as duas páginas eram iguais.

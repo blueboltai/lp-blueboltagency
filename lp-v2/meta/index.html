@@ -2174,22 +2174,28 @@ a{text-decoration:none;color:inherit}
   --faixa-b:   52%;
   --faixa-fim: 64%;
   background:
-    /* 1. A faixa por tras do texto. O erro anterior era ter o ponto mais
+    /* 1. A faixa por tras do texto. Subiu de .48 para .64 (e a base de
+          .38/.50 para .48/.60) a pedido: o titulo lia-se pouco sobre o
+          video. Medido com o video parado no primeiro fotograma, o pior
+          pixel por baixo do titulo dava 3,25:1 para as palavras a azul —
+          passa o minimo de texto grande, mas sem folga nenhuma; e a
+          folga que faz a diferenca quando o video esta a mexer.
+          O erro anterior era ter o ponto mais
           claro do veu exactamente onde esta o titulo: o sitio que precisa
           de mais protecao era o que tinha menos. Esta faixa escurece so a
           altura em que ha letras, esbatida nas duas pontas para nao
           deixar aresta. */
     linear-gradient(180deg,
       rgba(0,1,34,0)   var(--faixa-ini),
-      rgba(0,1,34,.48) var(--faixa-a),
-      rgba(0,1,34,.48) var(--faixa-b),
+      rgba(0,1,34,.64) var(--faixa-a),
+      rgba(0,1,34,.64) var(--faixa-b),
       rgba(0,1,34,0)   var(--faixa-fim)),
     /* 2. A base, que fecha no #000122 solido em baixo — e ela que faz o
           halo azul da VSL ler-se como um ecra aceso. */
-    linear-gradient(180deg, rgba(0,1,34,.38) 0%, rgba(0,1,34,.50) 55%, #000122 96%),
+    linear-gradient(180deg, rgba(0,1,34,.48) 0%, rgba(0,1,34,.60) 55%, #000122 96%),
     /* 3. O halo radial, agora largo e quase limpo ao centro: com a faixa
           a tratar do texto, este so tem de fechar os cantos. */
-    radial-gradient(80% 64% at 50% 34%, rgba(0,1,34,.04), rgba(0,1,34,.52) 100%);
+    radial-gradient(80% 64% at 50% 34%, rgba(0,1,34,.06), rgba(0,1,34,.58) 100%);
 }
 @media(max-width:860px){
   .hero-bg-veil{ --faixa-ini:3%; --faixa-a:10%; --faixa-b:70%; --faixa-fim:82%; }
