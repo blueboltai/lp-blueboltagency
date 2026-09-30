@@ -837,9 +837,9 @@ Top 5%, os três números) só aparecia depois do formulário.
 | --- | --- | --- |
 | rótulo | Diagnóstico gratuito de 30 minutos | Agência de marketing digital · Portugal |
 | título | Se depende de sorte com anúncios… | **A agência de marketing digital que trabalha até à venda, não só até ao lead.** |
-| subtítulo | As empresas que escalam têm um sistema… | Google Partner e Meta Business Partner, com mais de 400 negócios acompanhados. Comece com um diagnóstico gratuito de 30 minutos e saia com um plano para os próximos 90 dias. |
+| subtítulo | As empresas que escalam têm um sistema… | Google Partner e Meta Business Partner, no Top 5% das PME de Portugal, com mais de 400 negócios acompanhados. Comece com um diagnóstico gratuito de 30 minutos e saia com um plano para os próximos 90 dias. |
 | botão | Agendar sessão estratégica | Marcar diagnóstico gratuito |
-| por baixo do botão | — | três credenciais em texto + 3,72x ROAS · +562% vendas · 7x retorno |
+| por baixo do botão | — | 3,72x ROAS · +562% vendas · 7x retorno |
 | ordem | … o que implementamos → **formulário** → quem somos → testemunhos | … o que implementamos → **quem somos** → formulário → testemunhos |
 | formulário | Sem custo, sem compromisso. | + *No diagnóstico falamos de números: quanto faz sentido investir e que retorno é realista, antes de qualquer proposta.* |
 | `<title>` | Blue Bolt Agency \| Sistema Previsível… | Agência de marketing digital que trabalha até à venda \| Blue Bolt Agency |
@@ -850,10 +850,11 @@ o subtítulo dá a prova e a oferta, as credenciais respondem a "é a sério", o
 números a "e resulta". O título passa a conter as palavras que 60% dos cliques
 pesquisaram, o que também pesa na relevância da página para o anúncio.
 
-As credenciais vão em **texto**, não em imagem: a 40px de altura o selo do
-Scoring é um borrão e o "Google Partner" da imagem não se lê. Os selos
-verdadeiros continuam no rodapé. A classe `hero-trust` é a que o GSAP já animava
-na entrada — entra com o mesmo ritmo do resto.
+Por baixo do botão ficam **só os números**. Houve pílulas com as credenciais
+ali — repetiam o subtítulo palavra por palavra e, no telemóvel, quebravam em
+duas linhas antes dos números. As credenciais vivem no subtítulo; os números
+são a prova que ninguém pode copiar. A classe `hero-trust` é a que o GSAP já
+animava na entrada — entra com o mesmo ritmo do resto.
 
 "Quem somos" sobe para antes do formulário porque quem compara quer saber quem é
 antes de dar os dados. As duas secções vivem dentro do mesmo `.ig-cta-wrap`, por

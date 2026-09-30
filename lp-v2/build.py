@@ -1723,23 +1723,12 @@ PROVA_CSS = """
    Quem chega pelo Google pesquisou uma categoria ("agência de marketing
    digital") e esta a comparar fornecedores com varios separadores abertos.
    As perguntas sao: e uma agencia a serio, o que a distingue, quem ja
-   confiou. As credenciais e os numeros respondem as tres no primeiro
-   ecra, em vez de so aparecerem depois do formulario.
-   Vao em texto e nao em imagem: a 40px de altura o selo do Scoring e um
-   borrao e o "Google Partner" da imagem nao se le; a palavra le-se. Os
-   selos verdadeiros continuam no rodape. */
+   confiou. As credenciais vao no subtitulo; por baixo do botao ficam so
+   os tres numeros — a prova que ninguem pode copiar. Houve pilulas com
+   as credenciais aqui; repetiam o subtitulo e sairam. */
 .hero-prova{
   display:flex;flex-direction:column;align-items:center;gap:.95rem;
   margin-top:-1.35rem;margin-bottom:2.75rem;
-}
-.hero-prova-selos{ display:flex;flex-wrap:wrap;justify-content:center;gap:.45rem; }
-.hero-prova-selos span{
-  font-family:'Manrope',sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.02em;
-  color:rgba(255,255,255,.88);
-  padding:.36rem .8rem;border-radius:9999px;
-  border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.07);
-  backdrop-filter:blur(6px);
-  text-shadow:0 1px 2px rgba(0,1,34,.6);
 }
 .hero-prova-nums{ display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem 1.9rem;list-style:none;margin:0;padding:0; }
 .hero-prova-nums li{ display:flex;align-items:baseline;gap:.4rem;font-family:'Manrope',sans-serif; }
@@ -1761,7 +1750,6 @@ html[data-canal="google"] #guia{ padding-bottom:calc(var(--ritmo) * .75 + 24px);
 }
 @media(max-width:640px){
   .hero-prova{ margin-top:-.6rem;margin-bottom:2.25rem;gap:.8rem; }
-  .hero-prova-selos span{ font-size:11px;padding:.32rem .7rem; }
   .hero-prova-nums{ gap:.5rem 1.2rem; }
   .hero-prova-nums b{ font-size:19px; }
 }
@@ -3038,17 +3026,18 @@ GOOGLE_BADGE = "Agência de marketing digital · Portugal"
 GOOGLE_H1_T1 = "A agência de marketing digital que trabalha até à venda, "
 GOOGLE_H1_T2 = "não só até ao lead."
 GOOGLE_SUB = (
-    "<strong>Google Partner e Meta Business Partner</strong>, com mais de 400 negócios "
-    "acompanhados. Comece com um diagnóstico gratuito de 30 minutos e saia com um plano "
-    "para os próximos 90 dias."
+    "<strong>Google Partner e Meta Business Partner</strong>, no Top 5% das PME de Portugal, "
+    "com mais de 400 negócios acompanhados. Comece com um diagnóstico gratuito de 30 minutos "
+    "e saia com um plano para os próximos 90 dias."
 )
 GOOGLE_CTA = "Marcar diagnóstico gratuito"
 # A classe hero-trust e a que o GSAP ja anima na entrada (delay .85).
+# So os numeros: as credenciais em pilulas repetiam o subtitulo palavra
+# por palavra, e no telemovel quebravam em duas linhas antes dos numeros.
+# As credenciais ficam no subtitulo, os numeros sozinhos por baixo do
+# botao — sao a prova que ninguem pode copiar.
 GOOGLE_PROVA = (
-    '<div class="hero-trust hero-prova" aria-label="Credenciais e resultados">'
-    '<div class="hero-prova-selos">'
-    "<span>Google Partner</span><span>Meta Business Partner</span><span>Top 5% PME de Portugal</span>"
-    "</div>"
+    '<div class="hero-trust hero-prova" aria-label="Resultados">'
     '<ul class="hero-prova-nums">'
     "<li><b>3,72x</b><span>ROAS</span></li>"
     "<li><b>+562%</b><span>vendas</span></li>"
